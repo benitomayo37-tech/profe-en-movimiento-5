@@ -1,0 +1,272 @@
+import Image from "next/image";
+
+import TrainerPrintableSession from "@/features/trainer/components/TrainerPrintableSession";
+import TrainerPrintButton from "@/features/trainer/components/TrainerPrintButton";
+import type {
+  GeneratedTrainingSession,
+} from "@/features/trainer/types/trainer";
+
+interface TrainerResultPanelProps {
+  result: GeneratedTrainingSession | null;
+  isGenerating: boolean;
+  error: string;
+}
+
+export default function TrainerResultPanel({
+  result,
+  isGenerating,
+  error,
+}: TrainerResultPanelProps) {
+  return (
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="border-b border-slate-200 pb-6">
+        <p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">
+          Resultado
+        </p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">
+          Sesión generada
+        </h2>
+      </div>
+
+      {isGenerating ? (
+        <div
+          role="status"
+          className="flex min-h-80 flex-col items-center justify-center px-4 text-center"
+        >
+          <div className="relative h-28 w-28 animate-pulse overflow-hidden rounded-[2rem]">
+            <Image
+              src="/images/profe-ia-robot.png"
+              alt=""
+              width={220}
+              height={280}
+              className="absolute left-1/2 top-0 h-[180px] w-auto max-w-none -translate-x-1/2 object-contain"
+            />
+          </div>
+          <h3 className="mt-6 text-xl font-black text-slate-950">
+            Diseñando la sesión
+          </h3>
+          <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600">
+            Entrenador IA está comprobando tiempos, progresión, participación, recuperación y seguridad.
+          </p>
+        </div>
+      ) : error ? (
+        <div
+          role="alert"
+          className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5"
+        >
+          <h3 className="font-black text-red-900">
+            No se pudo generar la sesión
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-red-800">
+            {error}
+          </p>
+        </div>
+      ) : !result ? (
+        <div className="flex min-h-80 flex-col items-center justify-center px-4 text-center">
+          <div className="relative h-28 w-28 overflow-hidden rounded-[2rem]">
+            <Image
+              src="/images/profe-ia-robot.png"
+              alt=""
+              width={220}
+              height={280}
+              className="absolute left-1/2 top-0 h-[180px] w-auto max-w-none -translate-x-1/2 object-contain"
+            />
+          </div>
+          <h3 className="mt-6 text-xl font-black text-slate-950">
+            Entrenador IA está listo
+          </h3>
+          <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600">
+            Completa los datos y pulsa “Preparar configuración” para generar una sesión completa.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-6 space-y-7">
+          <div className="flex flex-wrap justify-end gap-3">
+            <TrainerPrintButton />
+          </div>
+
+          <TrainerPrintableSession
+            session={result}
+          />
+
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              Planificación completada · {result.totalMinutes} minutos
+            </p>
+            <h3 className="mt-2 text-2xl font-black text-slate-950">
+              {result.title}
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              {result.summary}
+            </p>
+            <p className="mt-3 text-sm font-semibold leading-6 text-slate-800">
+              Objetivo: {result.objective}
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-blue-50 p-5">
+            <h4 className="font-black text-blue-950">
+              Orientación de la carga
+            </h4>
+            <p className="mt-2 text-sm leading-6 text-blue-900">
+              {result.loadGuidance}
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {result.blocks.map((block, index) => (
+              <article
+                key={`${block.name}-${index}`}
+                className="rounded-2xl border border-slate-200 p-5"
+              >
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                      Bloque {index + 1}
+                    </p>
+                    <h4 className="mt-1 text-lg font-black text-slate-950">
+                      {block.name}
+                    </h4>
+                  </div>
+                  <span className="w-fit rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-black text-slate-700">
+                    {block.minutes} min
+                  </span>
+                </div>
+
+                <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                  <div>
+                    <dt className="font-bold text-slate-900">Objetivo</dt>
+                    <dd className="mt-1 leading-6 text-slate-600">{block.objective}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-bold text-slate-900">Intensidad</dt>
+                    <dd className="mt-1 leading-6 text-slate-600">{block.intensity}</dd>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <dt className="font-bold text-slate-900">Organización</dt>
+                    <dd className="mt-1 leading-6 text-slate-600">{block.organization}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                  <div>
+                    <h5 className="text-sm font-black text-slate-900">Actividades</h5>
+                    <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-600">
+                      {block.activities.map((activity) => (
+                        <li
+                          key={`${activity.name}-${activity.minutes}`}
+                          className="rounded-xl bg-slate-50 p-3"
+                        >
+                          <strong className="text-slate-900">
+                            {activity.name} ({activity.minutes} min)
+                          </strong>
+                          <p className="mt-1">
+                            {activity.description}
+                          </p>
+                          <ol className="mt-2 space-y-1 border-l-2 border-emerald-200 pl-3">
+                            {activity.segments.map(
+                              (segment, segmentIndex) => (
+                                <li
+                                  key={`${segment.name}-${segmentIndex}`}
+                                >
+                                  <span className="font-bold text-emerald-800">
+                                    {formatSegmentDuration(
+                                      segment.seconds,
+                                    )}
+                                  </span>{" "}
+                                  <strong className="text-slate-800">
+                                    {segment.name}:
+                                  </strong>{" "}
+                                  {segment.description}
+                                </li>
+                              ),
+                            )}
+                          </ol>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-black text-slate-900">Consignas del entrenador</h5>
+                    <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-600">
+                      {block.coachingPoints.map((point) => (
+                        <li key={point}>• {point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <p className="rounded-xl bg-emerald-50 p-3 text-sm leading-6 text-emerald-900">
+                    <strong>Recuperación:</strong> {block.recovery}
+                  </p>
+                  <p className="rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-900">
+                    <strong>Seguridad:</strong> {block.safety}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            <ResultList
+              title="Evaluación observable"
+              items={result.evaluationCriteria}
+              color="blue"
+            />
+            <ResultList
+              title="Medidas de seguridad"
+              items={result.safetyMeasures}
+              color="amber"
+            />
+            <ResultList
+              title="Opciones de adaptación"
+              items={result.adaptationNotes}
+              color="emerald"
+            />
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function formatSegmentDuration(seconds: number): string {
+  if (seconds < 60) {
+    return `${seconds} s`;
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return remainingSeconds === 0
+    ? `${minutes} min`
+    : `${minutes} min ${remainingSeconds} s`;
+}
+
+function ResultList({
+  title,
+  items,
+  color,
+}: {
+  title: string;
+  items: string[];
+  color: "blue" | "amber" | "emerald";
+}) {
+  const colorStyles = {
+    blue: "border-blue-200 bg-blue-50 text-blue-950",
+    amber: "border-amber-200 bg-amber-50 text-amber-950",
+    emerald: "border-emerald-200 bg-emerald-50 text-emerald-950",
+  } as const;
+
+  return (
+    <section className={`rounded-2xl border p-5 ${colorStyles[color]}`}>
+      <h4 className="font-black">{title}</h4>
+      <ul className="mt-3 space-y-2 text-sm leading-6">
+        {items.map((item) => (
+          <li key={item}>• {item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}

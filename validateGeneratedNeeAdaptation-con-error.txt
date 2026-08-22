@@ -1,0 +1,813 @@
+import type {
+  AIFormData,
+  GeneratedAIContent,
+} from "@/features/ai/types/ai";
+
+export interface NeeAdaptationValidationResult {
+  valid: boolean;
+  message?: string;
+}
+
+const EXPECTED_SECTION_TITLES = [
+  "actividad y aprendizaje esencial",
+  "necesidad indicada y barreras observables",
+  "ajustes de acceso espacio y comunicacion",
+  "variantes de ejecucion y participacion",
+  "apoyos del docente y de los companeros",
+  "evaluacion seguimiento y seguridad",
+] as const;
+
+function normalizeText(
+  value: string,
+): string {
+  return value
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      "",
+    )
+    .toLowerCase()
+    .replace(/[“”«»"'`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeSectionTitle(
+  value: string,
+): string {
+  return normalizeText(value)
+    .replace(
+      /^\s*\d+\s*[.)\-:]\s*/,
+      "",
+    )
+    .replace(/[,.;:]/g, "")
+    .trim();
+}
+
+function invalid(
+  message: string,
+): NeeAdaptationValidationResult {
+  return {
+    valid: false,
+    message,
+  };
+}
+
+function getVisibleText(
+  content: GeneratedAIContent,
+): string {
+  return normalizeText(
+    [
+      content.title,
+      content.introduction,
+      ...content.sections.flatMap(
+        (section) => [
+          section.title,
+          ...section.content,
+        ],
+      ),
+    ].join(" "),
+  );
+}
+
+function findSection(
+  content: GeneratedAIContent,
+  normalizedTitle: string,
+) {
+  return content.sections.find(
+    (section) =>
+      normalizeSectionTitle(
+        section.title,
+      ) === normalizedTitle,
+  );
+}
+
+function validateSectionStructure(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  if (
+    content.sections.length !==
+    EXPECTED_SECTION_TITLES.length
+  ) {
+    return invalid(
+      `La adaptación NEE debe incluir exactamente ${EXPECTED_SECTION_TITLES.length} secciones. Se generaron ${content.sections.length}.`,
+    );
+  }
+
+  for (
+    let index = 0;
+    index <
+    EXPECTED_SECTION_TITLES.length;
+    index += 1
+  ) {
+    const expectedTitle =
+      EXPECTED_SECTION_TITLES[index];
+
+    const generatedSection =
+      content.sections[index];
+
+    if (!generatedSection) {
+      return invalid(
+        `Falta la sección ${index + 1}: "${expectedTitle}".`,
+      );
+    }
+
+    const generatedTitle =
+      normalizeSectionTitle(
+        generatedSection.title,
+      );
+
+    if (
+      generatedTitle !==
+      expectedTitle
+    ) {
+      return invalid(
+        `La sección ${index + 1} debe titularse "${expectedTitle}" y conservar el orden solicitado.`,
+      );
+    }
+
+    if (
+      generatedSection.content.length ===
+      0
+    ) {
+      return invalid(
+        `La sección "${generatedSection.title}" no puede estar vacía.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function extractIndependentBarriers(
+  sectionContent: string[],
+): string[] {
+  if (
+    sectionContent.length >= 3 &&
+    sectionContent.length <= 5
+  ) {
+    return sectionContent;
+  }
+
+  const combinedText =
+    sectionContent
+      .join(" ")
+      .trim();
+
+  if (!combinedText) {
+    return [];
+  }
+
+  const markerPattern =
+    /(?:^|\s)(?:barrera\s*)?\d+\s*[.)\-:]\s*/gi;
+
+  const markers = Array.from(
+    combinedText.matchAll(
+      markerPattern,
+    ),
+  );
+
+  if (
+    markers.length >= 3 &&
+    markers.length <= 5
+  ) {
+    return markers
+      .map(
+        (
+          marker,
+          index,
+        ) => {
+          const start =
+            (marker.index ?? 0) +
+            marker[0].length;
+
+          const end =
+            markers[index + 1]
+              ?.index ??
+            combinedText.length;
+
+          return combinedText
+            .slice(start, end)
+            .trim();
+        },
+      )
+      .filter(Boolean);
+  }
+
+  const semicolonItems =
+    combinedText
+      .split(/\s*;\s*/)
+      .map((item) =>
+        item.trim(),
+      )
+      .filter(Boolean);
+
+  if (
+    semicolonItems.length >= 3 &&
+    semicolonItems.length <= 5
+  ) {
+    return semicolonItems;
+  }
+
+  return sectionContent;
+}
+
+function validateNeedAndBarriers(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const section =
+    findSection(
+      content,
+      "necesidad indicada y barreras observables",
+    );
+
+  if (!section) {
+    return invalid(
+      'Falta la sección "Necesidad indicada y barreras observables".',
+    );
+  }
+
+  const sectionText =
+    normalizeText(
+      section.content.join(" "),
+    );
+
+  const declaresNeedStatus =
+    /\b(?:no\s+(?:se\s+)?(?:indico|especifico|proporciono)|no\s+(?:fue\s+)?(?:indicada|especificada|proporcionada)|necesidad\s+(?:indicada|descrita|senalada)\s+por\s+el\s+docente|el\s+docente\s+(?:indico|senalo|describio))\b/.test(
+      sectionText,
+    );
+
+  if (!declaresNeedStatus) {
+    return invalid(
+      "La adaptación debe aclarar si el docente indicó una necesidad específica o si se proponen apoyos flexibles sin asumir una condición.",
+    );
+  }
+
+  const barriers =
+    extractIndependentBarriers(
+      section.content,
+    );
+
+  if (
+    barriers.length < 3 ||
+    barriers.length > 5
+  ) {
+    return invalid(
+      `La sección debe incluir entre 3 y 5 barreras observables independientes. Se identificaron ${barriers.length}.`,
+    );
+  }
+
+  for (const barrier of barriers) {
+    if (
+      normalizeText(
+        barrier,
+      ).length < 25
+    ) {
+      return invalid(
+        `La barrera "${barrier}" es demasiado breve para explicar una dificultad observable de acceso o participación.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateAdjustments(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const section =
+    findSection(
+      content,
+      "ajustes de acceso espacio y comunicacion",
+    );
+
+  if (!section) {
+    return invalid(
+      'Falta la sección "Ajustes de acceso, espacio y comunicación".',
+    );
+  }
+
+  if (
+    section.content.length !== 4
+  ) {
+    return invalid(
+      `La sección de ajustes debe incluir exactamente 4 elementos. Se generaron ${section.content.length}.`,
+    );
+  }
+
+  for (
+    const adjustment of
+      section.content
+  ) {
+    const normalizedAdjustment =
+      normalizeText(adjustment);
+
+    if (
+      !/^ajuste de acceso\b/.test(
+        normalizedAdjustment,
+      )
+    ) {
+      return invalid(
+        'Cada ajuste debe comenzar exactamente con "AJUSTE DE ACCESO —".',
+      );
+    }
+
+    if (
+      !/\b(?:docente|profesor|profesora)\b/.test(
+        normalizedAdjustment,
+      )
+    ) {
+      return invalid(
+        `El ajuste "${adjustment.slice(
+          0,
+          150,
+        )}" no explica la acción del docente.`,
+      );
+    }
+
+    if (
+      !/\b(?:evidencia|resultado|observable|se observa|verifica|demuestra)\b/.test(
+        normalizedAdjustment,
+      )
+    ) {
+      return invalid(
+        `El ajuste "${adjustment.slice(
+          0,
+          150,
+        )}" no incluye un resultado observable.`,
+      );
+    }
+
+    if (
+      adjustment.length > 700
+    ) {
+      return invalid(
+        "Los ajustes de acceso deben redactarse de forma más breve y aplicable.",
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateParticipationVariants(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const section =
+    findSection(
+      content,
+      "variantes de ejecucion y participacion",
+    );
+
+  if (!section) {
+    return invalid(
+      'Falta la sección "Variantes de ejecución y participación".',
+    );
+  }
+
+  if (
+    section.content.length !== 3
+  ) {
+    return invalid(
+      `La sección debe incluir exactamente 3 variantes. Se generaron ${section.content.length}.`,
+    );
+  }
+
+  for (
+    const variant of
+      section.content
+  ) {
+    const normalizedVariant =
+      normalizeText(variant);
+
+    if (
+      !/^variante de participacion\b/.test(
+        normalizedVariant,
+      )
+    ) {
+      return invalid(
+        'Cada variante debe comenzar exactamente con "VARIANTE DE PARTICIPACIÓN —".',
+      );
+    }
+
+    if (
+      !/\b(?:evidencia|observable|demuestra|ejecuta|realiza|mantiene|logra)\b/.test(
+        normalizedVariant,
+      )
+    ) {
+      return invalid(
+        `La variante "${variant.slice(
+          0,
+          150,
+        )}" no define una evidencia observable equivalente.`,
+      );
+    }
+
+    if (
+      variant.length > 700
+    ) {
+      return invalid(
+        "Las variantes de participación deben redactarse de forma más compacta.",
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateSupports(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const section =
+    findSection(
+      content,
+      "apoyos del docente y de los companeros",
+    );
+
+  if (!section) {
+    return invalid(
+      'Falta la sección "Apoyos del docente y de los compañeros".',
+    );
+  }
+
+  if (
+    section.content.length !== 4
+  ) {
+    return invalid(
+      `La sección de apoyos debe incluir exactamente 4 elementos. Se generaron ${section.content.length}.`,
+    );
+  }
+
+  let teacherSupports = 0;
+  let peerSupports = 0;
+
+  for (
+    const support of
+      section.content
+  ) {
+    const normalizedSupport =
+      normalizeText(support);
+
+    if (
+      /^apoyo docente\b/.test(
+        normalizedSupport,
+      )
+    ) {
+      teacherSupports += 1;
+    } else if (
+      /^apoyo entre companeros\b/.test(
+        normalizedSupport,
+      )
+    ) {
+      peerSupports += 1;
+    } else {
+      return invalid(
+        'Cada apoyo debe comenzar con "APOYO DOCENTE —" o "APOYO ENTRE COMPAÑEROS —".',
+      );
+    }
+
+    if (
+      support.length > 650
+    ) {
+      return invalid(
+        "Los apoyos deben ser breves, concretos y directamente aplicables.",
+      );
+    }
+  }
+
+  if (
+    teacherSupports !== 2 ||
+    peerSupports !== 2
+  ) {
+    return invalid(
+      `Deben generarse exactamente 2 apoyos del docente y 2 apoyos entre compañeros. Se identificaron ${teacherSupports} y ${peerSupports}.`,
+    );
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateEvaluationSection(
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const section =
+    findSection(
+      content,
+      "evaluacion seguimiento y seguridad",
+    );
+
+  if (!section) {
+    return invalid(
+      'Falta la sección "Evaluación, seguimiento y seguridad".',
+    );
+  }
+
+  if (
+    section.content.length !== 5
+  ) {
+    return invalid(
+      `La última sección debe contener exactamente 5 elementos. Se generaron ${section.content.length}.`,
+    );
+  }
+
+  const expectedPrefixes = [
+    /^evidencia esencial\b/,
+    /^criterios observables\b/,
+    /^seguimiento\b/,
+    /^retroalimentacion\b/,
+    /^seguridad\b/,
+  ];
+
+  for (
+    let index = 0;
+    index <
+    expectedPrefixes.length;
+    index += 1
+  ) {
+    const item =
+      section.content[index];
+
+    if (
+      !item ||
+      !expectedPrefixes[index].test(
+        normalizeText(item),
+      )
+    ) {
+      return invalid(
+        `El elemento ${index + 1} de la última sección no utiliza el encabezado obligatorio o está fuera de orden.`,
+      );
+    }
+
+    if (
+      item.length > 650
+    ) {
+      return invalid(
+        `El elemento "${item.slice(
+          0,
+          120,
+        )}" debe resumirse.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateForbiddenContent(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  const visibleText =
+    getVisibleText(content);
+
+  const diagnosticInferencePattern =
+    /\b(?:se\s+diagnostica|probablemente\s+tiene|parece\s+tener|podria\s+tener|se\s+concluye\s+que\s+tiene|padece|sufre\s+de)\b/;
+
+  if (
+    diagnosticInferencePattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "La adaptación NEE emite o sugiere un diagnóstico no autorizado. Debe limitarse a la necesidad indicada y a barreras observables.",
+    );
+  }
+
+  const stigmatizingPattern =
+    /\b(?:estudiante\s+normal|alumno\s+normal|incapaz|deficiente|problematico|no\s+puede\s+aprender)\b/;
+
+  if (
+    stigmatizingPattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "La adaptación utiliza una expresión estigmatizante o centrada en el déficit.",
+    );
+  }
+
+  const manualGuidancePattern =
+    /\b(?:guia|asistencia|ayuda)\s+manual\b|\b(?:sujetar|manipular|mover)\b[^.!?]{0,80}\b(?:brazos?|piernas?|cuerpo)\b/;
+
+  if (
+    manualGuidancePattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "La adaptación NEE no debe proponer guía manual, manipulación corporal ni sujeción de brazos o piernas.",
+    );
+  }
+
+  const replacesMotorEvidencePattern =
+    /\b(?:sustituir|reemplazar|en\s+lugar\s+de)\b[^.!?]{0,130}\b(?:ejecucion|evidencia\s+motriz|actividad\s+practica)\b[^.!?]{0,130}\b(?:explicacion|dibujo|observacion|respuesta\s+verbal|arbitraje)\b/;
+
+  if (
+    replacesMotorEvidencePattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "Los apoyos pueden adaptar la ejecución, pero no sustituir completamente una evidencia motriz esencial.",
+    );
+  }
+
+  const unnecessaryAnglicismPattern =
+  /\b(?:coach|feedback|tempo)\b/;
+
+  if (
+    unnecessaryAnglicismPattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      'Utiliza vocabulario pedagógico en español: "observador orientador" y "retroalimentación".',
+    );
+  }
+
+  const incompletePlaceholderPattern =
+    /\b(?:x|xx|xxx|n)\s+(?:intentos?|repeticiones?|pases?|rondas?|minutos?|metros?)\b|\b(?:cantidad|numero)\s+por\s+definir\b/;
+
+  if (
+    incompletePlaceholderPattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "La adaptación contiene cantidades pendientes o marcadores sin completar.",
+    );
+  }
+
+  const internalPropertyPattern =
+    /\b(?:logisticsplan|durationplan|waitingparticipants|simultaneousparticipants|fixedtargets|requiredmentions|true|false|null)\b/;
+
+  if (
+    internalPropertyPattern.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "El contenido visible incluye propiedades o valores técnicos internos.",
+    );
+  }
+
+  return {
+    valid: true,
+  };
+}
+const improperWhistleUsePattern =
+  /\bsilbatazos?\s+suaves?\b|\bsilbato\b[^.!?]{0,80}\b(?:marcar|regular|mantener)\s+(?:el\s+)?(?:ritmo|tempo)\b|\b(?:marcar|regular|mantener)\s+(?:el\s+)?(?:ritmo|tempo)\b[^.!?]{0,80}\bsilbato\b/;
+
+if (
+  improperWhistleUsePattern.test(
+    visibleText,
+  )
+) {
+  return invalid(
+    "El silbato debe utilizarse únicamente para iniciar, detener, señalar rotaciones o advertir riesgos; no para marcar el ritmo técnico.",
+  );
+}
+
+const incorrectFeedbackAgreementPattern =
+  /\bretroalimentacion\s+(?:inmediato|breve\s+y\s+especifico|respetuoso)\b/;
+
+if (
+  incorrectFeedbackAgreementPattern.test(
+    visibleText,
+  )
+) {
+  return invalid(
+    'Corrige la concordancia gramatical: escribe "retroalimentación inmediata, breve, específica o respetuosa".',
+  );
+}
+
+const normalizedMaterials =
+  normalizeText(
+    formData.materials,
+  );
+
+const hasWritingMaterials =
+  /\b(?:papel|papeles|hoja|hojas|ficha|fichas|lapiz|lapices|boligrafo|boligrafos|cuaderno|cuadernos|tabla\s+de\s+registro|portapapeles)\b/.test(
+    normalizedMaterials,
+  );
+
+const writtenRecordingPattern =
+  /\b(?:anota|anotar|anotara|anotacion|registro\s+escrito|hoja\s+de\s+registro|marca\s+escrita|anota\s+una\s+marca)\b/;
+
+if (
+  !hasWritingMaterials &&
+  writtenRecordingPattern.test(
+    visibleText,
+  )
+) {
+  return invalid(
+    "La adaptación propone anotaciones o registros escritos sin que existan materiales para escribir. Utiliza observación docente o comprobación oral.",
+  );
+}
+
+if (
+  /\bpase\s+de\s+pecho\b/.test(
+    visibleText,
+  ) &&
+  /\bcodos\s+altos\b/.test(
+    visibleText,
+  )
+) {
+  return invalid(
+    'En el pase de pecho no utilices la indicación "codos altos". Describe codos inicialmente flexionados, extensión de brazos y acompañamiento final de manos y muñecas.',
+  );
+}
+export function validateGeneratedNeeAdaptation(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): NeeAdaptationValidationResult {
+  if (
+    formData.toolId !==
+    "nee-adaptation"
+  ) {
+    return {
+      valid: true,
+    };
+  }
+
+  if (
+    content.durationPlan !== null &&
+    content.durationPlan !== undefined
+  ) {
+    return invalid(
+      "La adaptación NEE no debe generar un plan temporal estructurado.",
+    );
+  }
+
+  const structureValidation =
+    validateSectionStructure(
+      content,
+    );
+
+  if (!structureValidation.valid) {
+    return structureValidation;
+  }
+
+  const needValidation =
+    validateNeedAndBarriers(
+      content,
+    );
+
+  if (!needValidation.valid) {
+    return needValidation;
+  }
+
+  const adjustmentsValidation =
+    validateAdjustments(
+      content,
+    );
+
+  if (
+    !adjustmentsValidation.valid
+  ) {
+    return adjustmentsValidation;
+  }
+
+  const variantsValidation =
+    validateParticipationVariants(
+      content,
+    );
+
+  if (!variantsValidation.valid) {
+    return variantsValidation;
+  }
+
+  const supportsValidation =
+    validateSupports(
+      content,
+    );
+
+  if (!supportsValidation.valid) {
+    return supportsValidation;
+  }
+
+  const evaluationValidation =
+    validateEvaluationSection(
+      content,
+    );
+
+  if (!evaluationValidation.valid) {
+    return evaluationValidation;
+  }
+
+  return validateForbiddenContent(
+  formData,
+  content,
+);

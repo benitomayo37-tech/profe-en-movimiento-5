@@ -1,0 +1,21 @@
+HERRAMIENTA ESTUDIANTIL DEPORTES
+
+Incluye:
+- Ruta /estudiantes/deportes.
+- API /api/students/sports/generate.
+- Reportes de tres páginas sobre un deporte completo, técnica, táctica o reglamento.
+- Adaptación automática al nivel y curso del estudiante.
+- Robot durante la generación.
+- Impresión y guardado en PDF.
+- Historial estudiantil con resource_type sports.
+- Consumo compartido del límite de 10 investigaciones mensuales.
+- Vista docente sin consumo.
+
+INSTALACIÓN
+1. Copia las carpetas app y features dentro de profe-en-movimiento-5.
+2. Elige reemplazar los archivos del destino.
+3. No reemplaces .env.local, .vercel ni node_modules.
+4. Esta fase no necesita una migración SQL nueva: sports ya está permitido en student_research_history.
+5. Ejecuta npm run lint.
+6. Ejecuta npm run build.
+7. Si ambos terminan correctamente, ejecuta npx vercel@latest --prod.

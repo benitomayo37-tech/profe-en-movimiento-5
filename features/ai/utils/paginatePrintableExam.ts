@@ -1,0 +1,227 @@
+import type {
+  AIExamAnswer,
+  AIExamData,
+  AIExamGradeRow,
+  AIExamQuestion,
+} from "@/features/ai/types/ai";
+
+export interface PrintableExamVersionPage {
+  kind: "version";
+  versionLabel: "A" | "B";
+  questions: AIExamQuestion[];
+  showInstructions: boolean;
+  continuation: boolean;
+}
+
+export interface PrintableExamAnswerPage {
+  kind: "answers";
+  answers: AIExamAnswer[];
+  continuation: boolean;
+}
+
+export interface PrintableExamGradingPage {
+  kind: "grading";
+  rows: AIExamGradeRow[];
+  showFormula: boolean;
+  continuation: boolean;
+}
+
+export interface PrintableExamAnswerGradingPage {
+  kind: "answers-grading";
+  answers: AIExamAnswer[];
+  rows: AIExamGradeRow[];
+  showFormula: boolean;
+}
+
+export type PrintableExamPage =
+  | PrintableExamVersionPage
+  | PrintableExamAnswerPage
+  | PrintableExamGradingPage
+  | PrintableExamAnswerGradingPage;
+
+const VERSION_FIRST_PAGE_BUDGET = 72;
+const VERSION_NEXT_PAGE_BUDGET = 76;
+const ANSWER_PAGE_BUDGET = 70;
+const COMBINED_PAGE_BUDGET = 96;
+const CHARS_PER_LINE = 92;
+const GRADING_ROWS_PER_PAGE = 32;
+
+function estimateTextLines(value: string): number {
+  return Math.max(1, Math.ceil(value.trim().length / CHARS_PER_LINE));
+}
+
+function estimateQuestionLines(question: AIExamQuestion): number {
+  let lines = 5 + estimateTextLines(question.prompt);
+
+  if (Array.isArray(question.options)) {
+    lines += question.options.reduce(
+      (total, option) =>
+        total + 1 + estimateTextLines(`${option.label}. ${option.text}`),
+      0,
+    );
+  }
+
+  if (question.type === "true-false") {
+    lines += 2;
+  }
+
+  if (
+    ["matching", "fill-in-the-blank", "short-answer", "applied-case"].includes(
+      question.type,
+    )
+  ) {
+    lines += 5;
+  }
+
+  if (Array.isArray(question.evaluationCriteria)) {
+    lines +=
+      3 +
+      question.evaluationCriteria.reduce(
+        (total, criterion) => total + estimateTextLines(criterion),
+        0,
+      );
+  }
+
+  return lines;
+}
+
+function estimateAnswerLines(answer: AIExamAnswer): number {
+  return (
+    2 +
+    estimateTextLines(answer.answer) +
+    (answer.explanation ? estimateTextLines(answer.explanation) : 0)
+  );
+}
+
+function estimateGradingLines(
+  rows: AIExamGradeRow[],
+  showFormula: boolean,
+): number {
+  return 8 + (showFormula ? 3 : 0) + rows.length * 2;
+}
+
+export function paginatePrintableExam(exam: AIExamData): PrintableExamPage[] {
+  const pages: PrintableExamPage[] = [];
+
+  for (const version of exam.versions) {
+    let questions: AIExamQuestion[] = [];
+    let usedLines = 0;
+    let firstPage = true;
+
+    function pushVersionPage() {
+      if (questions.length === 0) {
+        return;
+      }
+
+      pages.push({
+        kind: "version",
+        versionLabel: version.label,
+        questions,
+        showInstructions: firstPage,
+        continuation: !firstPage,
+      });
+
+      questions = [];
+      usedLines = 0;
+      firstPage = false;
+    }
+
+    for (const question of version.questions) {
+      const questionLines = estimateQuestionLines(question);
+
+      const budget = firstPage
+        ? VERSION_FIRST_PAGE_BUDGET
+        : VERSION_NEXT_PAGE_BUDGET;
+
+      if (questions.length > 0 && usedLines + questionLines > budget) {
+        pushVersionPage();
+      }
+
+      questions.push(question);
+      usedLines += questionLines;
+    }
+
+    pushVersionPage();
+  }
+
+  if (Array.isArray(exam.answerKey) && exam.answerKey.length > 0) {
+    let answers: AIExamAnswer[] = [];
+    let usedLines = 0;
+    let firstAnswerPage = true;
+
+    function pushAnswerPage() {
+      if (answers.length === 0) {
+        return;
+      }
+
+      pages.push({
+        kind: "answers",
+        answers,
+        continuation: !firstAnswerPage,
+      });
+
+      answers = [];
+      usedLines = 0;
+      firstAnswerPage = false;
+    }
+
+    for (const answer of exam.answerKey) {
+      const answerLines = estimateAnswerLines(answer);
+
+      if (answers.length > 0 && usedLines + answerLines > ANSWER_PAGE_BUDGET) {
+        pushAnswerPage();
+      }
+
+      answers.push(answer);
+      usedLines += answerLines;
+    }
+
+    pushAnswerPage();
+  }
+
+  if (Array.isArray(exam.gradingTable) && exam.gradingTable.length > 0) {
+    const lastPage = pages[pages.length - 1];
+
+    const answerLines =
+      lastPage?.kind === "answers"
+        ? lastPage.answers.reduce(
+            (total, answer) => total + estimateAnswerLines(answer),
+            0,
+          )
+        : 0;
+
+    const gradingLines = estimateGradingLines(
+      exam.gradingTable,
+      Boolean(exam.ruleOfThreeFormula),
+    );
+
+    const canCombineWithAnswers =
+      lastPage?.kind === "answers" &&
+      exam.gradingTable.length <= GRADING_ROWS_PER_PAGE &&
+      answerLines + gradingLines <= COMBINED_PAGE_BUDGET;
+
+    if (canCombineWithAnswers) {
+      pages[pages.length - 1] = {
+        kind: "answers-grading",
+        answers: lastPage.answers,
+        rows: exam.gradingTable,
+        showFormula: Boolean(exam.ruleOfThreeFormula),
+      };
+    } else {
+      for (
+        let index = 0;
+        index < exam.gradingTable.length;
+        index += GRADING_ROWS_PER_PAGE
+      ) {
+        pages.push({
+          kind: "grading",
+          rows: exam.gradingTable.slice(index, index + GRADING_ROWS_PER_PAGE),
+          showFormula: index === 0,
+          continuation: index > 0,
+        });
+      }
+    }
+  }
+
+  return pages;
+}

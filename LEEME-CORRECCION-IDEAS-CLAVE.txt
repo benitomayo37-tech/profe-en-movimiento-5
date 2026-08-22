@@ -1,0 +1,14 @@
+CORRECCIÓN: IDEAS CLAVE SIN DUPLICADOS
+
+Archivo que debes copiar al proyecto:
+
+features/students/history/StudentHistoryWorkspace.tsx
+
+Qué corrige:
+- Oculta del contenido ordinario cualquier bloque duplicado titulado
+  "Ideas clave" o "Para reflexionar".
+- Conserva una sola presentación de cada sección en sus tarjetas finales.
+- Reconoce variantes con mayúsculas, tildes y signos de puntuación.
+
+No requiere migración de Supabase ni variables de entorno nuevas.
+

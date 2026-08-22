@@ -1,0 +1,395 @@
+import type {
+  AIFormData,
+  GeneratedAIContent,
+} from "@/features/ai/types/ai";
+
+export interface PedagogicalValidationResult {
+  valid: boolean;
+  message?: string;
+}
+
+const SPORT_PATTERNS = {
+  fútbol:
+    /\b(?:futbol|futbol\s+sala|futsal)\b/,
+  baloncesto:
+    /\b(?:baloncesto|basket|basquetbol)\b/,
+  voleibol:
+    /\b(?:voleibol|volleyball)\b/,
+  balonmano:
+    /\b(?:balonmano|handball)\b/,
+  atletismo: /\batletismo\b/,
+  béisbol:
+    /\b(?:beisbol|baseball)\b/,
+  gimnasia: /\bgimnasia\b/,
+  natación: /\bnatacion\b/,
+  hockey: /\bhockey\b/,
+  rugby: /\brugby\b/,
+  tenis: /\btenis\b/,
+} satisfies Record<string, RegExp>;
+
+const TECHNICAL_METADATA_PATTERNS = [
+  /\blogisticsplan\b/,
+  /\bdurationplan\b/,
+  /\bstudentcount\b/,
+  /\bgroupcount\b/,
+  /\bgroupsperstation\b/,
+  /\bsimultaneousparticipants\b/,
+  /\bwaitingparticipants\b/,
+  /\bfixedtargetsavailable\b/,
+  /\bfixedtargetsrequired\b/,
+  /\bspacedescription\b/,
+  /\bcollisionriskcontrolled\b/,
+  /\brequestedminutes\b/,
+  /\btotalminutes\b/,
+  /\bsimultaneous participation\b/,
+  /\bwaiting participants\b/,
+  /\b(?:true|false|null)\b/,
+];
+
+const MAX_NEE_SUPPORT_LENGTH = 220;
+
+function normalizeText(
+  value: string,
+): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function createInvalidResult(
+  message: string,
+): PedagogicalValidationResult {
+  return {
+    valid: false,
+    message,
+  };
+}
+
+function getRequestedText(
+  formData: AIFormData,
+): string {
+  return normalizeText(
+    [
+      formData.topic,
+      formData.curriculumCode,
+      formData.additionalInstructions,
+      formData.sourceResourceSlug ?? "",
+    ].join(" "),
+  );
+}
+
+function getVisibleContentText(
+  content: GeneratedAIContent,
+): string {
+  const rubricText = content.rubric
+    ? [
+        content.rubric.title,
+        ...content.rubric.criteria.flatMap(
+          (criterion) => [
+            criterion.criterion,
+            criterion.excellent,
+            criterion.good,
+            criterion.regular,
+            criterion.acceptable,
+            criterion.improvable,
+          ],
+        ),
+      ]
+    : [];
+
+  return normalizeText(
+    [
+      content.title,
+      content.introduction,
+      ...content.sections.flatMap(
+        (section) => [
+          section.title,
+          ...section.content,
+        ],
+      ),
+      ...rubricText,
+    ].join(" "),
+  );
+}
+
+function detectSports(
+  text: string,
+): string[] {
+  return Object.entries(
+    SPORT_PATTERNS,
+  )
+    .filter(([, pattern]) =>
+      pattern.test(text),
+    )
+    .map(([sport]) => sport);
+}
+
+function countBasketballTechniques(
+  text: string,
+): number {
+  const patterns = [
+    /\bpase(?:s)?\s+de\s+pecho\b/,
+    /\bpase(?:s)?\s+de\s+pique\b/,
+    /\bpase(?:s)?\s+sobre\s+la\s+cabeza\b/,
+    /\btiro\s+al\s+aro\b/,
+    /\bdribbling\b/,
+    /\bcanasta\b/,
+  ];
+
+  return patterns.filter((pattern) =>
+    pattern.test(text),
+  ).length;
+}
+
+function isNeeSectionTitle(
+  sectionTitle: string,
+): boolean {
+  const normalizedTitle =
+    normalizeText(sectionTitle);
+
+  return (
+    normalizedTitle.includes("nee") &&
+    (
+      normalizedTitle.includes(
+        "apoyo",
+      ) ||
+      normalizedTitle.includes(
+        "adaptacion",
+      )
+    )
+  );
+}
+
+function validateCompactNeeSection(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): PedagogicalValidationResult {
+  /*
+   * La herramienta especializada puede
+   * desarrollar una adaptación NEE extensa.
+   */
+  if (
+    !formData.includeNee ||
+    formData.toolId ===
+      "nee-adaptation"
+  ) {
+    return {
+      valid: true,
+    };
+  }
+
+  const neeSections =
+    content.sections.filter((section) =>
+      isNeeSectionTitle(
+        section.title,
+      ),
+    );
+
+  if (neeSections.length === 0) {
+    return createInvalidResult(
+      "La planificación solicitó adaptación NEE, pero no incluye una sección específica de apoyos NEE.",
+    );
+  }
+
+  if (neeSections.length > 1) {
+    return createInvalidResult(
+      "Los apoyos NEE deben aparecer en una sola sección, sin repetirlos en diferentes apartados.",
+    );
+  }
+
+  const supportItems =
+    neeSections[0].content
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  if (supportItems.length !== 4) {
+    return createInvalidResult(
+      `La sección NEE contiene ${supportItems.length} apoyos. Debe incluir exactamente 4 apoyos breves y separados.`,
+    );
+  }
+
+  const excessivelyLongSupport =
+    supportItems.find(
+      (item) =>
+        item.length >
+        MAX_NEE_SUPPORT_LENGTH,
+    );
+
+  if (excessivelyLongSupport) {
+    return createInvalidResult(
+      `Cada apoyo NEE debe tener como máximo ${MAX_NEE_SUPPORT_LENGTH} caracteres y una o dos frases breves.`,
+    );
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateDuaPresence(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): PedagogicalValidationResult {
+  const requiresDua =
+    formData.includeDua ||
+    formData.toolId ===
+      "dua-adaptation";
+
+  if (!requiresDua) {
+    return {
+      valid: true,
+    };
+  }
+
+  const visibleText =
+    getVisibleContentText(content);
+
+  const hasRepresentation =
+    /\brepresentacion\b/.test(
+      visibleText,
+    );
+
+  const hasActionAndExpression =
+    /\baccion\s*(?:y|\/)\s*expresion\b/.test(
+      visibleText,
+    );
+
+  const hasEngagement =
+    /\bcompromiso\s*(?:\/|y)\s*motivacion\b/.test(
+      visibleText,
+    ) ||
+    /\bimplicacion\b/.test(
+      visibleText,
+    );
+
+  const missingPrinciples: string[] =
+    [];
+
+  if (!hasRepresentation) {
+    missingPrinciples.push(
+      "Representación",
+    );
+  }
+
+  if (!hasActionAndExpression) {
+    missingPrinciples.push(
+      "Acción y Expresión",
+    );
+  }
+
+  if (!hasEngagement) {
+    missingPrinciples.push(
+      "Compromiso / Motivación",
+    );
+  }
+
+  if (missingPrinciples.length > 0) {
+    return createInvalidResult(
+      `Se solicitó DUA, pero faltan los siguientes principios: ${missingPrinciples.join(
+        ", ",
+      )}.`,
+    );
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function containsTechnicalMetadata(
+  visibleText: string,
+): boolean {
+  return TECHNICAL_METADATA_PATTERNS.some(
+    (pattern) =>
+      pattern.test(visibleText),
+  );
+}
+
+export function validateGeneratedPedagogy(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): PedagogicalValidationResult {
+  const requestedText =
+    getRequestedText(formData);
+
+  const visibleText =
+    getVisibleContentText(content);
+
+if (
+  containsTechnicalMetadata(
+    visibleText,
+  )
+) {
+  return createInvalidResult(
+    "El contenido visible incluye propiedades, valores o expresiones técnicas internas. Debe utilizar únicamente lenguaje pedagógico natural y completamente en español.",
+  );
+}
+
+  const requestedSports =
+    detectSports(requestedText);
+
+  const generatedSports =
+    detectSports(visibleText);
+
+  const unauthorizedSports =
+    generatedSports.filter(
+      (sport) =>
+        !requestedSports.includes(
+          sport,
+        ),
+    );
+
+  if (
+    unauthorizedSports.length > 0
+  ) {
+    return createInvalidResult(
+      `El contenido añadió un deporte no solicitado: ${unauthorizedSports.join(
+        ", ",
+      )}. Si el tema es genérico, el título y las actividades deben conservar una denominación genérica.`,
+    );
+  }
+
+  const mentionsFootball =
+    SPORT_PATTERNS.fútbol.test(
+      visibleText,
+    );
+
+  const basketballTechniqueCount =
+    countBasketballTechniques(
+      visibleText,
+    );
+
+  if (
+    mentionsFootball &&
+    basketballTechniqueCount >= 2
+  ) {
+    return createInvalidResult(
+      "La propuesta identifica la actividad como fútbol, pero desarrolla técnicas características del baloncesto. El título, el propósito y las actividades deben corresponder al mismo deporte.",
+    );
+  }
+
+  const duaValidation =
+  validateDuaPresence(
+    formData,
+    content,
+  );
+
+if (!duaValidation.valid) {
+  return duaValidation;
+}
+
+  const neeValidation =
+    validateCompactNeeSection(
+      formData,
+      content,
+    );
+
+  if (!neeValidation.valid) {
+    return neeValidation;
+  }
+
+  return {
+    valid: true,
+  };
+}

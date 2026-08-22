@@ -1,0 +1,19 @@
+CORRECCION DEL PDF DE HISTORIA ESTUDIANTIL
+
+Este paquete corrige exclusivamente la impresion de las investigaciones de Historia.
+
+Problema corregido:
+- El documento mostraba cuatro paginas de contenido, pero Chrome generaba ocho hojas fisicas.
+- Se intercalaban hojas vacias debido a que la altura del bloque superaba el area imprimible A4.
+
+Archivo actualizado:
+- app/globals.css
+
+No requiere una nueva migracion de Supabase.
+No modifica el contador, la generacion con IA ni los datos del estudiante.
+
+Despues de copiar el archivo, ejecutar:
+1. npm run lint
+2. npm run build
+3. npx vercel@latest --prod
+

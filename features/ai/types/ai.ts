@@ -1,0 +1,209 @@
+export type AIToolId =
+  | "lesson-plan"
+  | "rubric"
+  | "checklist"
+  | "game"
+  | "assessment"
+  | "exam"
+  | "dua-adaptation"
+  | "nee-adaptation"
+  | "physical-circuit";
+
+export interface AITool {
+  id: AIToolId;
+  title: string;
+  description: string;
+  icon: string;
+  category: string;
+}
+
+export type AIExamType = "theoretical" | "practical" | "mixed";
+
+export type AIExamDifficulty = "basic" | "intermediate" | "advanced";
+
+export type AIExamQuestionType =
+  | "multiple-choice"
+  | "true-false"
+  | "matching"
+  | "fill-in-the-blank"
+  | "short-answer"
+  | "applied-case"
+  | "practical-task";
+
+export type AIExamVersionMode = "A" | "A-B";
+
+export interface AIExamQuestionDistribution {
+  type: AIExamQuestionType;
+  quantity: number;
+  pointsPerQuestion: number;
+}
+
+export interface AIExamConfig {
+  examType: AIExamType;
+  difficulty: AIExamDifficulty;
+  totalScore: number;
+  versionMode: AIExamVersionMode;
+  includeAnswerKey: boolean;
+  includeGradingTable: boolean;
+  includeRuleOfThree: boolean;
+  questionDistribution: AIExamQuestionDistribution[];
+}
+
+export type AIPlanningMethodology =
+  | "automatic"
+  | "cooperative-learning"
+  | "gamification"
+  | "game-based-learning"
+  | "problem-based-learning"
+  | "project-based-learning"
+  | "guided-discovery"
+  | "problem-solving"
+  | "reciprocal-teaching"
+  | "stations"
+  | "task-circuit"
+  | "flipped-classroom"
+  | "direct-instruction"
+  | "combined";
+
+export interface AIPlanningMethodologyOption {
+  id: AIPlanningMethodology;
+  label: string;
+  shortLabel: string;
+  description: string;
+}
+
+export type AIObjectiveTaxonomy = "automatic" | "bloom" | "harrow" | "combined";
+
+export interface AIObjectiveTaxonomyOption {
+  id: AIObjectiveTaxonomy;
+  label: string;
+  shortLabel: string;
+  description: string;
+}
+
+export interface AIFormData {
+  toolId: AIToolId;
+  planningMethodology: AIPlanningMethodology;
+  objectiveTaxonomy: AIObjectiveTaxonomy;
+  topic: string;
+  educationalLevel: string;
+  grade: string;
+  duration: string;
+  students: string;
+  materials: string;
+  curriculumCode: string;
+  includeDua: boolean;
+  includeNee: boolean;
+  additionalInstructions: string;
+  sourceResourceSlug?: string;
+  examConfig?: AIExamConfig;
+}
+
+export interface AITimeBlock {
+  label: string;
+  minutes: number;
+}
+
+export interface AIDurationPlan {
+  requestedMinutes: number;
+  totalMinutes: number;
+  blocks: AITimeBlock[];
+}
+
+export interface AIResourceRequirement {
+  name: string;
+  available: number | null;
+  required: number;
+}
+
+export interface AILogisticsPlan {
+  studentCount: number;
+  groupCount: number;
+  stations: number;
+  groupsPerStation: number;
+  simultaneousParticipants: number;
+  waitingParticipants: number;
+  fixedTargetsAvailable: number | null;
+  fixedTargetsRequired: number;
+  resources: AIResourceRequirement[];
+  spaceDescription: string;
+  collisionRiskControlled: boolean;
+}
+
+export interface AIExamOption {
+  label: string;
+  text: string;
+}
+
+export interface AIExamQuestion {
+  number: number;
+  type: AIExamQuestionType;
+  prompt: string;
+  options?: AIExamOption[] | null;
+  score: number;
+  evaluationCriteria?: string[] | null;
+}
+
+export interface AIExamVersion {
+  label: "A" | "B";
+  questions: AIExamQuestion[];
+}
+
+export interface AIExamAnswer {
+  version: "A" | "B";
+  questionNumber: number;
+  answer: string;
+  explanation?: string | null;
+}
+
+export interface AIExamGradeRow {
+  earnedScore: number;
+  finalGrade: number;
+}
+
+export interface AIExamData {
+  title: string;
+  examType: AIExamType;
+  difficulty: AIExamDifficulty;
+  totalScore: number;
+  generalInstructions: string[];
+  versions: AIExamVersion[];
+  answerKey?: AIExamAnswer[] | null;
+  gradingTable?: AIExamGradeRow[] | null;
+  ruleOfThreeFormula?: string | null;
+}
+
+export interface GeneratedAIContent {
+  title: string;
+  introduction: string;
+
+  sections: {
+    title: string;
+    content: string[];
+  }[];
+
+  durationPlan?: AIDurationPlan | null;
+  logisticsPlan?: AILogisticsPlan | null;
+
+  rubric?: AIRubricData | null;
+  exam?: AIExamData | null;
+}
+
+export interface AIRubricLevel {
+  label: string;
+  score: number;
+}
+
+export interface AIRubricCriterion {
+  criterion: string;
+  excellent: string;
+  good: string;
+  regular: string;
+  acceptable: string;
+  improvable: string;
+}
+
+export interface AIRubricData {
+  title: string;
+  criteria: AIRubricCriterion[];
+}

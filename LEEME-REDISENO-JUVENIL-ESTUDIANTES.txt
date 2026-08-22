@@ -1,0 +1,25 @@
+REDISENO JUVENIL DEL ESPACIO ESTUDIANTIL
+
+Incluye:
+- Inicio estudiantil mas dinamico y juvenil.
+- Robot oficial de Profe IA como guia visual.
+- Historia con portada de mision investigativa.
+- Robot animado durante la generacion.
+- Mensaje de mision completada.
+- Botones al final para imprimir, investigar otro tema o volver al inicio.
+- Iconos en la navegacion lateral.
+
+Archivos actualizados:
+- app/estudiantes/page.tsx
+- app/estudiantes/historia/page.tsx
+- features/students/components/StudentSidebar.tsx
+- features/students/history/StudentHistoryWorkspace.tsx
+
+No requiere migracion de Supabase.
+No modifica variables de entorno, limites ni consumo mensual.
+
+Despues de copiar:
+1. npm run lint
+2. npm run build
+3. npx vercel@latest --prod
+

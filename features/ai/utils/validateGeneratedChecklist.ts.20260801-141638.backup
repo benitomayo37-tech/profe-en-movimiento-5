@@ -1,0 +1,387 @@
+import type {
+  AIFormData,
+  GeneratedAIContent,
+} from "@/features/ai/types/ai";
+
+export interface ChecklistValidationResult {
+  valid: boolean;
+  message?: string;
+}
+
+const MINIMUM_INDICATORS = 6;
+const MAXIMUM_INDICATORS = 12;
+
+const REQUIRED_SECTIONS = [
+  {
+    normalized: "proposito e instrucciones de aplicacion",
+    display: "Propósito e instrucciones de aplicación",
+  },
+  {
+    normalized: "indicadores observables",
+    display: "Indicadores observables",
+  },
+  {
+    normalized: "escala o forma de registro",
+    display: "Escala o forma de registro",
+  },
+  {
+    normalized: "interpretacion y retroalimentacion",
+    display: "Interpretación y retroalimentación",
+  },
+] as const;
+
+function normalizeText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeSectionTitle(value: string): string {
+  return normalizeText(
+    removeOptionalSectionNumber(value),
+  )
+    .replace(/[.:;]+$/g, "")
+    .trim();
+}
+
+function removeOptionalSectionNumber(
+  value: string,
+): string {
+  return value
+    .trim()
+    .replace(
+      /^(?:secci[oó]n\s+)?\d+\s*[.):\-–—]\s*/i,
+      "",
+    )
+    .trim();
+}
+
+function getVisibleSectionTitle(
+  value: string,
+): string {
+  return removeOptionalSectionNumber(
+    value,
+  )
+    .replace(/[.:;]+$/g, "")
+    .trim();
+}
+
+function invalid(message: string): ChecklistValidationResult {
+  return {
+    valid: false,
+    message,
+  };
+}
+
+function getIndicatorLabel(item: string): string {
+  const normalizedItem = normalizeText(item);
+  const selectionStart = normalizedItem.search(
+    /\[\s*\]\s*si\b/,
+  );
+  const label =
+    selectionStart >= 0
+      ? normalizedItem.slice(0, selectionStart)
+      : normalizedItem;
+
+  return label
+    .replace(/[\u2014\u2013-]\s*$/, "")
+    .trim();
+}
+
+function getVisibleText(content: GeneratedAIContent): string {
+  return normalizeText(
+    [
+      content.title,
+      content.introduction,
+      ...content.sections.flatMap((section) => [
+        section.title,
+        ...section.content,
+      ]),
+    ].join(" "),
+  );
+}
+
+function validateStructure(
+  content: GeneratedAIContent,
+): ChecklistValidationResult {
+  if (content.rubric != null) {
+    return invalid(
+      'Para Crear lista de cotejo, el campo "rubric" debe ser null.',
+    );
+  }
+
+  if (content.exam != null) {
+    return invalid(
+      'Para Crear lista de cotejo, el campo "exam" debe ser null.',
+    );
+  }
+
+  if (content.logisticsPlan != null) {
+    return invalid(
+      'Para Crear lista de cotejo, el campo "logisticsPlan" debe ser null.',
+    );
+  }
+
+  if (content.sections.length !== REQUIRED_SECTIONS.length) {
+    return invalid(
+      "La lista de cotejo debe incluir exactamente cuatro secciones visibles: Propósito e instrucciones de aplicación, Indicadores observables, Escala o forma de registro e Interpretación y retroalimentación.",
+    );
+  }
+
+  for (
+    let index = 0;
+    index < REQUIRED_SECTIONS.length;
+    index += 1
+  ) {
+    const section = content.sections[index];
+    const actualTitle = normalizeSectionTitle(section.title);
+    const expectedSection = REQUIRED_SECTIONS[index];
+
+    if (actualTitle !== expectedSection.normalized) {
+      return invalid(
+        `La sección ${index + 1} debe titularse "${expectedSection.display}" y conservar el orden solicitado.`,
+      );
+    }
+
+    if (
+      getVisibleSectionTitle(
+        section.title,
+      ) !== expectedSection.display
+    ) {
+      return invalid(
+        `Escribe el encabezado visible "${expectedSection.display}", respetando mayúsculas y tildes. Puede llevar delante únicamente el número de la sección.`,
+      );
+    }
+
+    if (
+      section.content.length === 0 ||
+      section.content.every((item) => !item.trim())
+    ) {
+      return invalid(
+        `La sección "${section.title}" no puede estar vacía.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateIndicators(
+  content: GeneratedAIContent,
+): ChecklistValidationResult {
+  const indicators = content.sections[1].content.filter(
+    (item) => item.trim().length > 0,
+  );
+
+  if (
+    indicators.length < MINIMUM_INDICATORS ||
+    indicators.length > MAXIMUM_INDICATORS
+  ) {
+    return invalid(
+      `La lista de cotejo debe contener entre ${MINIMUM_INDICATORS} y ${MAXIMUM_INDICATORS} indicadores observables; se generaron ${indicators.length}.`,
+    );
+  }
+
+  const selectionPattern =
+    /\[\s*\]\s*si\s*\|\s*\[\s*\]\s*en\s+proceso\s*\|\s*\[\s*\]\s*no\b/g;
+
+  const labels = new Set<string>();
+
+  for (const indicator of indicators) {
+    const normalizedIndicator = normalizeText(indicator);
+    const selectionMatches = [
+      ...normalizedIndicator.matchAll(selectionPattern),
+    ];
+
+    if (selectionMatches.length !== 1) {
+      return invalid(
+        `El indicador "${indicator.slice(0, 160)}" debe incluir exactamente una escala con el formato [ ] Sí | [ ] En proceso | [ ] No.`,
+      );
+    }
+
+    const label = getIndicatorLabel(indicator);
+
+    if (!label || label.length < 12) {
+      return invalid(
+        `El elemento "${indicator.slice(
+          0,
+          160,
+        )}" no presenta una conducta observable concreta antes de la escala. Escribe, por ejemplo: "Mantiene el balón frente al pecho al iniciar el pase — [ ] Sí | [ ] En proceso | [ ] No".`,
+      );
+    }
+
+    if (labels.has(label)) {
+      return invalid(
+        `El indicador "${label}" está repetido. Cada conducta debe aparecer una sola vez.`,
+      );
+    }
+
+    labels.add(label);
+
+    if (
+      /\b(?:lo hace bien|comprende|conoce|sabe|participa adecuadamente)\b/.test(
+        label,
+      )
+    ) {
+      return invalid(
+        `El indicador "${label}" utiliza una expresión ambigua. Debe describir una conducta visible y verificable.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateScaleSection(
+  content: GeneratedAIContent,
+): ChecklistValidationResult {
+  const scaleItems = content.sections[2].content.filter(
+    (item) => item.trim().length > 0,
+  );
+  const scaleText = normalizeText(scaleItems.join(" "));
+
+  if (scaleItems.length > 3) {
+    return invalid(
+      "La sección Escala o forma de registro debe contener como máximo tres elementos breves.",
+    );
+  }
+
+  if (
+    !/\bsi\b/.test(scaleText) ||
+    !/\ben proceso\b/.test(scaleText) ||
+    !/\bno\b/.test(scaleText)
+  ) {
+    return invalid(
+      "La escala debe explicar claramente el significado de Sí, En proceso y No.",
+    );
+  }
+
+  const indicatorLabels = content.sections[1].content.map(getIndicatorLabel);
+
+  for (const label of indicatorLabels) {
+    if (label.length >= 12 && scaleText.includes(label)) {
+      return invalid(
+        `La sección de escala repite el indicador "${label}". Los indicadores deben aparecer exclusivamente en Indicadores observables.`,
+      );
+    }
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+function validateApplication(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): ChecklistValidationResult {
+  const visibleText = getVisibleText(content);
+  const applicationText = normalizeText(
+    content.sections[0].content.join(" "),
+  );
+
+  if (
+    !/\bnombre\b/.test(visibleText) ||
+    !/\b(?:curso|grado)\b/.test(visibleText) ||
+    !/\bfecha\b/.test(visibleText)
+  ) {
+    return invalid(
+      "La lista de cotejo debe incluir espacios de identificación para nombre del estudiante, curso o grado y fecha.",
+    );
+  }
+
+  if (
+    /\b(?:representante|portavoz)\b[^.!?]{0,140}\b(?:califica|evalua|valora|asigna)\b/.test(
+      applicationText,
+    )
+  ) {
+    return invalid(
+      "La lista de cotejo no puede utilizar un representante para asignar una valoración general al grupo.",
+    );
+  }
+
+  const createsPassiveWaiting =
+    /\b(?:fila|cola|espera pasiva|sin actividad|inactivos?|inactivas?)\b/.test(
+      applicationText,
+    ) ||
+    /\b(?:esperan|aguardan)\s+(?:su\s+)?turno\b/.test(applicationText);
+
+  if (createsPassiveWaiting) {
+    return invalid(
+      "La aplicación de la lista de cotejo deja estudiantes esperando, en filas o sin una función activa.",
+    );
+  }
+
+  const concentratesFinalEvaluation =
+    /\b(?:demostracion|ejecucion|evaluacion|prueba)\s+final\b[^.!?]{0,160}\b(?:individual|uno\s+por\s+uno|cada\s+estudiante)\b/.test(
+      applicationText,
+    ) ||
+    /\b(?:individual|uno\s+por\s+uno|cada\s+estudiante)\b[^.!?]{0,160}\b(?:demostracion|ejecucion|evaluacion|prueba)\s+final\b/.test(
+      applicationText,
+    );
+
+  if (concentratesFinalEvaluation) {
+    return invalid(
+      "La observación debe integrarse durante la práctica y no concentrarse en una demostración final individual.",
+    );
+  }
+
+  if (/\bfeedback\b/.test(visibleText)) {
+    return invalid(
+      'La lista de cotejo debe utilizar "retroalimentación" y no el anglicismo "feedback".',
+    );
+  }
+
+  if (
+    formData.includeDua === false &&
+    /\b(?:estrategias?\s+dua|principios?\s+dua|accion\s+y\s+expresion|compromiso\s*\/\s*motivacion)\b/.test(
+      visibleText,
+    )
+  ) {
+    return invalid(
+      "No se solicitó DUA; la lista de cotejo no debe incluir estrategias ni principios DUA.",
+    );
+  }
+
+  return {
+    valid: true,
+  };
+}
+
+export function validateGeneratedChecklist(
+  formData: AIFormData,
+  content: GeneratedAIContent,
+): ChecklistValidationResult {
+  if (formData.toolId !== "checklist") {
+    return {
+      valid: true,
+    };
+  }
+
+  const structureValidation = validateStructure(content);
+
+  if (!structureValidation.valid) {
+    return structureValidation;
+  }
+
+  const indicatorValidation = validateIndicators(content);
+
+  if (!indicatorValidation.valid) {
+    return indicatorValidation;
+  }
+
+  const scaleValidation = validateScaleSection(content);
+
+  if (!scaleValidation.valid) {
+    return scaleValidation;
+  }
+
+  return validateApplication(formData, content);
+}

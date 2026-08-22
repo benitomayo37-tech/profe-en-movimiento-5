@@ -1,0 +1,1016 @@
+"use client";
+
+const PRINT_FRAME_ID = "profe-ia-print-frame";
+
+const PRINT_STYLES = `
+  @page {
+    size: A4 portrait;
+    margin: 15mm 8mm 14mm 8mm;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #0f172a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #ai-print-root {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .ai-print-page {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-height: 268mm;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: #ffffff;
+}
+
+/*
+ * El salto se aplica después de cada página lógica,
+ * excepto después de la última.
+ */
+.ai-print-page:not(:last-child) {
+  break-after: page;
+  page-break-after: always;
+}
+
+  .ai-print-header {
+    margin: 0 0 3px 0;
+    padding: 0 0 3px 0;
+    border-bottom: 1px solid #cbd5e1;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .ai-print-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+.ai-print-brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+  .ai-print-logo {
+  display: block;
+  flex: 0 0 10mm;
+  width: 10mm;
+  height: 10mm;
+  min-width: 10mm;
+  min-height: 10mm;
+  max-width: 10mm;
+  max-height: 10mm;
+  object-fit: contain;
+}
+
+  .ai-print-brand {
+    margin: 0;
+    font-size: 8.5pt;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #1d4ed8;
+  }
+
+  .ai-print-brand-secondary {
+    margin: 2px 0 0 0;
+    font-size: 7pt;
+    font-weight: 700;
+    color: #64748b;
+  }
+
+  .ai-print-header h1 {
+  margin: 10px 0 3px 0;
+  font-size: 14pt;
+  line-height: 1.15;
+}
+
+  .ai-print-introduction {
+    margin: 0;
+    font-size: 8.5pt;
+    line-height: 1.25;
+    color: #475569;
+  }
+
+  .ai-print-continuation-title {
+    margin: 0;
+    font-size: 9.5pt;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .ai-print-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 1px solid #94a3b8;
+  }
+
+  .ai-print-table thead {
+    display: table-header-group;
+  }
+
+  .ai-print-table th,
+.ai-print-table td {
+  border: 1px solid #94a3b8;
+  padding: 5px;
+  vertical-align: top;
+  text-align: left;
+  font-size: 8.5pt;
+  line-height: 1.3;
+  color: #0f172a;
+  background: #ffffff;
+  overflow-wrap: anywhere;
+}
+
+  .ai-print-table thead th {
+    background: #f1f5f9;
+    font-weight: 800;
+  }
+
+  .ai-print-table th:first-child {
+    width: 28%;
+    font-weight: 700;
+  }
+
+  .ai-print-table th:nth-child(2),
+  .ai-print-table td:nth-child(2) {
+    width: 72%;
+  }
+
+  .ai-print-table td p {
+    margin: 0 0 3px 0;
+  }
+
+  .ai-print-table td p:last-child {
+    margin-bottom: 0;
+  }
+.ai-print-dua {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.ai-print-checklist-row > td {
+  padding: 4px;
+}
+
+.ai-print-checklist-title {
+  margin: 0 0 5px 0;
+  font-size: 9pt;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ai-print-checklist-wrapper {
+  width: 100%;
+}
+
+.ai-print-checklist-identification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 4px 0;
+  padding: 4px;
+  border: 1px solid #64748b;
+  font-size: 7.5pt;
+  font-weight: 700;
+}
+
+.ai-print-checklist-instruction {
+  margin: 0 0 4px 0 !important;
+  font-size: 7.2pt;
+  line-height: 1.2;
+  color: #334155;
+}
+
+.ai-print-checklist-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1px solid #64748b;
+}
+
+.ai-print-checklist-table thead {
+  display: table-header-group;
+}
+
+.ai-print-checklist-table th,
+.ai-print-checklist-table td {
+  border: 1px solid #64748b;
+  padding: 4px;
+  font-size: 7.5pt;
+  line-height: 1.2;
+  vertical-align: middle;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.ai-print-checklist-table thead th {
+  background: #dbeafe;
+  font-weight: 800;
+  text-align: center;
+}
+
+.ai-print-checklist-table th:nth-child(1),
+.ai-print-checklist-table td:nth-child(1) {
+  width: 50%;
+  text-align: left;
+}
+
+.ai-print-checklist-table th:nth-child(2),
+.ai-print-checklist-table td:nth-child(2) {
+  width: 7%;
+}
+
+.ai-print-checklist-table th:nth-child(3),
+.ai-print-checklist-table td:nth-child(3) {
+  width: 12%;
+}
+
+.ai-print-checklist-table th:nth-child(4),
+.ai-print-checklist-table td:nth-child(4) {
+  width: 7%;
+}
+
+.ai-print-checklist-table th:nth-child(5),
+.ai-print-checklist-table td:nth-child(5) {
+  width: 24%;
+}
+
+.ai-print-checklist-table tbody tr {
+  height: 10mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ai-print-checklist-table td.ai-print-check-box {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 12pt !important;
+  font-weight: 700;
+}
+
+.ai-print-observations-cell {
+  min-height: 10mm;
+}
+.ai-print-dua-heading {
+  margin-top: 4px !important;
+  margin-bottom: 3px !important;
+  padding: 4px 6px !important;
+  border: 1px solid;
+  border-radius: 6px;
+  font-weight: 800;
+}
+
+.ai-print-dua-item {
+  padding-left: 6px !important;
+  border-left: 2px solid;
+}
+
+/* Representación: morado */
+.ai-print-dua-representation.ai-print-dua-heading {
+  border-color: #c4b5fd;
+  background: #f5f3ff !important;
+  color: #6d28d9 !important;
+}
+
+.ai-print-dua-representation.ai-print-dua-item {
+  border-left-color: #8b5cf6;
+}
+
+/* Acción y Expresión: azul */
+.ai-print-dua-action-expression.ai-print-dua-heading {
+  border-color: #93c5fd;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.ai-print-dua-action-expression.ai-print-dua-item {
+  border-left-color: #3b82f6;
+}
+
+/* Compromiso / Motivación: verde */
+.ai-print-dua-engagement.ai-print-dua-heading {
+  border-color: #86efac;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+.ai-print-dua-engagement.ai-print-dua-item {
+  border-left-color: #22c55e;
+}
+  .ai-print-rubric-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 1px solid #94a3b8;
+  }
+
+  .ai-print-rubric-table thead {
+    display: table-header-group;
+  }
+
+  .ai-print-rubric-table th,
+  .ai-print-rubric-table td {
+    border: 1px solid #94a3b8;
+    padding: 5px;
+    vertical-align: top;
+    text-align: left;
+    font-size: 7.6pt;
+    line-height: 1.28;
+    color: #0f172a;
+    background: #ffffff;
+    overflow-wrap: anywhere;
+  }
+
+  .ai-print-rubric-table thead th {
+    background: #f1f5f9;
+    font-weight: 800;
+  }
+
+  .ai-print-rubric-table th:first-child {
+    width: 16%;
+    font-weight: 700;
+  }
+
+  .ai-print-rubric-table th:not(:first-child),
+  .ai-print-rubric-table td {
+    width: 16.8%;
+  }
+
+  .ai-print-rubric-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .ai-print-rubric-page .ai-print-header h1 {
+    margin-bottom: 5px;
+    font-size: 14pt;
+  }
+
+  .ai-print-continuation {
+    font-weight: 400;
+    color: #64748b;
+  }
+
+.ai-print-exam-page {
+  font-size: 8.5pt;
+}
+
+.ai-print-exam-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  margin-top: 3px;
+  font-size: 8pt;
+  font-weight: 700;
+  color: #334155;
+}
+
+.ai-print-exam-identification {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 3px 0 5px 0;
+  padding: 5px;
+  border: 1px solid #94a3b8;
+  font-size: 7.8pt;
+  font-weight: 700;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ai-print-exam-instructions {
+  margin: 0 0 6px 0;
+  padding: 5px 7px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 7.6pt;
+  line-height: 1.25;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ai-print-exam-instructions ul {
+  margin: 3px 0 0 16px;
+  padding: 0;
+}
+
+.ai-print-exam-instructions li {
+  margin: 0 0 2px 0;
+}
+
+.ai-print-exam-questions {
+  display: block;
+}
+
+.ai-print-exam-question {
+  margin: 0 0 5px 0;
+  padding: 5px 7px;
+  border: 1px solid #94a3b8;
+  border-radius: 5px;
+  background: #ffffff;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ai-print-exam-question-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 3px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 8pt;
+  font-weight: 800;
+}
+
+.ai-print-exam-prompt {
+  margin: 0;
+  white-space: pre-line;
+  font-size: 8.5pt;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.ai-print-exam-options {
+  margin: 4px 0 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-print-exam-options li {
+  margin: 0 0 2px 0;
+  font-size: 8pt;
+  line-height: 1.25;
+}
+
+.ai-print-exam-option-box {
+  display: inline-block;
+  margin-right: 3px;
+  font-size: 9pt;
+}
+
+.ai-print-exam-true-false {
+  margin: 5px 0 0 0;
+  font-size: 8.5pt;
+  font-weight: 700;
+}
+
+.ai-print-exam-answer-lines {
+  margin-top: 6px;
+}
+
+.ai-print-exam-answer-lines div {
+  height: 6mm;
+  border-bottom: 1px solid #94a3b8;
+}
+
+.ai-print-exam-criteria {
+  margin-top: 5px;
+  padding: 4px 6px;
+  border: 1px solid #fcd34d;
+  background: #fffbeb;
+  font-size: 7.5pt;
+  line-height: 1.25;
+}
+
+.ai-print-exam-criteria ul {
+  margin: 3px 0 0 16px;
+  padding: 0;
+}
+
+.ai-print-exam-answer-table,
+.ai-print-exam-grade-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1px solid #94a3b8;
+}
+
+.ai-print-exam-answer-table thead,
+.ai-print-exam-grade-table thead {
+  display: table-header-group;
+}
+
+.ai-print-exam-answer-table th,
+.ai-print-exam-answer-table td,
+.ai-print-exam-grade-table th,
+.ai-print-exam-grade-table td {
+  border: 1px solid #94a3b8;
+  padding: 4px;
+  vertical-align: top;
+  text-align: left;
+  font-size: 7.8pt;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.ai-print-exam-answer-table th,
+.ai-print-exam-grade-table th {
+  background: #f1f5f9;
+  font-weight: 800;
+}
+
+.ai-print-exam-answer-table th:nth-child(1),
+.ai-print-exam-answer-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+.ai-print-exam-answer-table th:nth-child(2),
+.ai-print-exam-answer-table td:nth-child(2) {
+  width: 12%;
+  text-align: center;
+}
+
+.ai-print-exam-answer-table th:nth-child(3),
+.ai-print-exam-answer-table td:nth-child(3) {
+  width: 28%;
+}
+
+.ai-print-exam-answer-table th:nth-child(4),
+.ai-print-exam-answer-table td:nth-child(4) {
+  width: 50%;
+}
+
+.ai-print-exam-answer-table tr,
+.ai-print-exam-grade-table tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.ai-print-exam-grade-table th,
+.ai-print-exam-grade-table td {
+  width: 50%;
+  text-align: center;
+}
+
+.ai-print-exam-formula {
+  margin: 0 0 6px 0;
+  padding: 6px;
+  border: 1px solid #c4b5fd;
+  border-left: 3px solid #8b5cf6;
+  background: #f5f3ff;
+  font-size: 8.5pt;
+  line-height: 1.3;
+  color: #4c1d95;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+  .ai-print-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: 7pt;
+  line-height: 1.2;
+  color: #64748b;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+`;
+type PrintDuaPrinciple =
+  | "representation"
+  | "action-expression"
+  | "engagement";
+
+const DUA_PRINT_PALETTE: Record<
+  PrintDuaPrinciple,
+  {
+    background: string;
+    text: string;
+    border: string;
+  }
+> = {
+  representation: {
+    background: "#f5f3ff",
+    text: "#6d28d9",
+    border: "#8b5cf6",
+  },
+  "action-expression": {
+    background: "#eff6ff",
+    text: "#1d4ed8",
+    border: "#3b82f6",
+  },
+  engagement: {
+    background: "#ecfdf5",
+    text: "#047857",
+    border: "#22c55e",
+  },
+};
+
+function normalizePrintDuaText(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase()
+    .replace(/^[^A-Z]+/, "");
+}
+
+function detectPrintDuaPrinciple(
+  text: string,
+): PrintDuaPrinciple | null {
+  const normalized = normalizePrintDuaText(text);
+
+  if (normalized.startsWith("REPRESENTACION")) {
+    return "representation";
+  }
+
+  if (
+    normalized.startsWith("ACCION Y EXPRESION") ||
+    normalized.startsWith("ACCION / EXPRESION")
+  ) {
+    return "action-expression";
+  }
+
+  if (
+    normalized.startsWith("COMPROMISO") ||
+    normalized.startsWith("MOTIVACION") ||
+    normalized.startsWith("IMPLICACION")
+  ) {
+    return "engagement";
+  }
+
+  return null;
+}
+
+function isDedicatedDuaSection(
+  sectionTitle: string,
+): boolean {
+  const normalized =
+    normalizePrintDuaText(sectionTitle);
+
+  return (
+    normalized.includes("ESTRATEGIAS DUA") ||
+    normalized.includes("APLICACION DUA")
+  );
+}
+
+function applyDuaParagraphStyle(
+  paragraph: HTMLParagraphElement,
+  principle: PrintDuaPrinciple,
+  cardStyle: boolean,
+): void {
+  const palette = DUA_PRINT_PALETTE[principle];
+
+  paragraph.style.setProperty(
+    "break-inside",
+    "avoid",
+    "important",
+  );
+
+  paragraph.style.setProperty(
+    "page-break-inside",
+    "avoid",
+    "important",
+  );
+
+  if (cardStyle) {
+    paragraph.style.setProperty(
+      "background-color",
+      palette.background,
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "color",
+      palette.text,
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "border",
+      `1px solid ${palette.border}`,
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "border-left",
+      `3px solid ${palette.border}`,
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "border-radius",
+      "6px",
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "padding",
+      "2px 5px",
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "font-weight",
+      "700",
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "margin-top",
+      "2px",
+      "important",
+    );
+
+    paragraph.style.setProperty(
+      "margin-bottom",
+      "3px",
+      "important",
+    );
+
+    return;
+  }
+
+  paragraph.style.setProperty(
+    "background-color",
+    "transparent",
+    "important",
+  );
+
+  paragraph.style.setProperty(
+    "color",
+    "#0f172a",
+    "important",
+  );
+
+  paragraph.style.setProperty(
+    "border",
+    "0",
+    "important",
+  );
+
+  paragraph.style.setProperty(
+    "border-left",
+    `2px solid ${palette.border}`,
+    "important",
+  );
+
+  paragraph.style.setProperty(
+    "padding",
+    "0 0 0 5px",
+    "important",
+  );
+}
+
+function applyDuaStylesToPrintClone(
+  printClone: HTMLElement,
+): void {
+  let activePrinciple: PrintDuaPrinciple | null =
+    null;
+
+  const rows = Array.from(
+    printClone.querySelectorAll<HTMLTableRowElement>(
+      ".ai-print-table tbody tr",
+    ),
+  );
+
+  rows.forEach((row) => {
+    const sectionTitle =
+      row.querySelector("th")?.textContent ?? "";
+
+    const dedicatedSection =
+      isDedicatedDuaSection(sectionTitle);
+
+    const paragraphs = Array.from(
+      row.querySelectorAll<HTMLParagraphElement>(
+        "td p",
+      ),
+    );
+
+    paragraphs.forEach((paragraph) => {
+      const detectedPrinciple =
+        detectPrintDuaPrinciple(
+          paragraph.textContent ?? "",
+        );
+
+      if (detectedPrinciple) {
+        activePrinciple = detectedPrinciple;
+
+        applyDuaParagraphStyle(
+          paragraph,
+          detectedPrinciple,
+          true,
+        );
+
+        return;
+      }
+
+      if (dedicatedSection && activePrinciple) {
+        applyDuaParagraphStyle(
+          paragraph,
+          activePrinciple,
+          false,
+        );
+      }
+    });
+  });
+}
+function waitForImages(
+  targetDocument: Document,
+): Promise<void> {
+  const images = Array.from(targetDocument.images);
+
+  return Promise.all(
+    images.map(
+      (image) =>
+        new Promise<void>((resolve) => {
+          if (image.complete) {
+            resolve();
+            return;
+          }
+
+          const finish = () => {
+            resolve();
+          };
+
+          image.addEventListener("load", finish, {
+            once: true,
+          });
+
+          image.addEventListener("error", finish, {
+            once: true,
+          });
+        }),
+    ),
+  ).then(() => undefined);
+}
+
+function waitForLayout(
+  targetWindow: Window,
+): Promise<void> {
+  return new Promise((resolve) => {
+    targetWindow.requestAnimationFrame(() => {
+      targetWindow.requestAnimationFrame(() => {
+        resolve();
+      });
+    });
+  });
+}
+
+export default function PrintButton() {
+  async function handlePrint() {
+    const printableArea = document.getElementById(
+      "ai-printable-result",
+    );
+
+    if (!printableArea) {
+      return;
+    }
+
+    document.getElementById(PRINT_FRAME_ID)?.remove();
+
+    const printClone =
+      printableArea.cloneNode(true) as HTMLElement;
+
+    printClone.id = "ai-print-root";
+    printClone.classList.remove("hidden");
+    printClone.classList.remove("print:block");
+    printClone.removeAttribute("aria-hidden");
+    printClone.style.display = "block";
+    applyDuaStylesToPrintClone(printClone);
+
+    const iframe = document.createElement("iframe");
+
+    iframe.id = PRINT_FRAME_ID;
+    iframe.title = "Documento imprimible de Profe IA";
+
+    Object.assign(iframe.style, {
+      position: "fixed",
+      top: "0",
+      left: "-10000px",
+      width: "210mm",
+      height: "297mm",
+      border: "0",
+      pointerEvents: "none",
+    });
+
+    document.body.appendChild(iframe);
+
+    const printDocument = iframe.contentDocument;
+    const printWindow = iframe.contentWindow;
+
+    if (!printDocument || !printWindow) {
+      iframe.remove();
+      return;
+    }
+
+    printDocument.open();
+
+    printDocument.write(`
+      <!doctype html>
+      <html lang="es">
+        <head>
+          <meta charset="utf-8" />
+          <title>Profe IA - Documento imprimible</title>
+        </head>
+        <body></body>
+      </html>
+    `);
+
+    printDocument.close();
+
+    const base = printDocument.createElement("base");
+    base.href = document.baseURI;
+    printDocument.head.appendChild(base);
+
+    const style = printDocument.createElement("style");
+    style.textContent = PRINT_STYLES;
+    printDocument.head.appendChild(style);
+
+    const importedResult = printDocument.importNode(
+      printClone,
+      true,
+    );
+
+    printDocument.body.appendChild(importedResult);
+
+    try {
+      await Promise.all([
+        waitForImages(printDocument),
+        printDocument.fonts.ready,
+      ]);
+
+      await waitForLayout(printWindow);
+    } catch {
+      iframe.remove();
+      return;
+    }
+
+    let cleaned = false;
+
+    const cleanup = () => {
+      if (cleaned) {
+        return;
+      }
+
+      cleaned = true;
+
+      printWindow.removeEventListener(
+        "afterprint",
+        cleanup,
+      );
+
+      window.removeEventListener(
+        "afterprint",
+        cleanup,
+      );
+
+      iframe.remove();
+    };
+
+    printWindow.addEventListener(
+      "afterprint",
+      cleanup,
+      { once: true },
+    );
+
+    window.addEventListener(
+      "afterprint",
+      cleanup,
+      { once: true },
+    );
+
+    printWindow.focus();
+    printWindow.print();
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handlePrint}
+      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+    >
+      <span aria-hidden="true">🖨️</span>
+      Imprimir
+    </button>
+  );
+}

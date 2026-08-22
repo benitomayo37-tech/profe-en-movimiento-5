@@ -1,0 +1,536 @@
+import type { GeneratedAIContent } from "@/features/ai/types/ai";
+import AIPrintableExam from "./AIPrintableExam";
+import { paginatePrintableContent } from "@/features/ai/utils/paginatePrintableContent";
+import { paginatePrintableExam } from "@/features/ai/utils/paginatePrintableExam";
+
+interface AIPrintableResultProps {
+  result: GeneratedAIContent;
+}
+
+type DuaPrinciple =
+  | "representation"
+  | "action-expression"
+  | "engagement";
+
+function normalizeDuaText(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase()
+    .replace(/^[^A-Z]+/, "")
+    .replace(
+      /^DUA\s*(?:[—–-]|:)\s*/,
+      "",
+    );
+}
+
+function removeDuaColorName(text: string): string {
+  return text
+    .replace(
+      /^(\s*[-•]?\s*)DUA\s*(?:[—–-]|:)\s*/i,
+      "$1",
+    )
+    .replace(
+      /\s*[—–-]\s*\(?(MORADO|AZUL|VERDE)\)?\s*(?::|[—–-])\s*/gi,
+      " — ",
+    );
+}
+
+function detectDuaPrinciple(
+  text: string,
+): DuaPrinciple | null {
+  const normalized = normalizeDuaText(text);
+
+  if (normalized.startsWith("REPRESENTACION")) {
+    return "representation";
+  }
+
+  if (
+    normalized.startsWith("ACCION Y EXPRESION") ||
+    normalized.startsWith("ACCION / EXPRESION")
+  ) {
+    return "action-expression";
+  }
+
+  if (
+    normalized.startsWith("COMPROMISO") ||
+    normalized.startsWith("MOTIVACION") ||
+    normalized.startsWith("IMPLICACION")
+  ) {
+    return "engagement";
+  }
+
+  return null;
+}
+
+function isDuaSection(sectionTitle: string): boolean {
+  const normalized = normalizeDuaText(sectionTitle);
+
+  return (
+    normalized.includes("ESTRATEGIAS DUA") ||
+    normalized.includes("APLICACION DUA")
+  );
+}
+
+function isChecklistIndicatorsSection(
+  sectionTitle: string,
+): boolean {
+  const normalized =
+    normalizeDuaText(sectionTitle);
+
+  return (
+    normalized.includes(
+      "INDICADORES OBSERVABLES",
+    ) ||
+    normalized.includes(
+      "LISTA DE COTEJO",
+    )
+  );
+}
+
+function removeChecklistScale(
+  text: string,
+): string {
+  return text
+    .replace(
+      /^\s*(?:\d+[.)]\s*)?Indicador\s*[—–-]\s*\[\s*\]\s*Sí\s*\|\s*\[\s*\]\s*En proceso\s*\|\s*\[\s*\]\s*No\.?\s*/i,
+      "",
+    )
+    .replace(
+      /\s*[—–-]\s*\[\s*\]\s*Sí\s*\|\s*\[\s*\]\s*En proceso\s*\|\s*\[\s*\]\s*No\.?\s*$/i,
+      "",
+    )
+    .trim();
+}
+
+function PrintableChecklistTable({
+  indicators,
+}: {
+  indicators: string[];
+}) {
+    const checklistIndicators =
+    indicators.filter((indicator) => {
+      const normalized =
+        normalizeDuaText(indicator);
+
+      return (
+        !/NOMBRE(?:\s+DEL)?\s+(?:ESTUDIANTE|ALUMNO)\b/.test(normalized) &&
+        !normalized.startsWith(
+          "ESPACIOS PARA IDENTIFICACION",
+        ) &&
+        !normalized.startsWith(
+          "INSTRUCCION",
+        ) &&
+        !normalized.startsWith(
+          "INDICADORES"
+        )
+      );
+    });
+
+  return (
+    <div className="ai-print-checklist-wrapper">
+      <div className="ai-print-checklist-identification">
+        <span>
+          Nombre del estudiante:
+          ______________________________
+        </span>
+
+        <span>
+          Curso: __________________
+        </span>
+
+        <span>
+          Fecha: ______________
+        </span>
+      </div>
+
+      <p className="ai-print-checklist-instruction">
+        Marque una sola casilla por indicador según
+        el desempeño observado.
+      </p>
+
+      <table className="ai-print-checklist-table">
+        <thead>
+          <tr>
+            <th>Indicador observable</th>
+            <th>Sí</th>
+            <th>En proceso</th>
+            <th>No</th>
+            <th>Observaciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+         {checklistIndicators.map(
+  (indicator, index) => (
+    <tr key={`${indicator}-${index}`}>
+      <td>
+        {removeChecklistScale(
+          indicator,
+        )}
+      </td>
+
+      <td className="ai-print-check-box">
+        □
+      </td>
+
+      <td className="ai-print-check-box">
+        □
+      </td>
+
+      <td className="ai-print-check-box">
+        □
+      </td>
+
+      <td className="ai-print-observations-cell">
+        {" "}
+      </td>
+    </tr>
+  ),
+)}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function buildDuaClassName(
+  principle: DuaPrinciple,
+  variant:
+    | "heading"
+    | "item",
+): string {
+  return [
+    "ai-print-dua",
+    `ai-print-dua-${principle}`,
+    variant === "heading"
+      ? "ai-print-dua-heading"
+      : "ai-print-dua-item",
+  ].join(" ");
+}
+
+function getDuaParagraphClass(
+  sectionTitle: string,
+  content: string[],
+  itemIndex: number,
+): string | undefined {
+  const currentPrinciple =
+    detectDuaPrinciple(content[itemIndex]);
+
+  /*
+   * Una estrategia DUA explícita debe conservar sus
+   * colores aunque se encuentre dentro de Inicio,
+   * Desarrollo, Cierre o Evaluación.
+   */
+  if (currentPrinciple) {
+    return buildDuaClassName(
+      currentPrinciple,
+      "heading",
+    );
+  }
+
+  /*
+   * Los párrafos que no comienzan con un principio
+   * únicamente heredan el color cuando pertenecen a
+   * una sección dedicada completamente a DUA.
+   */
+  if (!isDuaSection(sectionTitle)) {
+    return undefined;
+  }
+
+  let activePrinciple: DuaPrinciple | null = null;
+
+  for (
+    let index = 0;
+    index < itemIndex;
+    index += 1
+  ) {
+    const detectedPrinciple = detectDuaPrinciple(
+      content[index],
+    );
+
+    if (detectedPrinciple) {
+      activePrinciple = detectedPrinciple;
+    }
+  }
+
+  if (!activePrinciple) {
+    return undefined;
+  }
+
+
+  return buildDuaClassName(
+    activePrinciple,
+    "item",
+  );
+}
+
+function PrintableBrand() {
+  return (
+    <div className="ai-print-brand-row">
+      {/* La impresión en una ventana aislada requiere una etiqueta img estándar. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logos/logo-profe-en-movimiento.png"
+        alt="Profe en Movimiento"
+        width={48}
+        height={48}
+        loading="eager"
+        decoding="sync"
+        className="ai-print-logo"
+      />
+
+      <div>
+        <p className="ai-print-brand">
+          PROFE EN MOVIMIENTO 5.0
+        </p>
+
+        <p className="ai-print-brand-secondary">
+          PROFE IA · ASISTENTE INTELIGENTE PARA DOCENTES
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function AIPrintableResult({
+  result,
+}: AIPrintableResultProps) {
+    const pages = result.exam
+    ? []
+    : paginatePrintableContent(result);
+
+  const examPages = result.exam
+    ? paginatePrintableExam(result.exam)
+    : [];
+
+  const hasRubric = Boolean(result.rubric);
+
+  const normalizedResultTitle =
+  result.title
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      "",
+    )
+    .trim()
+    .toUpperCase();
+
+const isNeeAdaptationContent =
+  normalizedResultTitle.startsWith(
+    "ADAPTACION NEE",
+  );
+
+  const totalPages =
+    pages.length +
+    examPages.length +
+    (hasRubric ? 1 : 0);
+
+  const examStartingPageNumber =
+    pages.length + 1;
+
+  const rubricPageNumber =
+    pages.length +
+    examPages.length +
+    1;
+
+  return (
+    <div
+      id="ai-printable-result"
+      className="hidden"
+    >
+      {pages.map((page) => (
+      <article
+  key={page.pageNumber}
+  className={
+    isNeeAdaptationContent
+      ? "ai-print-page ai-print-nee-page"
+      : "ai-print-page"
+  }
+>
+          <header className="ai-print-header">
+            <PrintableBrand />
+
+            {page.pageNumber === 1 ? (
+              <>
+                <h1>{result.title}</h1>
+
+                <p className="ai-print-introduction">
+                  {result.introduction}
+                </p>
+              </>
+            ) : (
+              <p className="ai-print-continuation-title">
+                {result.title}
+              </p>
+            )}
+          </header>
+
+          <table className="ai-print-table">
+            <thead>
+              <tr>
+                <th>Sección</th>
+                <th>Contenido</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {page.rows.map(
+  (row, rowIndex) => {
+    const isChecklistSection =
+      isChecklistIndicatorsSection(
+        row.sectionTitle,
+      );
+
+    if (isChecklistSection) {
+      return (
+        <tr
+          key={`${page.pageNumber}-${row.sectionTitle}-${rowIndex}`}
+          className="ai-print-checklist-row"
+        >
+          <td colSpan={2}>
+            <h2 className="ai-print-checklist-title">
+              {row.sectionTitle}
+
+              {row.continuation && (
+                <span className="ai-print-continuation">
+                  {" "}
+                  (continuación)
+                </span>
+              )}
+            </h2>
+
+            <PrintableChecklistTable
+              indicators={row.content}
+            />
+          </td>
+        </tr>
+      );
+    }
+
+    return (
+      <tr
+        key={`${page.pageNumber}-${row.sectionTitle}-${rowIndex}`}
+      >
+        <th scope="row">
+          {row.sectionTitle}
+
+          {row.continuation && (
+            <span className="ai-print-continuation">
+              {" "}
+              (continuación)
+            </span>
+          )}
+        </th>
+
+        <td>
+          {row.content.map(
+            (item, itemIndex) => (
+              <p
+                key={`${page.pageNumber}-${rowIndex}-${itemIndex}`}
+                className={getDuaParagraphClass(
+                  row.sectionTitle,
+                  row.content,
+                  itemIndex,
+                )}
+              >
+                {removeDuaColorName(
+                  item,
+                )}
+              </p>
+            ),
+          )}
+        </td>
+      </tr>
+    );
+  },
+)}
+            </tbody>
+          </table>
+
+          <footer className="ai-print-footer">
+            <span>
+              Profe en Movimiento 5.0 · Proyecto FARO · Profe IA
+            </span>
+
+            <span>
+              Página {page.pageNumber} de{" "}
+              {totalPages}
+            </span>
+          </footer>
+        </article>
+      ))}
+      {result.exam &&
+      examPages.length > 0 ? (
+        <AIPrintableExam
+          exam={result.exam}
+          pages={examPages}
+          startingPageNumber={
+            examStartingPageNumber
+          }
+          totalPages={totalPages}
+        />
+      ) : null}
+      {result.rubric && (
+        <article className="ai-print-page ai-print-rubric-page">
+          <header className="ai-print-header">
+            <PrintableBrand />
+
+            <h1>{result.rubric.title}</h1>
+          </header>
+
+          <table className="ai-print-rubric-table">
+            <thead>
+              <tr>
+                <th>Criterio</th>
+                <th>Excelente (10)</th>
+                <th>Bien (9)</th>
+                <th>Regular (8)</th>
+                <th>Aceptable (7)</th>
+                <th>Mejorable (5)</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {result.rubric.criteria.map(
+                (criterion, index) => (
+                  <tr
+                    key={`${criterion.criterion}-${index}`}
+                  >
+                    <th scope="row">
+                      {criterion.criterion}
+                    </th>
+
+                    <td>
+                      {criterion.excellent}
+                    </td>
+                    <td>{criterion.good}</td>
+                    <td>{criterion.regular}</td>
+                    <td>
+                      {criterion.acceptable}
+                    </td>
+                    <td>
+                      {criterion.improvable}
+                    </td>
+                  </tr>
+                ),
+              )}
+            </tbody>
+          </table>
+
+          <footer className="ai-print-footer">
+            <span>
+              Profe en Movimiento 5.0 · Proyecto FARO · Profe IA
+            </span>
+
+            <span>
+              Página {rubricPageNumber} de{" "}
+              {totalPages}
+            </span>
+          </footer>
+        </article>
+      )}
+    </div>
+  );
+}

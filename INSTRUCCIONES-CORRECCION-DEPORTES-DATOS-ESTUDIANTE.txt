@@ -1,0 +1,86 @@
+CORRECCIÓN FINAL — DEPORTES ESTUDIANTIL
+
+Esta actualización:
+- incorpora los datos del estudiante en la primera página impresa;
+- incorpora el logo de Profe en Movimiento en el encabezado de las tres páginas;
+- presenta un encabezado institucional inspirado en Profe IA, con el nombre
+  «PROFE EN MOVIMIENTO 5.0», el subtítulo «DEPORTES EN ACCIÓN · RECURSO
+  EDUCATIVO PARA ESTUDIANTES» y el número de página alineado a la derecha;
+- conserva exactamente tres páginas al imprimir o guardar como PDF;
+- corrige el vocabulario «Identify» por «Identifica»;
+- corrige la posición de la mano guía en baloncesto;
+- impide que mantener la mano guía al costado sea presentado como un error:
+  el error correcto es impulsar o desviar el balón con esa mano;
+- corrige la regla de entrada durante el tiro libre;
+- normaliza «línea de lance libre» como «línea de tiro libre»;
+- elimina instrucciones internas sobre reserva de espacio visual;
+- reemplaza adaptaciones imprecisas de aro alto/bajo por aro más bajo o menor distancia;
+- rechaza automáticamente marcadores internos o mensajes técnicos y vuelve a generar el reporte;
+- permite activar o desactivar «Incluir apoyo visual» antes de generar;
+- añade hasta dos imágenes educativas desde Wikimedia Commons con descripción, autor, licencia y fuente;
+- exige que los metadatos de cada imagen identifiquen el deporte y, cuando corresponda, la técnica solicitada;
+- continúa generando el reporte textual si no encuentra una imagen pertinente o el servicio visual no responde;
+- elimina el falso positivo que rechazaba textos correctos terminados en palabras como «de», «para», «y» o «sin»;
+- distingue las pautas técnicas de las reglas y evita prácticas inadecuadas como lanzar desde las rodillas;
+- fija de forma controlada las tres reglas visibles del tiro libre para impedir duplicaciones o cortes entre viñetas;
+- presenta la descripción de la imagen en español aunque los metadatos originales estén en otro idioma;
+- normaliza el contenido antes de la validación final para que una regla reparable no agote los tres intentos;
+- registra en Vercel la causa concreta de cada intento rechazado sin exponer el contenido del estudiante;
+- mantiene el botón Imprimir o guardar en PDF.
+
+ARCHIVOS INCLUIDOS
+- app/estudiantes/deportes/page.tsx
+- app/api/students/sports/generate/route.ts
+- app/api/students/sports/image/route.ts
+- app/globals.css
+- public/logos/logo-profe-en-movimiento.png
+- features/students/sports/StudentSportsWorkspace.tsx
+- features/students/sports/types.ts
+- features/students/sports/normalize.ts
+- features/students/sports/prompt.ts
+- features/students/sports/validation.ts
+- features/students/sports/visuals.ts
+
+INSTALACIÓN
+1. Cierra el servidor local si está funcionando.
+2. Extrae el ZIP.
+3. Copia las carpetas app y features sobre:
+   C:\Users\Usuario\profe-en-movimiento-5
+4. Cuando Windows pregunte, selecciona «Reemplazar los archivos en el destino».
+5. No reemplaces ni elimines .env.local, .vercel ni node_modules.
+6. Abre PowerShell en C:\Users\Usuario\profe-en-movimiento-5 y ejecuta:
+
+   npm run lint
+   npm run build
+
+7. Si ambas verificaciones terminan correctamente, publica:
+
+   npx vercel@latest --prod
+
+No hace falta ejecutar una migración SQL para esta corrección.
+
+PRUEBA RECOMENDADA
+1. Ingresa como estudiante.
+2. Abre Recursos para estudiantes > Deportes.
+3. Genera «Técnica del tiro libre en baloncesto».
+4. Mantén marcada la opción «Incluir apoyo visual».
+5. Verifica que aparezcan hasta dos imágenes pertinentes con su crédito. Si
+   Wikimedia Commons no ofrece una imagen adecuada, el reporte debe continuar.
+6. Pulsa «Imprimir o guardar en PDF» y espera unos segundos para que las
+   imágenes terminen de cargar.
+7. Verifica que el PDF tenga exactamente 3 páginas.
+8. En la página 1 comprueba: nombre, Unidad Educativa, nivel, grado/curso,
+   tema y fecha.
+9. Comprueba que la mano guía aparezca al costado del balón y que los
+   jugadores de los espacios de rebote puedan entrar cuando el balón salga
+   de las manos del lanzador.
+   En «Errores frecuentes», debe indicar que el error es impulsar o desviar
+   el balón con la mano guía, no mantenerla al costado.
+10. Comprueba que las tres páginas muestren el encabezado institucional con
+    el logo, «PROFE EN MOVIMIENTO 5.0», «DEPORTES EN ACCIÓN · RECURSO
+    EDUCATIVO PARA ESTUDIANTES» y el número de página.
+11. Comprueba que el PDF no cree una cuarta página vacía.
+
+NOTA
+La Unidad Educativa se obtiene del perfil estudiantil existente. Si el perfil
+no tiene ese dato, la impresión mostrará «No registrada».

@@ -1,0 +1,75 @@
+export type TrainerModuleId =
+  | "training-session"
+  | "microcycle"
+  | "mesocycle"
+  | "macrocycle";
+
+export type TrainingLevel =
+  | "initiation"
+  | "intermediate"
+  | "advanced";
+
+export type TrainingIntensity =
+  | "low"
+  | "moderate"
+  | "high-controlled";
+
+export type TrainingFocus =
+  | "technical"
+  | "tactical"
+  | "physical"
+  | "coordination"
+  | "recovery"
+  | "combined";
+
+export interface TrainingSessionFormData {
+  sport: string;
+  category: string;
+  level: TrainingLevel;
+  focus: TrainingFocus;
+  objective: string;
+  durationMinutes: number;
+  athleteCount: number;
+  intensity: TrainingIntensity;
+  materials: string;
+  space: string;
+  competitionContext: string;
+  additionalInstructions: string;
+}
+
+export interface GeneratedTrainingActivity {
+  name: string;
+  minutes: number;
+  description: string;
+  segments: GeneratedTrainingSegment[];
+}
+
+export interface GeneratedTrainingSegment {
+  name: string;
+  seconds: number;
+  description: string;
+}
+
+export interface GeneratedTrainingBlock {
+  name: string;
+  objective: string;
+  minutes: number;
+  intensity: string;
+  organization: string;
+  activities: GeneratedTrainingActivity[];
+  coachingPoints: string[];
+  recovery: string;
+  safety: string;
+}
+
+export interface GeneratedTrainingSession {
+  title: string;
+  summary: string;
+  objective: string;
+  totalMinutes: number;
+  loadGuidance: string;
+  blocks: GeneratedTrainingBlock[];
+  evaluationCriteria: string[];
+  safetyMeasures: string[];
+  adaptationNotes: string[];
+}

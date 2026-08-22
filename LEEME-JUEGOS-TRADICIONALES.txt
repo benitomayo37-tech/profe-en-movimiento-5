@@ -1,0 +1,37 @@
+PROFE EN MOVIMIENTO 5.0
+JUEGOS TRADICIONALES · PORTAL ESTUDIANTIL
+
+Este paquete agrega:
+
+- Ruta /estudiantes/juegos-tradicionales.
+- API /api/students/traditional-games/generate.
+- Selección por país y región, provincia o localidad opcional.
+- Cuatro o cinco juegos con materiales, objetivo, preparación, pasos, reglas,
+  seguridad, adaptación inclusiva y nota cultural.
+- Uso del mismo límite compartido de 10 investigaciones mensuales.
+- Las cuentas docentes pueden probar la herramienta sin consumir cupo.
+- Registro en student_research_history con resource_type traditional-games.
+- Robot durante la generación, diseño juvenil y botón para imprimir o guardar PDF.
+- Navegación habilitada desde Inicio estudiantil y la barra lateral.
+
+INSTALACIÓN
+
+1. Copia el contenido de esta carpeta sobre la raíz de tu proyecto.
+2. No reemplaces .env.local, node_modules ni .vercel.
+3. No requiere una migración nueva si ya ejecutaste
+   20260813_student_history_phase_2.sql, porque esa migración admite
+   resource_type = traditional-games.
+4. Ejecuta:
+   npm run lint
+   npm run build
+5. Si ambos finalizan correctamente, despliega:
+   npx vercel@latest --prod
+
+PRUEBA RECOMENDADA
+
+- Ingresa como estudiante.
+- Abre Juegos tradicionales.
+- País: Ecuador.
+- Región: Región Costa.
+- Genera la guía y comprueba que el contador disminuya solo una vez.
+- Usa Imprimir o guardar en PDF y verifica la vista previa.

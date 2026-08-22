@@ -1,0 +1,546 @@
+import type {
+  AIExamConfig,
+  AIExamQuestionDistribution,
+  AIExamQuestionType,
+  AIExamType,
+} from "@/features/ai/types/ai";
+
+interface AIExamConfigurationProps {
+  config: AIExamConfig;
+  onChange: (config: AIExamConfig) => void;
+}
+
+interface QuestionTypeOption {
+  type: AIExamQuestionType;
+  label: string;
+  description: string;
+}
+
+const fieldStyles =
+  "mt-2 min-h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 text-slate-950 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+
+const questionTypeOptions: QuestionTypeOption[] = [
+  {
+    type: "multiple-choice",
+    label: "Selección múltiple",
+    description:
+      "Una respuesta correcta y varias alternativas.",
+  },
+  {
+    type: "true-false",
+    label: "Verdadero o falso",
+    description:
+      "Afirmaciones que deben ser verificadas.",
+  },
+  {
+    type: "matching",
+    label: "Relación de columnas",
+    description:
+      "Correspondencia entre conceptos y respuestas.",
+  },
+  {
+    type: "fill-in-the-blank",
+    label: "Completar espacios",
+    description:
+      "Palabras o conceptos que completan una idea.",
+  },
+  {
+    type: "short-answer",
+    label: "Respuesta corta",
+    description:
+      "Respuesta concreta redactada por el estudiante.",
+  },
+  {
+    type: "applied-case",
+    label: "Caso de aplicación",
+    description:
+      "Situación para analizar y tomar decisiones.",
+  },
+  {
+    type: "practical-task",
+    label: "Tarea práctica",
+    description:
+      "Ejecución observable con criterios de calificación.",
+  },
+];
+
+const allowedQuestionTypes: Record<
+  AIExamType,
+  AIExamQuestionType[]
+> = {
+  theoretical: [
+    "multiple-choice",
+    "true-false",
+    "matching",
+    "fill-in-the-blank",
+    "short-answer",
+    "applied-case",
+  ],
+  practical: [
+    "applied-case",
+    "practical-task",
+  ],
+  mixed: questionTypeOptions.map(
+    (option) => option.type,
+  ),
+};
+
+const defaultDistributionByExamType: Record<
+  AIExamType,
+  AIExamQuestionDistribution[]
+> = {
+  theoretical: [
+    {
+      type: "multiple-choice",
+      quantity: 5,
+      pointsPerQuestion: 1,
+    },
+    {
+      type: "true-false",
+      quantity: 5,
+      pointsPerQuestion: 1,
+    },
+  ],
+  practical: [
+    {
+      type: "practical-task",
+      quantity: 2,
+      pointsPerQuestion: 5,
+    },
+  ],
+  mixed: [
+    {
+      type: "multiple-choice",
+      quantity: 5,
+      pointsPerQuestion: 1,
+    },
+    {
+      type: "practical-task",
+      quantity: 1,
+      pointsPerQuestion: 5,
+    },
+  ],
+};
+
+function calculateTotalScore(
+  distribution: AIExamQuestionDistribution[],
+): number {
+  return distribution.reduce(
+    (total, item) =>
+      total +
+      item.quantity *
+        item.pointsPerQuestion,
+    0,
+  );
+}
+
+export default function AIExamConfiguration({
+  config,
+  onChange,
+}: AIExamConfigurationProps) {
+  const availableQuestionTypes =
+    allowedQuestionTypes[config.examType];
+
+  function updateDistribution(
+    distribution: AIExamQuestionDistribution[],
+  ) {
+    onChange({
+      ...config,
+      questionDistribution: distribution,
+      totalScore:
+        calculateTotalScore(distribution),
+    });
+  }
+
+  function handleExamTypeChange(
+    examType: AIExamType,
+  ) {
+    const questionDistribution =
+      defaultDistributionByExamType[
+        examType
+      ].map((item) => ({ ...item }));
+
+    onChange({
+      ...config,
+      examType,
+      questionDistribution,
+      totalScore:
+        calculateTotalScore(
+          questionDistribution,
+        ),
+    });
+  }
+
+  function handleQuestionTypeToggle(
+    type: AIExamQuestionType,
+    checked: boolean,
+  ) {
+    if (checked) {
+      updateDistribution([
+        ...config.questionDistribution,
+        {
+          type,
+          quantity: 1,
+          pointsPerQuestion: 1,
+        },
+      ]);
+
+      return;
+    }
+
+    updateDistribution(
+      config.questionDistribution.filter(
+        (item) => item.type !== type,
+      ),
+    );
+  }
+
+  function updateQuestionDistribution(
+    type: AIExamQuestionType,
+    field: "quantity" | "pointsPerQuestion",
+    value: number,
+  ) {
+    const safeValue = Number.isFinite(value)
+      ? Math.max(1, value)
+      : 1;
+
+    updateDistribution(
+      config.questionDistribution.map(
+        (item) =>
+          item.type === type
+            ? {
+                ...item,
+                [field]: safeValue,
+              }
+            : item,
+      ),
+    );
+  }
+
+  return (
+    <section className="sm:col-span-2 rounded-3xl border border-orange-200 bg-orange-50/40 p-5 sm:p-6">
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-600">
+          Configuración del examen
+        </p>
+
+        <h3 className="mt-2 text-xl font-black text-slate-950">
+          Estructura, preguntas y calificación
+        </h3>
+
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Selecciona las características que Profe IA
+          deberá respetar al elaborar el examen.
+        </p>
+      </div>
+
+      <div className="mt-6 grid gap-5 md:grid-cols-3">
+        <label>
+          <span className="text-sm font-bold text-slate-800">
+            Tipo de examen
+          </span>
+
+          <select
+            value={config.examType}
+            onChange={(event) =>
+              handleExamTypeChange(
+                event.target.value as AIExamType,
+              )
+            }
+            className={fieldStyles}
+          >
+            <option value="theoretical">
+              Teórico
+            </option>
+
+            <option value="practical">
+              Práctico
+            </option>
+
+            <option value="mixed">
+              Mixto
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span className="text-sm font-bold text-slate-800">
+            Dificultad
+          </span>
+
+          <select
+            value={config.difficulty}
+            onChange={(event) =>
+              onChange({
+                ...config,
+                difficulty: event.target
+                  .value as AIExamConfig["difficulty"],
+              })
+            }
+            className={fieldStyles}
+          >
+            <option value="basic">
+              Básica
+            </option>
+
+            <option value="intermediate">
+              Intermedia
+            </option>
+
+            <option value="advanced">
+              Avanzada
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span className="text-sm font-bold text-slate-800">
+            Versiones
+          </span>
+
+          <select
+            value={config.versionMode}
+            onChange={(event) =>
+              onChange({
+                ...config,
+                versionMode: event.target
+                  .value as AIExamConfig["versionMode"],
+              })
+            }
+            className={fieldStyles}
+          >
+            <option value="A">
+              Solo versión A
+            </option>
+
+            <option value="A-B">
+              Versiones A y B
+            </option>
+          </select>
+        </label>
+      </div>
+
+      <fieldset className="mt-7">
+        <legend className="text-sm font-black text-slate-900">
+          Tipos y cantidad de preguntas
+        </legend>
+
+        <p className="mt-1 text-xs leading-5 text-slate-600">
+          Activa uno o varios tipos y asigna su
+          cantidad y puntaje individual.
+        </p>
+
+        <div className="mt-4 grid gap-4">
+          {questionTypeOptions
+            .filter((option) =>
+              availableQuestionTypes.includes(
+                option.type,
+              ),
+            )
+            .map((option) => {
+              const distribution =
+                config.questionDistribution.find(
+                  (item) =>
+                    item.type === option.type,
+                );
+
+              const isSelected =
+                distribution !== undefined;
+
+              return (
+                <div
+                  key={option.type}
+                  className="rounded-2xl border border-slate-200 bg-white p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(event) =>
+                        handleQuestionTypeToggle(
+                          option.type,
+                          event.target.checked,
+                        )
+                      }
+                      className="mt-1 h-5 w-5 accent-orange-500"
+                    />
+
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-slate-950">
+                        {option.label}
+                      </p>
+
+                      <p className="mt-1 text-xs leading-5 text-slate-600">
+                        {option.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {distribution ? (
+                    <div className="mt-4 grid gap-4 border-t border-slate-100 pt-4 sm:grid-cols-2">
+                      <label>
+                        <span className="text-xs font-bold text-slate-700">
+                          Cantidad de preguntas
+                        </span>
+
+                        <input
+                          type="number"
+                          min={1}
+                          max={50}
+                          value={
+                            distribution.quantity
+                          }
+                          onChange={(event) =>
+                            updateQuestionDistribution(
+                              option.type,
+                              "quantity",
+                              event.currentTarget
+                                .valueAsNumber,
+                            )
+                          }
+                          className={fieldStyles}
+                        />
+                      </label>
+
+                      <label>
+                        <span className="text-xs font-bold text-slate-700">
+                          Puntaje por pregunta
+                        </span>
+
+                        <input
+                          type="number"
+                          min={1}
+                          max={100}
+                          step={1}
+                          value={
+                            distribution.pointsPerQuestion
+                          }
+                          onChange={(event) =>
+                            updateQuestionDistribution(
+                              option.type,
+                              "pointsPerQuestion",
+                              event.currentTarget
+                                .valueAsNumber,
+                            )
+                          }
+                          className={fieldStyles}
+                        />
+                      </label>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+        </div>
+      </fieldset>
+
+      <div className="mt-6 rounded-2xl bg-slate-950 p-5 text-white">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-orange-300">
+          Puntaje total calculado
+        </p>
+
+        <p className="mt-2 text-3xl font-black">
+          {config.totalScore} puntos
+        </p>
+
+        <p className="mt-1 text-xs leading-5 text-slate-300">
+          Se calcula automáticamente multiplicando
+          la cantidad de preguntas por su puntaje.
+        </p>
+      </div>
+
+      <fieldset className="mt-6">
+        <legend className="text-sm font-black text-slate-900">
+          Documentos y cálculos adicionales
+        </legend>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-white p-4">
+            <input
+              type="checkbox"
+              checked={config.includeAnswerKey}
+              onChange={(event) =>
+                onChange({
+                  ...config,
+                  includeAnswerKey:
+                    event.target.checked,
+                })
+              }
+              className="mt-1 h-5 w-5 accent-emerald-600"
+            />
+
+            <span>
+              <span className="block font-bold text-slate-950">
+                Incluir solucionario
+              </span>
+
+              <span className="mt-1 block text-xs leading-5 text-slate-600">
+                Respuestas y orientaciones para el docente.
+              </span>
+            </span>
+          </label>
+
+          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-blue-200 bg-white p-4">
+            <input
+              type="checkbox"
+              checked={config.includeGradingTable}
+              onChange={(event) =>
+                onChange({
+                  ...config,
+                  includeGradingTable:
+                    event.target.checked,
+                })
+              }
+              className="mt-1 h-5 w-5 accent-blue-600"
+            />
+
+            <span>
+              <span className="block font-bold text-slate-950">
+                Tabla de calificación
+              </span>
+
+              <span className="mt-1 block text-xs leading-5 text-slate-600">
+                Convierte el puntaje obtenido en nota.
+              </span>
+            </span>
+          </label>
+
+          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-purple-200 bg-white p-4">
+            <input
+              type="checkbox"
+              checked={config.includeRuleOfThree}
+              onChange={(event) =>
+                onChange({
+                  ...config,
+                  includeRuleOfThree:
+                    event.target.checked,
+                })
+              }
+              className="mt-1 h-5 w-5 accent-purple-600"
+            />
+
+            <span>
+              <span className="block font-bold text-slate-950">
+                Regla de tres
+              </span>
+
+              <span className="mt-1 block text-xs leading-5 text-slate-600">
+                Calcula la calificación final sobre 10.
+              </span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      {config.questionDistribution.length ===
+      0 ? (
+        <p
+          role="alert"
+          className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700"
+        >
+          Selecciona al menos un tipo de pregunta.
+        </p>
+      ) : null}
+    </section>
+  );
+}

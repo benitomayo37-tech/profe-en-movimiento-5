@@ -1,0 +1,12 @@
+export { default as DashboardWorkspace } from "./components/DashboardWorkspace";
+export { default as DashboardHeader } from "./components/DashboardHeader";
+export { default as DashboardHero } from "./components/DashboardHero";
+export { default as DashboardSection } from "./components/DashboardSection";
+export { default as QuickActionsGrid } from "./components/QuickActionsGrid";
+export { default as QuickActionCard } from "./components/QuickActionCard";
+export { default as ProfeSOSCard } from "./components/ProfeSOSCard";
+export { default as RecentActivity } from "./components/RecentActivity";
+export { default as RecentActivityItem } from "./components/RecentActivityItem";
+export { default as TipsPanel } from "./components/TipsPanel";
+export { default as NotificationBell } from "./components/NotificationBell";
+export { default as ProfileMenu } from "./components/ProfileMenu";

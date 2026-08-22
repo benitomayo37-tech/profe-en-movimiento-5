@@ -1,0 +1,580 @@
+export const generatedContentSchema = {
+  type: "object",
+  additionalProperties: false,
+
+  required: [
+    "title",
+    "introduction",
+    "sections",
+    "durationPlan",
+    "logisticsPlan",
+    "rubric",
+    "exam",
+  ],
+
+  properties: {
+    title: {
+      type: "string",
+      minLength: 1,
+    },
+
+    introduction: {
+      type: "string",
+      minLength: 1,
+    },
+
+    sections: {
+      type: "array",
+      minItems: 1,
+      maxItems: 12,
+
+      items: {
+        type: "object",
+        additionalProperties: false,
+
+        required: ["title", "content"],
+
+        properties: {
+          title: {
+            type: "string",
+            minLength: 1,
+          },
+
+          content: {
+            type: "array",
+            minItems: 1,
+            maxItems: 20,
+
+            items: {
+              type: "string",
+              minLength: 1,
+            },
+          },
+        },
+      },
+    },
+    durationPlan: {
+      anyOf: [
+        {
+          type: "null",
+        },
+        {
+          type: "object",
+          additionalProperties: false,
+
+          required: ["requestedMinutes", "totalMinutes", "blocks"],
+
+          properties: {
+            requestedMinutes: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            totalMinutes: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            blocks: {
+              type: "array",
+              minItems: 1,
+              maxItems: 20,
+
+              items: {
+                type: "object",
+                additionalProperties: false,
+
+                required: ["label", "minutes"],
+
+                properties: {
+                  label: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  minutes: {
+                    type: "integer",
+                    minimum: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    logisticsPlan: {
+      anyOf: [
+        {
+          type: "null",
+        },
+        {
+          type: "object",
+          additionalProperties: false,
+
+          required: [
+            "studentCount",
+            "groupCount",
+            "stations",
+            "groupsPerStation",
+            "simultaneousParticipants",
+            "waitingParticipants",
+            "fixedTargetsAvailable",
+            "fixedTargetsRequired",
+            "resources",
+            "spaceDescription",
+            "collisionRiskControlled",
+          ],
+
+          properties: {
+            studentCount: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            groupCount: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            stations: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            groupsPerStation: {
+              type: "integer",
+              minimum: 1,
+            },
+
+            simultaneousParticipants: {
+              type: "integer",
+              minimum: 0,
+            },
+
+            waitingParticipants: {
+              type: "integer",
+              minimum: 0,
+            },
+
+            fixedTargetsAvailable: {
+              anyOf: [
+                {
+                  type: "null",
+                },
+                {
+                  type: "integer",
+                  minimum: 0,
+                },
+              ],
+            },
+
+            fixedTargetsRequired: {
+              type: "integer",
+              minimum: 0,
+            },
+
+            resources: {
+              type: "array",
+              minItems: 1,
+              maxItems: 20,
+
+              items: {
+                type: "object",
+                additionalProperties: false,
+
+                required: ["name", "available", "required"],
+
+                properties: {
+                  name: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  available: {
+                    anyOf: [
+                      {
+                        type: "null",
+                      },
+                      {
+                        type: "integer",
+                        minimum: 0,
+                      },
+                    ],
+                  },
+
+                  required: {
+                    type: "integer",
+                    minimum: 0,
+                  },
+                },
+              },
+            },
+
+            spaceDescription: {
+              type: "string",
+              minLength: 1,
+            },
+
+            collisionRiskControlled: {
+              type: "boolean",
+            },
+          },
+        },
+      ],
+    },
+    rubric: {
+      anyOf: [
+        {
+          type: "null",
+        },
+        {
+          type: "object",
+          additionalProperties: false,
+
+          required: ["title", "criteria"],
+
+          properties: {
+            title: {
+              type: "string",
+              minLength: 1,
+            },
+
+            criteria: {
+              type: "array",
+              minItems: 4,
+              maxItems: 6,
+
+              items: {
+                type: "object",
+                additionalProperties: false,
+
+                required: [
+                  "criterion",
+                  "excellent",
+                  "good",
+                  "regular",
+                  "acceptable",
+                  "improvable",
+                ],
+
+                properties: {
+                  criterion: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  excellent: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  good: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  regular: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  acceptable: {
+                    type: "string",
+                    minLength: 1,
+                  },
+
+                  improvable: {
+                    type: "string",
+                    minLength: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+
+    exam: {
+      anyOf: [
+        {
+          type: "null",
+        },
+        {
+          type: "object",
+          additionalProperties: false,
+
+          required: [
+            "title",
+            "examType",
+            "difficulty",
+            "totalScore",
+            "generalInstructions",
+            "versions",
+            "answerKey",
+            "gradingTable",
+            "ruleOfThreeFormula",
+          ],
+
+          properties: {
+            title: {
+              type: "string",
+              minLength: 1,
+            },
+
+            examType: {
+              type: "string",
+              enum: ["theoretical", "practical", "mixed"],
+            },
+
+            difficulty: {
+              type: "string",
+              enum: ["basic", "intermediate", "advanced"],
+            },
+
+            totalScore: {
+              type: "integer",
+              minimum: 1,
+              maximum: 100,
+            },
+
+            generalInstructions: {
+              type: "array",
+              minItems: 1,
+              maxItems: 10,
+
+              items: {
+                type: "string",
+                minLength: 1,
+              },
+            },
+
+            versions: {
+              type: "array",
+              minItems: 1,
+              maxItems: 2,
+
+              items: {
+                type: "object",
+                additionalProperties: false,
+
+                required: ["label", "questions"],
+
+                properties: {
+                  label: {
+                    type: "string",
+                    enum: ["A", "B"],
+                  },
+
+                  questions: {
+                    type: "array",
+                    minItems: 1,
+                    maxItems: 50,
+
+                    items: {
+                      type: "object",
+                      additionalProperties: false,
+
+                      required: [
+                        "number",
+                        "type",
+                        "prompt",
+                        "options",
+                        "score",
+                        "evaluationCriteria",
+                      ],
+
+                      properties: {
+                        number: {
+                          type: "integer",
+                          minimum: 1,
+                          maximum: 50,
+                        },
+
+                        type: {
+                          type: "string",
+                          enum: [
+                            "multiple-choice",
+                            "true-false",
+                            "matching",
+                            "fill-in-the-blank",
+                            "short-answer",
+                            "applied-case",
+                            "practical-task",
+                          ],
+                        },
+
+                        prompt: {
+                          type: "string",
+                          minLength: 1,
+                        },
+
+                        options: {
+                          anyOf: [
+                            {
+                              type: "null",
+                            },
+                            {
+                              type: "array",
+                              minItems: 2,
+                              maxItems: 6,
+
+                              items: {
+                                type: "object",
+                                additionalProperties: false,
+
+                                required: ["label", "text"],
+
+                                properties: {
+                                  label: {
+                                    type: "string",
+                                    minLength: 1,
+                                  },
+
+                                  text: {
+                                    type: "string",
+                                    minLength: 1,
+                                  },
+                                },
+                              },
+                            },
+                          ],
+                        },
+
+                        score: {
+                          type: "integer",
+                          minimum: 1,
+                          maximum: 100,
+                        },
+
+                        evaluationCriteria: {
+                          anyOf: [
+                            {
+                              type: "null",
+                            },
+                            {
+                              type: "array",
+                              minItems: 1,
+                              maxItems: 10,
+
+                              items: {
+                                type: "string",
+                                minLength: 1,
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+
+            answerKey: {
+              anyOf: [
+                {
+                  type: "null",
+                },
+                {
+                  type: "array",
+                  minItems: 1,
+                  maxItems: 100,
+
+                  items: {
+                    type: "object",
+                    additionalProperties: false,
+
+                    required: [
+                      "version",
+                      "questionNumber",
+                      "answer",
+                      "explanation",
+                    ],
+
+                    properties: {
+                      version: {
+                        type: "string",
+                        enum: ["A", "B"],
+                      },
+
+                      questionNumber: {
+                        type: "integer",
+                        minimum: 1,
+                        maximum: 50,
+                      },
+
+                      answer: {
+                        type: "string",
+                        minLength: 1,
+                      },
+
+                      explanation: {
+                        anyOf: [
+                          {
+                            type: "null",
+                          },
+                          {
+                            type: "string",
+                            minLength: 1,
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+
+            gradingTable: {
+              anyOf: [
+                {
+                  type: "null",
+                },
+                {
+                  type: "array",
+                  minItems: 1,
+                  maxItems: 101,
+
+                  items: {
+                    type: "object",
+                    additionalProperties: false,
+
+                    required: ["earnedScore", "finalGrade"],
+
+                    properties: {
+                      earnedScore: {
+                        type: "integer",
+                        minimum: 0,
+                        maximum: 100,
+                      },
+
+                      finalGrade: {
+                        type: "number",
+                        minimum: 0,
+                        maximum: 10,
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+
+            ruleOfThreeFormula: {
+              anyOf: [
+                {
+                  type: "null",
+                },
+                {
+                  type: "string",
+                  minLength: 1,
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  },
+} as const;
