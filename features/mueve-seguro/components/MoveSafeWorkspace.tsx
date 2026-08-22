@@ -37,8 +37,15 @@ function determineLevel(critical: CriticalAnswer | null, severity: Severity | nu
   return "yellow";
 }
 
-export default function MoveSafeWorkspace() {
-  const [mode, setMode] = useState<"home" | "guidance" | "prevention" | "protocols" | "incident" | "history">("home");
+export default function MoveSafeWorkspace({
+  authenticated,
+}: {
+  authenticated: boolean;
+}) {
+  const [mode, setMode] = useState<
+  "home" | "guidance" | "prevention" | "protocols" | "incident" | "history"
+>("home");
+
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState<Situation | null>(null);
   const [critical, setCritical] = useState<CriticalAnswer | null>(null);
@@ -72,8 +79,91 @@ export default function MoveSafeWorkspace() {
           <button onClick={startGuidance} className="group rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-600 text-2xl text-white" aria-hidden="true">⚡</span><h2 className="mt-5 text-xl font-black">Necesito orientación ahora</h2><p className="mt-3 text-sm leading-6 text-slate-600">Responde preguntas breves y recibe pasos conservadores de actuación.</p><span className="mt-5 inline-flex font-black text-orange-700">Comenzar →</span></button>
           <button onClick={() => setMode("prevention")} className="group rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-2xl text-white" aria-hidden="true">✓</span><h2 className="mt-5 text-xl font-black">Prevenir riesgos</h2><p className="mt-3 text-sm leading-6 text-slate-600">Listas de verificación para espacios, clima y materiales.</p><span className="mt-5 inline-flex text-sm font-black text-emerald-700">Comenzar revisión →</span></button>
           <button onClick={() => setMode("protocols")} className="group rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-2xl text-white" aria-hidden="true">📘</span><h2 className="mt-5 text-xl font-black">Consultar protocolos</h2><p className="mt-3 text-sm leading-6 text-slate-600">Guías rápidas, revisadas y organizadas por situación.</p><span className="mt-5 inline-flex text-sm font-black text-blue-700">Consultar guía →</span></button>
-          <button onClick={() => setMode("incident")} className="group rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-700 text-2xl text-white" aria-hidden="true">📝</span><h2 className="mt-5 text-xl font-black">Registrar incidente</h2><p className="mt-3 text-sm leading-6 text-slate-600">Documenta objetivamente lo ocurrido, las acciones realizadas y el seguimiento.</p><span className="mt-5 inline-flex text-sm font-black text-violet-700">Crear registro →</span></button>
-          <button onClick={() => setMode("history")} className="group rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-700 text-2xl text-white" aria-hidden="true">📚</span><h2 className="mt-5 text-xl font-black">Historial y seguimiento</h2><p className="mt-3 text-sm leading-6 text-slate-600">Consulta tus incidentes guardados, revisa su estado y abre cada registro.</p><span className="mt-5 inline-flex text-sm font-black text-indigo-700">Ver historial →</span></button>
+          <button
+  onClick={() => {
+    if (!authenticated) return;
+    setMode("incident");
+  }}
+  className={`group relative rounded-3xl border p-6 text-left shadow-sm transition ${
+    authenticated
+      ? "border-violet-200 bg-gradient-to-br from-violet-50 to-white hover:-translate-y-1 hover:shadow-xl"
+      : "border-slate-200 bg-slate-50/80 hover:shadow-md"
+  }`}
+>
+  <span
+    className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white ${
+      authenticated ? "bg-violet-700" : "bg-slate-500"
+    }`}
+    aria-hidden="true"
+  >
+    📝
+  </span>
+
+  <div className="mt-5 flex items-center gap-2">
+    <h2 className="text-xl font-black">Registrar incidente</h2>
+
+    {!authenticated ? (
+      <span className="rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">
+        🔒 PRO
+      </span>
+    ) : null}
+  </div>
+
+  <p className="mt-3 text-sm leading-6 text-slate-600">
+    Documenta objetivamente lo ocurrido, las acciones realizadas y el
+    seguimiento.
+  </p>
+
+  <span
+    className={`mt-5 inline-flex text-sm font-black ${
+      authenticated ? "text-violet-700" : "text-slate-500"
+    }`}
+  >
+    {authenticated ? "Crear registro →" : "Disponible en PRO 🔒"}
+  </span>
+</button>
+          <button
+  onClick={() => {
+    if (!authenticated) return;
+    setMode("history");
+  }}
+  className={`group relative rounded-3xl border p-6 text-left shadow-sm transition ${
+    authenticated
+      ? "border-indigo-200 bg-gradient-to-br from-indigo-50 to-white hover:-translate-y-1 hover:shadow-xl"
+      : "border-slate-200 bg-slate-50/80 hover:shadow-md"
+  }`}
+>
+  <span
+    className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white ${
+      authenticated ? "bg-indigo-700" : "bg-slate-500"
+    }`}
+    aria-hidden="true"
+  >
+    📚
+  </span>
+
+  <div className="mt-5 flex items-center gap-2">
+    <h2 className="text-xl font-black">Historial y seguimiento</h2>
+
+    {!authenticated ? (
+      <span className="rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">
+        🔒 PRO
+      </span>
+    ) : null}
+  </div>
+
+  <p className="mt-3 text-sm leading-6 text-slate-600">
+    Consulta tus incidentes guardados, revisa su estado y abre cada registro.
+  </p>
+
+  <span
+    className={`mt-5 inline-flex text-sm font-black ${
+      authenticated ? "text-indigo-700" : "text-slate-500"
+    }`}
+  >
+    {authenticated ? "Ver historial →" : "Disponible en PRO 🔒"}
+  </span>
+</button>
         </div>
       ) : mode === "prevention" ? (
         <PreventionChecklist onBack={reset} />
@@ -259,7 +349,7 @@ function IncidentHistory({ onBack }: { onBack: () => void }) {
         </div>
 
         <MoveSafeStats records={records} />
-        
+
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <input aria-label="Buscar incidente" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar por código, estudiante, situación, lugar o actividad..." className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-indigo-500" />
           <select aria-label="Filtrar por estado" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)} className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-black outline-none focus:border-indigo-500"><option value="all">Todos los estados</option><option value="pendiente">Pendientes</option><option value="en_seguimiento">En seguimiento</option><option value="cerrado">Cerrados</option></select>

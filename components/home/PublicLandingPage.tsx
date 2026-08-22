@@ -76,6 +76,96 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
 
       <section className="relative z-10 mx-auto -mt-7 max-w-6xl px-4 sm:px-6"><div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl sm:grid-cols-3">{[["19", "Herramientas para profes"], ["3", "Asistentes inteligentes"], ["1", "Biblioteca profesional"]].map(([number, label], index) => <div key={label} className={`flex items-center justify-center gap-4 px-6 py-6 ${index ? "border-t border-slate-200 sm:border-l sm:border-t-0" : ""}`}><span className="text-3xl font-black text-blue-800">{number}</span><span className="max-w-36 text-sm font-bold text-slate-600">{label}</span></div>)}</div></section>
 
+            {/* =========================
+          MUEVESEGURO — ACCESO FREE
+      ========================== */}
+      <section className="px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-blue-50 p-7 shadow-xl sm:p-10 lg:p-12">
+            <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-orange-200/40 blur-3xl" />
+            <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+
+            <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-orange-700">
+                    🛡️ MueveSeguro
+                  </span>
+
+                  <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-emerald-700">
+                    Acceso gratuito
+                  </span>
+                </div>
+
+                <h2 className="mt-5 max-w-3xl text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+                  Seguridad para tus clases.
+                  <span className="block text-blue-800">
+                    Respuesta cuando más la necesitas.
+                  </span>
+                </h2>
+
+                <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+                  Consulta rápidamente orientaciones preventivas y
+                  recomendaciones para actuar ante situaciones que puedan
+                  presentarse durante la actividad física.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-slate-600">
+                  <span>✓ Sin registro</span>
+                  <span>✓ Acceso inmediato</span>
+                  <span>✓ Gratis</span>
+                </div>
+
+                <div className="mt-8">
+                  <Link
+                    href="/mueve-seguro"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-black text-white shadow-lg shadow-orange-900/20 transition hover:-translate-y-0.5 hover:bg-orange-600"
+                  >
+                    Acceder gratis
+                    <ArrowIcon />
+                  </Link>
+                </div>
+
+                <p className="mt-4 text-sm font-semibold text-slate-500">
+                  🔒 Registro de incidentes, historial y seguimiento disponibles
+                  en MueveSeguro PRO.
+                </p>
+              </div>
+
+              <div className="relative flex justify-center lg:justify-end">
+  <div className="flex h-40 w-40 items-center justify-center rounded-[2rem] border border-white bg-white/90 shadow-2xl sm:h-48 sm:w-48">
+    <svg
+      viewBox="0 0 64 64"
+      className="h-24 w-24 sm:h-28 sm:w-28"
+      aria-hidden="true"
+    >
+      <path
+        d="M32 5 52 12v17c0 13.5-8.2 24.1-20 30C20.2 53.1 12 42.5 12 29V12L32 5Z"
+        fill="#EAF2FF"
+        stroke="#0B2050"
+        strokeWidth="3"
+      />
+      <path
+        d="M32 11 46 16v13c0 9.6-5.4 17.5-14 22.3C23.4 46.5 18 38.6 18 29V16l14-5Z"
+        fill="#FC7000"
+        opacity="0.95"
+      />
+      <path
+        d="M32 16 42 20v9c0 6.8-3.6 12.5-10 16.5C25.6 41.5 22 35.8 22 29v-9l10-4Z"
+        fill="#FFFFFF"
+      />
+      <path
+        d="M32 20 39 23v6c0 4.4-2.3 8.1-7 10.9C27.3 37.1 25 33.4 25 29v-6l7-3Z"
+        fill="#3B82F6"
+      />
+    </svg>
+  </div>
+</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="producto" className="px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 lg:grid-cols-3">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:1024px) 100vw, 33vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 font-black text-blue-700">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
 
       <section className="bg-[#071532] px-4 py-20 text-white sm:px-6">
