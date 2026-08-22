@@ -1,4 +1,7 @@
 import { useMemo } from "react";
+import {
+  analyzeMoveSafePatterns,
+} from "../utils/moveSafePatternEngine";
 
 type MoveSafeStatsRecord = {
   status: "pendiente" | "en_seguimiento" | "cerrado";
@@ -98,6 +101,7 @@ export default function MoveSafeStats({ records }: MoveSafeStatsProps) {
     const situations = toItems(bySituation);
     const locations = toItems(byLocation);
     const activities = toItems(byActivity);
+    const patternAnalysis = analyzeMoveSafePatterns(records);
 
     const followup = records.filter(
       (record) => record.status === "en_seguimiento",
@@ -182,6 +186,9 @@ export default function MoveSafeStats({ records }: MoveSafeStatsProps) {
       locations,
       activities,
       temporal,
+      patterns: patternAnalysis.patterns,
+      patternLevel: patternAnalysis.level,
+      patternScore: patternAnalysis.score,
       preventiveLevel,
       signals: signals.slice(0, 4),
       recommendations: Array.from(new Set(recommendations)).slice(0, 4),
@@ -324,11 +331,112 @@ export default function MoveSafeStats({ records }: MoveSafeStatsProps) {
           </div>
         </div>
       </div>
+   {/* ALERTAS PREVENTIVAS V2.2 */}
+<div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <div className="flex items-center justify-between gap-3">
+    <div>
+      <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-600">
+        MueveSeguro V2.2
+      </p>
 
+      <h3 className="mt-1 text-xl font-black text-slate-950">
+        🚨 Alertas preventivas
+      </h3>
+
+      <p className="mt-1 text-sm text-slate-500">
+        Patrones detectados a partir de los incidentes registrados.
+      </p>
+    </div>
+
+    <div
+      className={`rounded-full px-3 py-1 text-xs font-black uppercase ${
+        stats.patternLevel === "critica"
+          ? "bg-red-100 text-red-700"
+          : stats.patternLevel === "alta"
+            ? "bg-orange-100 text-orange-700"
+            : stats.patternLevel === "moderada"
+              ? "bg-amber-100 text-amber-700"
+              : "bg-emerald-100 text-emerald-700"
+      }`}
+    >
+      {stats.patternLevel === "critica"
+        ? "Crítico"
+        : stats.patternLevel === "alta"
+          ? "Alto"
+          : stats.patternLevel === "moderada"
+            ? "Moderado"
+            : "Preventivo"}
+    </div>
+  </div>
+
+  {stats.patterns.length === 0 ? (
+    <div className="mt-4 rounded-xl bg-emerald-50 p-4">
+      <p className="font-bold text-emerald-800">
+        🟢 No se detectaron patrones relevantes.
+      </p>
+
+      <p className="mt-1 text-sm text-emerald-700">
+        Continúa registrando los incidentes para fortalecer el análisis preventivo.
+      </p>
+    </div>
+  ) : (
+    <div className="mt-4 space-y-3">
+      {stats.patterns.slice(0, 4).map((pattern, index) => (
+        <div
+          key={`${pattern.type}-${pattern.label}-${index}`}
+          className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-black text-slate-950">
+                {pattern.title}
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                {pattern.description}
+              </p>
+            </div>
+
+            <span
+              className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${
+                pattern.severity === "critica"
+                  ? "bg-red-100 text-red-700"
+                  : pattern.severity === "alta"
+                    ? "bg-orange-100 text-orange-700"
+                    : pattern.severity === "moderada"
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-emerald-100 text-emerald-700"
+              }`}
+            >
+              {pattern.severity === "critica"
+                ? "Crítico"
+                : pattern.severity === "alta"
+                  ? "Alto"
+                  : pattern.severity === "moderada"
+                    ? "Moderado"
+                    : "Preventivo"}
+            </span>
+          </div>
+
+          <div className="mt-3 rounded-lg bg-white p-3">
+            <p className="text-xs font-black uppercase tracking-wide text-slate-400">
+              Recomendación
+            </p>
+
+            <p className="mt-1 text-sm font-medium leading-6 text-slate-700">
+              {pattern.recommendation}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="mb-5">
             <p className="text-xs font-black uppercase tracking-wide text-indigo-700">Frecuencia</p>
+         
             <h4 className="mt-1 text-lg font-black text-slate-950">Incidentes por tipo</h4>
           </div>
           <BarList
