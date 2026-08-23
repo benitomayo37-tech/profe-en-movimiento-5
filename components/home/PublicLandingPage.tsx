@@ -34,6 +34,8 @@ function ArrowIcon() {
 export default function PublicLandingPage({ authenticated }: PublicLandingPageProps) {
   const primaryHref = authenticated ? "/dashboard" : "/registro";
   const primaryLabel = authenticated ? "Ir al Dashboard" : "Comenzar gratis";
+  const heroHref = authenticated ? "/dashboard" : "/login";
+  const heroLabel = authenticated ? "Ir al Dashboard" : "Iniciar sesión";
   const memberHref = (destination: string) => authenticated
     ? destination
     : `/login?next=${encodeURIComponent(destination)}`;
@@ -68,7 +70,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
             <span className="inline-flex rounded-full border border-orange-300/30 bg-orange-400/10 px-4 py-2 text-xs font-black uppercase tracking-[.18em] text-orange-300">Educación Física + Inteligencia Artificial</span>
             <h1 className="mt-6 max-w-2xl text-5xl font-black leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">Haz realidad tu <span className="text-orange-400">clase ideal</span></h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-blue-100">Planifica, enseña y evalúa con inteligencia artificial. Ahorra tiempo y transforma la experiencia de tus estudiantes sin perder tu criterio docente.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row"><Link href={primaryHref} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-orange-500 px-7 py-3 font-black text-white shadow-xl shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-600">{primaryLabel}<ArrowIcon /></Link><Link href="/login?rol=estudiante" className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/25 bg-white/10 px-7 py-3 font-black backdrop-blur transition hover:bg-white/20">Acceso estudiantil</Link></div>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row"><Link href={heroHref} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-orange-500 px-7 py-3 font-black text-white shadow-xl shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-600">{heroLabel}<ArrowIcon /></Link><Link href="/login?rol=estudiante" className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/25 bg-white/10 px-7 py-3 font-black backdrop-blur transition hover:bg-white/20">Acceso estudiantil</Link></div>
             <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-blue-100"><span className="text-orange-300">✓</span> Acceso Free disponible · Sin tarjeta de crédito</p>
           </div>
         </div>

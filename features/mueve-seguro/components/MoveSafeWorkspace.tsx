@@ -65,7 +65,17 @@ export default function MoveSafeWorkspace({
       <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#071532] via-[#0b3c67] to-emerald-700 px-6 py-10 text-white shadow-2xl sm:px-10 lg:px-12">
         <div className="absolute -right-16 -top-20 h-72 w-72 rounded-full border-[48px] border-white/5" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-3xl"><span className="inline-flex rounded-full border border-emerald-200/30 bg-emerald-300/10 px-4 py-2 text-xs font-black uppercase tracking-[.2em] text-emerald-200">Seguridad educativa</span><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">MueveSeguro</h1><p className="mt-3 text-xl font-black text-orange-300">Educa, previene y protege.</p><p className="mt-5 max-w-2xl leading-8 text-blue-100">Orientación clara para actuar con calma, identificar señales de alerta y aplicar los protocolos de tu institución.</p></div>
+          <div className="max-w-3xl">
+      <div className="mb-5 lg:hidden">
+  <Link
+    href="/"
+    className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-black text-white backdrop-blur transition hover:bg-white/20"
+  >
+    ← Volver al inicio
+  </Link>
+</div>
+
+    <span className="inline-flex rounded-full border border-emerald-200/30 bg-emerald-300/10 px-4 py-2 text-xs font-black uppercase tracking-[.2em] text-emerald-200">Seguridad educativa</span><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">MueveSeguro</h1><p className="mt-3 text-xl font-black text-orange-300">Educa, previene y protege.</p><p className="mt-5 max-w-2xl leading-8 text-blue-100">Orientación clara para actuar con calma, identificar señales de alerta y aplicar los protocolos de tu institución.</p></div>
           <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-[2rem] border border-white/15 bg-white/10 text-6xl shadow-inner" aria-hidden="true">🛡️</div>
         </div>
       </section>
