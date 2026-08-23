@@ -34,8 +34,8 @@ function ArrowIcon() {
 export default function PublicLandingPage({ authenticated }: PublicLandingPageProps) {
   const primaryHref = authenticated ? "/dashboard" : "/registro";
   const primaryLabel = authenticated ? "Ir al Dashboard" : "Comenzar gratis";
-  const heroHref = authenticated ? "/dashboard" : "/login";
-  const heroLabel = authenticated ? "Ir al Dashboard" : "Iniciar sesión";
+  const heroLabel = "Iniciar sesión";
+  const heroHref = "/login";
   const memberHref = (destination: string) => authenticated
     ? destination
     : `/login?next=${encodeURIComponent(destination)}`;
