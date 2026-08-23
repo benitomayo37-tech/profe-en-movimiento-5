@@ -26,6 +26,12 @@ export default function MoveSafeSidebar() {
           Educa · Previene · Protege
         </p>
       </Link>
+            <Link
+        href="/"
+        className="mt-6 flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+      >
+        ← Volver al inicio
+      </Link>
 
       <div className="mt-8">
         <p className="px-4 text-xs font-black uppercase tracking-[0.18em] text-slate-400">
