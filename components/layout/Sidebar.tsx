@@ -32,6 +32,10 @@ const navigation: NavigationItem[] = [
     href: "/mueve-seguro",
   },
   {
+    label: "Movimiento para Todos",
+    href: "/movimiento-para-todos",
+  },
+  {
     label: "App para profes",
     href: "/apps",
   },
