@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 import { movementCategories } from "../data/categories";
 import { chronicDiseasesExercises } from "../data/chronicDiseases";
+import { prenatalExercises } from "../data/prenatal";
 import MovementExerciseCard from "./MovementExerciseCard";
 import {
   olderAdultsExercises,
@@ -784,6 +785,170 @@ export default function MovimientoParaTodosWorkspace() {
         </>
       )}
   
+      {selected?.id === "prenatal" && (
+        <>
+          <section className="rounded-3xl border border-violet-200 bg-violet-50 p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">
+              Actividad física durante el embarazo
+            </p>
+
+            <h3 className="mt-2 text-2xl font-black text-violet-950">
+              Movimiento seguro durante el embarazo
+            </h3>
+
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-violet-900">
+              La actividad física puede formar parte de un embarazo saludable
+              cuando no existen contraindicaciones. Las propuestas de esta
+              sección son orientaciones educativas generales y deben adaptarse
+              a las características, experiencia, tolerancia y recomendaciones
+              del equipo sanitario.
+            </p>
+
+            <div className="mt-5 rounded-2xl border border-violet-200 bg-white p-5">
+              <p className="font-black text-slate-950">Importante</p>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                Esta herramienta no diagnostica, no establece tratamientos y no
+                sustituye la valoración ni las indicaciones del equipo sanitario.
+              </p>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-600">
+              Orientaciones generales
+            </p>
+
+            <h3 className="mt-2 text-2xl font-black text-slate-950">
+              Muévete de forma progresiva y adaptable
+            </h3>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <article className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+                <h4 className="text-lg font-black text-emerald-950">
+                  Actividad regular
+                </h4>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-emerald-900">
+                  <li>Prioriza actividades que puedas realizar con comodidad.</li>
+                  <li>Comienza progresivamente si eras poco activa.</li>
+                  <li>Realiza pausas cuando las necesites.</li>
+                  <li>Adapta la actividad a tu tolerancia.</li>
+                </ul>
+              </article>
+
+              <article className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                <h4 className="text-lg font-black text-blue-950">
+                  Durante la actividad
+                </h4>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-blue-900">
+                  <li>Mantén una hidratación adecuada.</li>
+                  <li>Evita ambientes excesivamente calurosos.</li>
+                  <li>Mantén una intensidad confortable.</li>
+                  <li>Realiza pausas cuando las necesites.</li>
+                </ul>
+              </article>
+
+              <article className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
+                <h4 className="text-lg font-black text-amber-950">
+                  Adaptación
+                </h4>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-amber-900">
+                  <li>Ajusta duración e intensidad según tu tolerancia.</li>
+                  <li>Utiliza apoyos cuando mejoren la estabilidad.</li>
+                  <li>Evita aumentos bruscos de carga.</li>
+                  <li>Respeta las indicaciones del equipo sanitario.</li>
+                </ul>
+              </article>
+
+              <article className="rounded-2xl border border-rose-100 bg-rose-50 p-5">
+                <h4 className="text-lg font-black text-rose-950">
+                  Situaciones especiales
+                </h4>
+                <p className="mt-3 text-sm leading-6 text-rose-900">
+                  Si existe una complicación del embarazo, una condición médica
+                  o una restricción obstétrica, consulta al equipo sanitario
+                  antes de iniciar o aumentar el ejercicio.
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-600">
+              Seguridad
+            </p>
+
+            <h3 className="mt-2 text-2xl font-black text-slate-950">
+              Semáforo de seguridad
+            </h3>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                <p className="font-black text-emerald-800">Puedes continuar</p>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-emerald-900">
+                  <li>Esfuerzo cómodo o moderado.</li>
+                  <li>Respiración controlada.</li>
+                  <li>Puedes conversar con relativa comodidad.</li>
+                  <li>No aparecen síntomas preocupantes.</li>
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                <p className="font-black text-amber-800">Reduce o pausa</p>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-amber-900">
+                  <li>Fatiga excesiva.</li>
+                  <li>Necesidad de recuperar la respiración.</li>
+                  <li>Incomodidad persistente.</li>
+                  <li>Sensación de inestabilidad.</li>
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5">
+                <p className="font-black text-rose-800">Detén la actividad</p>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-rose-900">
+                  <li>Sangrado vaginal.</li>
+                  <li>Pérdida de líquido.</li>
+                  <li>Contracciones dolorosas o regulares.</li>
+                  <li>Dolor en el pecho, mareo intenso o desmayo.</li>
+                  <li>Dificultad respiratoria importante.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="mb-6">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-600">
+                Ejercicios prácticos
+              </p>
+
+              <h3 className="mt-2 text-2xl font-black text-slate-950">
+                Movimiento progresivo y adaptable
+              </h3>
+
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+                Selecciona una propuesta y consulta sus instrucciones,
+                beneficios, adaptaciones y recomendaciones de seguridad.
+              </p>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-2">
+              {prenatalExercises.map((exercise) => (
+                <MovementExerciseCard
+                  key={exercise.id}
+                  exercise={exercise}
+                  accent="violet"
+                  isOpen={openExerciseId === exercise.id}
+                  onToggle={() =>
+                    setOpenExerciseId(
+                      openExerciseId === exercise.id ? null : exercise.id,
+                    )
+                  }
+                />
+              ))}
+            </div>
+          </section>
+        </>
+      )}
  <section
         id="movilidad-reducida"
         className="rounded-3xl border border-blue-200 bg-blue-50 p-6 sm:p-8"
