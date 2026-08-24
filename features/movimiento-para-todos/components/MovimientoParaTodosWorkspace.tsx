@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 "use client";
 
@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { movementCategories } from "../data/categories";
 import { chronicDiseasesExercises } from "../data/chronicDiseases";
 import { prenatalExercises } from "../data/prenatal";
+import { reducedMobilityExercises } from "../data/reducedMobility";
 import MovementExerciseCard from "./MovementExerciseCard";
 import {
   olderAdultsExercises,
@@ -937,6 +938,73 @@ export default function MovimientoParaTodosWorkspace() {
                   key={exercise.id}
                   exercise={exercise}
                   accent="violet"
+                  isOpen={openExerciseId === exercise.id}
+                  onToggle={() =>
+                    setOpenExerciseId(
+                      openExerciseId === exercise.id ? null : exercise.id,
+                    )
+                  }
+                />
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+      {selected?.id === "reduced-mobility" && (
+        <>
+          <section className="rounded-3xl border border-blue-200 bg-blue-50 p-6 shadow-sm sm:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">
+              Movilidad adaptada
+            </p>
+
+            <h3 className="mt-2 text-2xl font-black text-blue-950">
+              Movimiento seguro con movilidad reducida
+            </h3>
+
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-blue-900">
+              Estas propuestas están pensadas para favorecer el movimiento
+              disponible y la participación activa de personas con movilidad
+              reducida. Cada actividad debe adaptarse a las capacidades,
+              comodidad y recomendaciones del equipo sanitario cuando
+              corresponda.
+            </p>
+
+            <div className="mt-5 rounded-2xl border border-blue-200 bg-white p-5">
+              <p className="font-black text-slate-950">
+                Importante
+              </p>
+
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                Las propuestas son orientaciones educativas generales. No
+                sustituyen una valoración profesional ni deben utilizarse para
+                realizar transferencias, movilizaciones pasivas o maniobras
+                clínicas sin la capacitación correspondiente.
+              </p>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="mb-6">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-600">
+                Ejercicios adaptados
+              </p>
+
+              <h3 className="mt-2 text-2xl font-black text-slate-950">
+                8 propuestas de movilidad
+              </h3>
+
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+                Selecciona una propuesta para consultar instrucciones,
+                beneficios, adaptaciones y recomendaciones de seguridad.
+              </p>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-2">
+              {reducedMobilityExercises.map((exercise) => (
+                <MovementExerciseCard
+                  key={exercise.id}
+                  exercise={exercise}
+                  accent="blue"
                   isOpen={openExerciseId === exercise.id}
                   onToggle={() =>
                     setOpenExerciseId(
