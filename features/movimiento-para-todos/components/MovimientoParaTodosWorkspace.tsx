@@ -10,6 +10,7 @@ import { movementCategories } from "../data/categories";
 import { chronicDiseasesExercises } from "../data/chronicDiseases";
 import { prenatalExercises } from "../data/prenatal";
 import { reducedMobilityExercises } from "../data/reducedMobility";
+import { caregiverGuidance } from "../data/caregiverGuidance";
 import MovementExerciseCard from "./MovementExerciseCard";
 import {
   olderAdultsExercises,
@@ -1049,6 +1050,138 @@ export default function MovimientoParaTodosWorkspace() {
         </div>
       </section>
 
+      <section className="mt-6 rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
+        <div className="mb-6">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-600">
+            Orientaciones para cuidadores
+          </p>
+
+          <h3 className="mt-2 text-2xl font-black text-slate-950">
+            Movilización segura y acompañamiento
+          </h3>
+
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+            Consulta estas orientaciones antes de acompañar movimientos,
+            cambios de posición o transferencias. Prioriza siempre la
+            seguridad, la comunicación y la participación de la persona.
+          </p>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          {caregiverGuidance.map((item) => (
+            <article
+              key={item.id}
+              className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5"
+            >
+              <p className="text-xs font-black uppercase tracking-[0.12em] text-blue-600">
+                Orientación
+              </p>
+
+              <h4 className="mt-2 text-lg font-black text-blue-950">
+                {item.title}
+              </h4>
+
+              <p className="mt-2 text-sm leading-6 text-slate-700">
+                {item.objective}
+              </p>
+
+              <details className="mt-4 rounded-xl border border-blue-100 bg-white p-4">
+                <summary className="cursor-pointer text-sm font-black text-slate-900">
+                  Ver orientación
+                </summary>
+
+                <div className="mt-4 space-y-4 text-sm leading-6">
+                  <div>
+                    <p className="font-black text-slate-900">
+                      Preparación
+                    </p>
+
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
+                      {item.preparation.map((step) => (
+                        <li key={step}>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-black text-slate-900">
+                      Orientación
+                    </p>
+
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
+                      {item.steps.map((step) => (
+                        <li key={step}>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {item.personPosition && (
+                    <div>
+                      <p className="font-black text-slate-900">
+                        Posición de la persona
+                      </p>
+
+                      <p className="mt-1 text-slate-600">
+                        {item.personPosition}
+                      </p>
+                    </div>
+                  )}
+
+                  {item.caregiverPosition && (
+                    <div>
+                      <p className="font-black text-slate-900">
+                        Posición del cuidador
+                      </p>
+
+                      <p className="mt-1 text-slate-600">
+                        {item.caregiverPosition}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="font-black text-emerald-800">
+                      Seguridad
+                    </p>
+
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
+                      {item.safety.map((step) => (
+                        <li key={step}>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-black text-rose-800">
+                      No intentar si...
+                    </p>
+
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
+                      {item.doNotAttemptIf.map((step) => (
+                        <li key={step}>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {item.assistiveDevices && (
+                    <div>
+                      <p className="font-black text-slate-900">
+                        Ayudas técnicas
+                      </p>
+
+                      <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
+                        {item.assistiveDevices.map((device) => (
+                          <li key={device}>{device}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </details>
+            </article>
+          ))}
+        </div>
+      </section>
       <section
         id="biblioteca"
         className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
