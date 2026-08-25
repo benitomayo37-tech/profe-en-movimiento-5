@@ -1263,19 +1263,111 @@ export default function MovimientoParaTodosWorkspace() {
         id="comunidad"
         className="rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8"
       >
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-300">
-          Comunidad
-        </p>
+        <div className="mb-6">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-300">
+            Comunidad
+          </p>
 
-        <h2 className="mt-2 text-2xl font-black">
-          Construyamos esta sección juntos
-        </h2>
+          <h2 className="mt-2 text-2xl font-black">
+            Construyamos Movimiento Para Todos juntos
+          </h2>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
-          Podremos incorporar preguntas, experiencias, sugerencias y propuestas
-          de nuevos temas para que Movimiento para Todos crezca con las
-          necesidades reales de nuestra comunidad.
-        </p>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+            Este espacio está pensado para escuchar a nuestra comunidad,
+            recoger experiencias y descubrir nuevas necesidades relacionadas
+            con el movimiento, la actividad física adaptada y el acompañamiento.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="text-3xl" aria-hidden="true">
+              💡
+            </span>
+
+            <h3 className="mt-4 text-lg font-black">
+              Sugerir un tema
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Propón un tema que te gustaría encontrar en Movimiento Para
+              Todos.
+            </p>
+
+            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
+              Próximamente
+            </span>
+          </article>
+
+          <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="text-3xl" aria-hidden="true">
+              📝
+            </span>
+
+            <h3 className="mt-4 text-lg font-black">
+              Compartir una experiencia
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Comparte experiencias, prácticas o ideas que puedan ayudar a
+              otras personas.
+            </p>
+
+            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
+              Próximamente
+            </span>
+          </article>
+
+          <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="text-3xl" aria-hidden="true">
+              ❓
+            </span>
+
+            <h3 className="mt-4 text-lg font-black">
+              Enviar una pregunta
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Ayúdanos a identificar las preguntas que más necesita responder
+              nuestra comunidad.
+            </p>
+
+            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
+              Próximamente
+            </span>
+          </article>
+
+          <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <span className="text-3xl" aria-hidden="true">
+              ❤️
+            </span>
+
+            <h3 className="mt-4 text-lg font-black">
+              Proponer una mejora
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Cuéntanos qué podríamos mejorar para hacer esta sección más útil
+              y accesible.
+            </p>
+
+            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
+              Próximamente
+            </span>
+          </article>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-orange-300/20 bg-orange-400/10 p-5">
+          <p className="font-black text-orange-200">
+            Una comunidad que participa, crece
+          </p>
+
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            Queremos que Movimiento Para Todos evolucione a partir de las
+            necesidades reales de las personas, familias, cuidadores y
+            profesionales que utilizan estos recursos.
+          </p>
+        </div>
 
         <p className="mt-5 text-sm font-semibold text-slate-400">
           {movementDisclaimer}
