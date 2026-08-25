@@ -133,12 +133,26 @@ export default function MovementExerciseCard({
       </button>
 
       {isOpen ? (
-        <div
-          id={`exercise-${exercise.id}`}
-          className="border-t border-slate-200 bg-slate-50 p-5 sm:p-6"
-        >
-          <div className="grid gap-4">
-            <section className="rounded-2xl border border-slate-200 bg-white p-5">
+  <div
+    id={`exercise-${exercise.id}`}
+    className="border-t border-slate-200 bg-slate-50 p-5 sm:p-6"
+  >
+    <div className="grid gap-4">
+      {exercise.materials?.length ? (
+        <section className="rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-black uppercase tracking-wide text-slate-500">
+            Materiales
+          </p>
+
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
+            {exercise.materials.map((material) => (
+              <li key={material}>{material}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
               <p className="text-xs font-black uppercase tracking-wide text-slate-500">
                 Cómo realizarlo
               </p>
