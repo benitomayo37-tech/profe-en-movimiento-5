@@ -168,6 +168,112 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
 
+      <section
+        id="movimiento-para-todos-home"
+        className="bg-slate-50 px-4 py-20 sm:px-6"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-black uppercase tracking-[.22em] text-blue-700">
+              Movimiento para Todos
+            </p>
+
+            <h2 className="mt-4 text-4xl font-black leading-tight tracking-tight sm:text-5xl">
+              El movimiento también debe ser para todos
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-slate-600">
+              Una sección pensada para acompañar diferentes necesidades y
+              etapas de la vida con actividad física adaptada, orientaciones
+              de seguridad y recursos educativos.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <article className="relative overflow-hidden rounded-[2rem] border border-blue-200 bg-white p-7 shadow-lg transition hover:-translate-y-1 hover:shadow-xl sm:p-9">
+              <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-100 blur-2xl" />
+
+              <div className="relative">
+                <span className="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-blue-700">
+                  🌎 Movimiento para Todos
+                </span>
+
+                <h3 className="mt-5 text-2xl font-black text-slate-950 sm:text-3xl">
+                  Movimiento adaptado a diferentes necesidades
+                </h3>
+
+                <p className="mt-4 leading-7 text-slate-600">
+                  Encuentra propuestas para adultos mayores, personas con
+                  enfermedades crónicas, embarazo, movilidad reducida y
+                  cuidadores.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-3 py-2">
+                    Adultos mayores
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-2">
+                    Enfermedades crónicas
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-2">
+                    Embarazo
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-2">
+                    Movilidad reducida
+                  </span>
+                </div>
+
+                <Link
+                  href={memberHref("/movimiento-para-todos")}
+                  className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-blue-700 px-6 py-3 font-black text-white shadow-lg shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-800"
+                >
+                  Explorar Movimiento para Todos
+                  <ArrowIcon />
+                </Link>
+              </div>
+            </article>
+
+            <article className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-7 shadow-lg sm:p-9">
+              <div className="absolute -bottom-20 -right-16 h-48 w-48 rounded-full bg-orange-200/50 blur-3xl" />
+
+              <div className="relative">
+                <span className="inline-flex rounded-full bg-orange-100 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-orange-700">
+                  🧑‍🦽 Acompañamiento
+                </span>
+
+                <h3 className="mt-5 text-2xl font-black text-slate-950 sm:text-3xl">
+                  También pensamos en quienes ayudan
+                </h3>
+
+                <p className="mt-4 leading-7 text-slate-600">
+                  Orientaciones educativas sobre movilización segura,
+                  acompañamiento, cuidados básicos y uso responsable de ayudas
+                  técnicas.
+                </p>
+
+                <div className="mt-6 rounded-2xl border border-orange-100 bg-white/80 p-4">
+                  <p className="font-black text-slate-950">
+                    Seguridad antes que esfuerzo
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Recursos generales para favorecer un acompañamiento
+                    informado y responsable.
+                  </p>
+                </div>
+
+                <Link
+                  href={memberHref("/movimiento-para-todos?categoria=reduced-mobility")}
+                  className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl border-2 border-orange-500 px-6 py-3 font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-50"
+                >
+                  Ver recursos de acompañamiento
+                  <ArrowIcon />
+                </Link>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
       <section id="producto" className="px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 lg:grid-cols-3">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:1024px) 100vw, 33vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 font-black text-blue-700">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
 
       <section className="bg-[#071532] px-4 py-20 text-white sm:px-6">
