@@ -11,6 +11,7 @@ import { chronicDiseasesExercises } from "../data/chronicDiseases";
 import { prenatalExercises } from "../data/prenatal";
 import { reducedMobilityExercises } from "../data/reducedMobility";
 import { caregiverGuidance } from "../data/caregiverGuidance";
+import { movementLibraryResources } from "../data/library";
 import MovementExerciseCard from "./MovementExerciseCard";
 import {
   olderAdultsExercises,
@@ -1184,22 +1185,80 @@ export default function MovimientoParaTodosWorkspace() {
       </section>
       <section
         id="biblioteca"
-        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+        className="rounded-3xl border border-orange-100 bg-orange-50/40 p-6 shadow-sm sm:p-8"
       >
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-600">
-          Próximamente
-        </p>
+        <div className="mb-6">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-600">
+            Recursos educativos
+          </p>
 
-        <h2 className="mt-2 text-2xl font-black text-slate-950">
-          Biblioteca Movimiento para Todos
-        </h2>
+          <h2 className="mt-2 text-2xl font-black text-slate-950">
+            Biblioteca Movimiento Para Todos
+          </h2>
 
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
-          Aquí podremos incorporar fichas imprimibles, infografías, videos,
-          guías, checklists y otros recursos educativos.
-        </p>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+            Un espacio para reunir materiales educativos, fichas, guías y
+            recursos prácticos relacionados con el movimiento, la autonomía,
+            la actividad física adaptada y el acompañamiento seguro.
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {movementLibraryResources.map((resource) => (
+            <article
+              key={resource.id}
+              className="flex h-full flex-col rounded-2xl border border-orange-100 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-3xl" aria-hidden="true">
+                  {resource.icon}
+                </span>
+
+                <span className="rounded-full bg-orange-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-orange-700">
+                  {resource.status === "available"
+                    ? "Disponible"
+                    : "Próximamente"}
+                </span>
+              </div>
+
+              <h3 className="mt-4 text-lg font-black text-slate-950">
+                {resource.title}
+              </h3>
+
+              <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">
+                {resource.description}
+              </p>
+
+              <div className="mt-5">
+                {resource.status === "available" && resource.href ? (
+                  <a
+                    href={resource.href}
+                    className="inline-flex rounded-xl bg-orange-600 px-4 py-2 text-sm font-black text-white transition hover:bg-orange-700"
+                  >
+                    Abrir recurso
+                  </a>
+                ) : (
+                  <span className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-500">
+                    Recurso en preparación
+                  </span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-orange-100 bg-white p-5">
+          <p className="font-black text-slate-950">
+            Biblioteca en crecimiento
+          </p>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Incorporaremos nuevos materiales progresivamente para que este
+            espacio se convierta en un punto de referencia práctico para
+            personas, familias, cuidadores y profesionales.
+          </p>
+        </div>
       </section>
-
       <section
         id="comunidad"
         className="rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-8"
