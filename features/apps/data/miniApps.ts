@@ -204,6 +204,17 @@ export const miniApps: MiniAppDefinition[] = [
     status: "available",
   },
   {
+    id: "alimentacion-en-movimiento",
+    title: "Alimentación en Movimiento",
+    description: "Guía 30 experiencias sobre alimentación, hidratación, etiquetas y bienestar con niveles, DUA, seguridad y fichas docentes.",
+    category: "sports",
+    categoryLabel: "Deporte y salud",
+    icon: "🥗",
+    accent: "from-emerald-800 to-lime-500",
+    plan: "Pro",
+    status: "available",
+  },
+  {
     id: "sorteador-equipos",
     title: "Sorteador de equipos",
     description: "Forma equipos equilibrados en segundos a partir de una lista de participantes.",

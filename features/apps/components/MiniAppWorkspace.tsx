@@ -1,5 +1,6 @@
 import EmbeddedMiniApp from "@/features/apps/components/EmbeddedMiniApp";
 import ChessTeacherApp from "@/features/apps/components/ChessTeacherApp";
+import HealthyEatingTeacherApp from "@/features/apps/components/HealthyEatingTeacherApp";
 import HiitTimerApp from "@/features/apps/components/HiitTimerApp";
 import MiniAppShell from "@/features/apps/components/MiniAppShell";
 import SportsScoreboardApp from "@/features/apps/components/SportsScoreboardApp";
@@ -75,6 +76,11 @@ const guidanceByApp: Record<string, string[]> = {
     "Utiliza el modo demostración para explicar movimientos, jaque y decisiones sin exponer datos estudiantiles.",
     "Crea retos con una consigna observable y comprueba personalmente que la posición tenga una solución legal.",
     "Combina explicación breve, práctica guiada y reflexión; el código del reto no contiene nombres ni datos personales.",
+  ],
+  "alimentacion-en-movimiento": [
+    "Selecciona el nivel y adapta los ejemplos a la cultura, disponibilidad y realidad del grupo sin pedir datos personales.",
+    "Revisa alergias, autorizaciones, higiene y conservación antes de cualquier experiencia con alimentos; ofrece siempre una alternativa sin degustación.",
+    "Evalúa comprensión y decisiones justificadas, nunca peso, apariencia corporal, diagnóstico ni alimentos disponibles en el hogar.",
   ],
   "sorteador-equipos": [
     "Utiliza nombres, iniciales o números según las normas de privacidad de tu institución.",
@@ -175,6 +181,7 @@ export default function MiniAppWorkspace({ app }: MiniAppWorkspaceProps) {
   if (app.id === "marcador-cronometro-deportivo") tool = <SportsScoreboardApp />;
   if (app.id === "cronometro-circuitos-hiit") tool = <HiitTimerApp />;
   if (app.id === "ajedrez-educativo") tool = <ChessTeacherApp />;
+  if (app.id === "alimentacion-en-movimiento") tool = <HealthyEatingTeacherApp />;
   if (app.embeddedAsset) tool = <EmbeddedMiniApp app={app} />;
 
   return (
