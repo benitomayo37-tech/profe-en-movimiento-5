@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Container from "../ui/Container";
 import SearchBar from "../ui/SearchBar";
+import { ThemeSwitcher } from "../theme/ThemeSwitcher";
 
 const navigation = [
   { name: "Inicio", href: "/" },
@@ -75,6 +76,7 @@ export default function Navbar() {
 
           {/* ACCIONES DE ESCRITORIO */}
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <ThemeSwitcher />
             <button
               type="button"
               onClick={() => setIsSearchOpen((currentState) => !currentState)}
@@ -218,6 +220,7 @@ export default function Navbar() {
             </nav>
 
             <div className="mt-5 grid gap-3 border-t border-slate-200 pt-5 sm:grid-cols-2">
+              <div className="sm:col-span-2"><ThemeSwitcher mobile /></div>
               <Link
                 href="/login"
                 onClick={closeMenu}

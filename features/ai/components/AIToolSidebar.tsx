@@ -29,9 +29,10 @@ export default function AIToolSidebar({
               <button
                 key={tool.id}
                 type="button"
+                data-selected={isSelected}
                 onClick={() => onSelectTool(tool.id as AIToolId)}
                 aria-pressed={isSelected}
-                className={`w-full rounded-2xl border p-4 text-left transition ${
+                className={`theme-selectable-card w-full rounded-2xl border p-4 text-left transition ${
                   isSelected
                     ? "border-sky-300 bg-sky-50 shadow-sm"
                     : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"

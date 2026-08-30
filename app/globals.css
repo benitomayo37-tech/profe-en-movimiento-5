@@ -133,6 +133,22 @@ img {
     text-decoration: none;
   }
 }
+
+html[data-theme="dark"] {
+  --background: #07111f;
+  --foreground: #e5edf8;
+  --surface: #0f1d2e;
+  --surface-muted: #17263a;
+  --border: #2b3b50;
+}
+
+html[data-theme="sepia"] {
+  --background: #f4ecd9;
+  --foreground: #3f3325;
+  --surface: #fffaf0;
+  --surface-muted: #eee2ca;
+  --border: #d8c6a8;
+}
 @page {
   size: A4 portrait;
   margin: 10mm 10mm 14mm 10mm;
@@ -140,7 +156,7 @@ img {
 
 @media print {
   html,
-  body {
+body {
     background: #ffffff !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -519,4 +535,122 @@ img {
     break-after: auto;
     page-break-after: auto;
   }
+}
+
+body,
+body * {
+  transition-property: background-color, border-color, color;
+  transition-duration: 160ms;
+  transition-timing-function: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body * {
+    transition-duration: 0ms;
+  }
+}
+
+/* El tema global modifica superficies neutras y conserva los colores de marca. */
+html[data-theme="dark"] :is(.bg-white, .bg-white\/95, .bg-white\/90, .bg-slate-50):not(.healthy-app):not(.healthy-app *) {
+  background-color: #0f1d2e !important;
+}
+
+html[data-theme="dark"] :is(.bg-slate-100, .bg-slate-200):not(.healthy-app):not(.healthy-app *) {
+  background-color: #17263a !important;
+}
+
+html[data-theme="dark"] :is(.text-slate-950, .text-slate-900, .text-slate-800, .text-slate-700):not(.healthy-app):not(.healthy-app *) {
+  color: #e5edf8 !important;
+}
+
+html[data-theme="dark"] :is(.text-slate-600, .text-slate-500, .text-slate-400):not(.healthy-app):not(.healthy-app *) {
+  color: #aebed2 !important;
+}
+
+html[data-theme="dark"] :is(.border-slate-100, .border-slate-200, .border-slate-300):not(.healthy-app):not(.healthy-app *) {
+  border-color: #2b3b50 !important;
+}
+
+html[data-theme="dark"] :is(input, select, textarea):not(.healthy-app *) {
+  background-color: #0b1727;
+  border-color: #3a4c63;
+  color: #edf4ff;
+}
+
+html[data-theme="dark"] :is(input, textarea):not(.healthy-app *)::placeholder {
+  color: #8192a8;
+}
+
+html[data-theme="sepia"] :is(.bg-white, .bg-white\/95, .bg-white\/90, .bg-slate-50):not(.healthy-app):not(.healthy-app *) {
+  background-color: #fffaf0 !important;
+}
+
+html[data-theme="sepia"] :is(.bg-slate-100, .bg-slate-200):not(.healthy-app):not(.healthy-app *) {
+  background-color: #eee2ca !important;
+}
+
+html[data-theme="sepia"] :is(.text-slate-950, .text-slate-900, .text-slate-800, .text-slate-700):not(.healthy-app):not(.healthy-app *) {
+  color: #3f3325 !important;
+}
+
+html[data-theme="sepia"] :is(.text-slate-600, .text-slate-500, .text-slate-400):not(.healthy-app):not(.healthy-app *) {
+  color: #74644f !important;
+}
+
+html[data-theme="sepia"] :is(.border-slate-100, .border-slate-200, .border-slate-300):not(.healthy-app):not(.healthy-app *) {
+  border-color: #d8c6a8 !important;
+}
+
+html[data-theme="sepia"] :is(input, select, textarea):not(.healthy-app *) {
+  background-color: #fffdf7;
+  border-color: #cdb895;
+  color: #3f3325;
+}
+
+/* La identidad oficial conserva siempre su fondo blanco y colores originales. */
+.theme-brand-logo,
+html[data-theme] .theme-brand-logo {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .theme-sidebar-link:hover:not([aria-current="page"]) {
+  background-color: #1b2b40 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .theme-sidebar-link[aria-current="page"] {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="sepia"] .theme-sidebar-link:hover:not([aria-current="page"]) {
+  background-color: #eee2ca !important;
+  color: #3f3325 !important;
+}
+
+html[data-theme="sepia"] .theme-sidebar-link[aria-current="page"] {
+  background-color: #e2e8f0 !important;
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="dark"] .theme-selectable-card[data-selected="true"] {
+  background-color: #173a4e !important;
+  border-color: #22d3ee !important;
+}
+
+html[data-theme="dark"] .theme-selectable-card[data-selected="false"]:hover {
+  background-color: #17263a !important;
+  border-color: #3b82f6 !important;
+}
+
+html[data-theme="sepia"] .theme-selectable-card[data-selected="true"] {
+  background-color: #e3f2ef !important;
+  border-color: #0891b2 !important;
+}
+
+html[data-theme="sepia"] .theme-selectable-card[data-selected="false"]:hover {
+  background-color: #eee2ca !important;
+  border-color: #93a7c0 !important;
 }

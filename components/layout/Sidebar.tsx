@@ -44,14 +44,16 @@ export function Sidebar() {
         aria-label="Ir al Dashboard de Profe en Movimiento"
         className="flex flex-col items-center border-b border-slate-200 pb-6 text-center"
       >
-        <Image
-          src="/logos/logo-profe-en-movimiento.png"
-          alt="Logo de Profe en Movimiento"
-          width={180}
-          height={180}
-          priority
-          className="h-auto w-full max-w-[180px] object-contain"
-        />
+        <span className="theme-brand-logo flex w-full max-w-[200px] items-center justify-center rounded-2xl border border-slate-200 p-3 shadow-sm">
+          <Image
+            src="/logos/logo-profe-en-movimiento.png"
+            alt="Logo de Profe en Movimiento"
+            width={180}
+            height={180}
+            priority
+            className="h-auto w-full max-w-[174px] object-contain"
+          />
+        </span>
 
         <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
           Plataforma educativa inteligente
@@ -68,17 +70,17 @@ export function Sidebar() {
       >
         {navigationGroups.map((group) => (
           <div key={group.title}>
-            <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">{group.title}</p>
+            <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">{group.title}</p>
             <div className="mt-2 flex flex-col gap-1">
               {group.items.map((item) => {
                 const isActive = item.href === "/dashboard" ? pathname === "/dashboard" : pathname === item.href || pathname.startsWith(`${item.href}/`);
-                return <Link key={item.label} href={item.href} aria-current={isActive ? "page" : undefined} className={`rounded-xl px-4 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isActive ? "bg-blue-50 font-semibold text-blue-700" : "font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`}>{item.label}</Link>;
+                return <Link key={item.label} href={item.href} aria-current={isActive ? "page" : undefined} className={`theme-sidebar-link rounded-xl px-4 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isActive ? "bg-blue-50 font-semibold text-blue-700" : "font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`}>{item.label}</Link>;
               })}
             </div>
           </div>
         ))}
         <div>
-          <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Próximamente</p>
+          <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">Próximamente</p>
           <div className="mt-2 flex flex-wrap gap-2 px-4">{upcoming.map((label) => <span key={label} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-400">{label}</span>)}</div>
         </div>
       </nav>

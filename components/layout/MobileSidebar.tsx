@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 
 interface MobileSidebarProps {
   children: ReactNode;
@@ -18,6 +19,7 @@ export function MobileSidebar({ children }: MobileSidebarProps) {
     }
 
     const previousOverflow = document.body.style.overflow;
+    const trigger = triggerRef.current;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
@@ -31,7 +33,7 @@ export function MobileSidebar({ children }: MobileSidebarProps) {
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [open]);
 
@@ -85,6 +87,10 @@ export function MobileSidebar({ children }: MobileSidebarProps) {
             >
               <span aria-hidden="true">×</span>
             </button>
+
+            <div className="border-b border-slate-200 p-4 pr-16">
+              <ThemeSwitcher mobile />
+            </div>
 
             {children}
           </aside>

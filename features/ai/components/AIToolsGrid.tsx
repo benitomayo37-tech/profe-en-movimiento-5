@@ -42,6 +42,7 @@ export default function AIToolsGrid({
             <button
               key={tool.id}
               type="button"
+              data-selected={isSelected}
               onClick={() => {
                 if (isLocked) {
                   onProRequired(tool.title);
@@ -50,7 +51,7 @@ export default function AIToolsGrid({
                 onSelectTool(tool.id);
               }}
               className={[
-                "flex w-full items-start gap-4 rounded-2xl border p-4 text-left transition-all",
+                "theme-selectable-card flex w-full items-start gap-4 rounded-2xl border p-4 text-left transition-all",
                 "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100",
                 isSelected
                   ? "border-cyan-400 bg-cyan-50/60 shadow-sm"

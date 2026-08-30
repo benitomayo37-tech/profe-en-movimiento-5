@@ -1,3 +1,5 @@
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+
 interface AccountBadgeProps {
   authenticated: boolean;
   email?: string | null;
@@ -29,12 +31,15 @@ export function AccountBadge({
     : "Visitante";
 
   return (
-    <div
-      aria-label={label}
-      title={label}
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold text-white ${className}`}
-    >
-      {authenticated ? getInitials(fullName, email) : "PM"}
+    <div className="flex shrink-0 items-center gap-2">
+      <div className="hidden sm:block"><ThemeSwitcher /></div>
+      <div
+        aria-label={label}
+        title={label}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold text-white ${className}`}
+      >
+        {authenticated ? getInitials(fullName, email) : "PM"}
+      </div>
     </div>
   );
 }
