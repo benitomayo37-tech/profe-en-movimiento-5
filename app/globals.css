@@ -896,3 +896,24 @@ html[data-theme="sepia"] .landing-adaptive-inset,
 html[data-theme="sepia"] .landing-tinted-card {
   border-color: #d8c6a8 !important;
 }
+
+/* Las insignias del Dashboard conservan contraste en todos los temas. */
+html[data-theme] .dashboard-header-plan-badge {
+  background-color: #ede9fe !important;
+  color: #5b21b6 !important;
+}
+
+html[data-theme] .dashboard-header-admin-badge {
+  background-color: #fef3c7 !important;
+  color: #78350f !important;
+}
+
+html[data-theme] .dashboard-hero-plan-badge {
+  background-color: #fb923c !important;
+  color: #0f172a !important;
+}
+
+html[data-theme] .dashboard-hero-admin-badge {
+  background-color: #fde68a !important;
+  color: #451a03 !important;
+}

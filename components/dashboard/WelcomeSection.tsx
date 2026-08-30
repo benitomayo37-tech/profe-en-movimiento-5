@@ -15,8 +15,8 @@ export default function WelcomeSection({
       <div className="max-w-4xl">
         <div className="flex flex-wrap gap-2">
           <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-blue-100">Centro de operaciones</span>
-          <span className="inline-flex rounded-full bg-orange-400 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-slate-950">Plan {access.hasProAccess ? "Pro" : "Free"}</span>
-          {access.role === "admin" ? <span className="inline-flex rounded-full bg-amber-200 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-amber-950">Administrador</span> : null}
+          <span className="dashboard-hero-plan-badge inline-flex rounded-full bg-orange-400 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-slate-950">Plan {access.hasProAccess ? "Pro" : "Free"}</span>
+          {access.role === "admin" ? <span className="dashboard-hero-admin-badge inline-flex rounded-full bg-amber-200 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-amber-950">Administrador</span> : null}
         </div>
 
         <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
