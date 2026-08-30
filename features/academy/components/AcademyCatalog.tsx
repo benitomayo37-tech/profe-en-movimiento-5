@@ -1,0 +1,15 @@
+import Link from "next/link";
+
+import { academyCourse } from "@/features/academy/data/courses";
+import type { AcademyProgress } from "@/features/academy/types";
+
+export function AcademyCatalog({ progress, firstName }: { progress: AcademyProgress; firstName: string }) {
+  const percent = Math.round((progress.completedLessons.length / academyCourse.lessonCount) * 100);
+  return <div className="space-y-8">
+    <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0b2050] via-blue-800 to-violet-700 p-8 text-white shadow-2xl sm:p-10"><div className="absolute -right-20 -top-24 h-72 w-72 rounded-full bg-orange-400/20" aria-hidden /><div className="relative max-w-3xl"><p className="text-xs font-black uppercase tracking-[.2em] text-orange-300">Academia Profe en Movimiento</p><h2 className="mt-4 text-4xl font-black sm:text-5xl">Continúa aprendiendo, {firstName}</h2><p className="mt-5 text-lg leading-8 text-blue-100">Cursos breves y aplicables para fortalecer tus decisiones docentes y llevar nuevas ideas a la clase.</p></div></section>
+
+    <div><p className="text-xs font-black uppercase tracking-[.18em] text-blue-700">Curso piloto</p><h2 className="mt-2 text-3xl font-black text-slate-950">Formación disponible</h2></div>
+
+    <article className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl"><div className="grid lg:grid-cols-[.72fr_1.28fr]"><div className="flex min-h-72 flex-col justify-between bg-gradient-to-br from-orange-500 via-orange-600 to-red-700 p-8 text-white"><div><span className="rounded-full border border-white/25 bg-white/15 px-3 py-1.5 text-xs font-black">{academyCourse.access} · CERTIFICADO</span><p className="mt-10 text-6xl" aria-hidden>🎓</p></div><p className="text-sm font-bold">{academyCourse.duration} · {academyCourse.lessonCount} lecciones</p></div><div className="p-7 sm:p-9"><p className="text-xs font-black uppercase tracking-[.17em] text-violet-700">{academyCourse.level}</p><h3 className="mt-3 text-3xl font-black text-slate-950">{academyCourse.title}</h3><p className="mt-4 max-w-3xl leading-7 text-slate-600">{academyCourse.description}</p><div className="mt-7"><div className="flex justify-between text-sm font-black"><span>Tu progreso</span><span>{percent}%</span></div><div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-blue-700 to-violet-600" style={{ width: `${percent}%` }} /></div></div><div className="mt-7 flex flex-wrap gap-3"><Link href={`/academia/${academyCourse.slug}`} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-700 px-6 py-3 font-black text-white hover:bg-blue-800">{percent ? "Continuar curso" : "Comenzar curso"} →</Link>{progress.certificateEarnedAt ? <Link href={`/academia/${academyCourse.slug}/certificado`} className="inline-flex min-h-12 items-center justify-center rounded-xl border border-violet-300 bg-violet-50 px-6 py-3 font-black text-violet-800">Ver certificado</Link> : null}</div></div></div></article>
+  </div>;
+}

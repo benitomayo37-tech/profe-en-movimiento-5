@@ -26,13 +26,14 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
     { label: "Movimiento para Todos", href: "/movimiento-para-todos" },
   ] },
   { title: "Recursos y cuenta", items: [
+    { label: "Academia", href: "/academia" },
     { label: "Biblioteca", href: "/resources" },
     { label: "Tienda", href: "/store" },
     { label: "Mi cuenta", href: "/cuenta" },
   ] },
 ];
 
-const upcoming = ["Academia", "Comunidad"];
+const upcoming = ["Comunidad"];
 
 export function Sidebar() {
   const pathname = usePathname();

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Sello institucional de Academia Profe en Movimiento</title>
+  <desc id="description">Sello circular azul marino y naranja para certificados de finalización.</desc>
+  <circle cx="256" cy="256" r="238" fill="#ffffff" stroke="#0b2050" stroke-width="14"/>
+  <circle cx="256" cy="256" r="216" fill="none" stroke="#fc7000" stroke-width="5"/>
+  <circle cx="256" cy="256" r="158" fill="#f8fafc"/>
+  <text x="256" y="78" text-anchor="middle" fill="#fc7000" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" letter-spacing="5">ACADEMIA</text>
+  <text x="256" y="108" text-anchor="middle" fill="#0b2050" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="900" letter-spacing="1.5">PROFE EN MOVIMIENTO</text>
+  <circle cx="256" cy="171" r="25" fill="#0b2050"/>
+  <path d="M195 249 C211 194 229 176 256 176 C283 176 301 194 317 249" fill="none" stroke="#0b2050" stroke-width="18" stroke-linecap="round"/>
+  <path d="M199 225 C222 207 237 203 256 203 C275 203 290 207 313 225" fill="none" stroke="#fc7000" stroke-width="8" stroke-linecap="round"/>
+  <text x="256" y="302" text-anchor="middle" fill="#0b2050" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" letter-spacing="7">PEM</text>
+  <rect x="151" y="322" width="210" height="38" rx="19" fill="#0b2050"/>
+  <text x="256" y="347" text-anchor="middle" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="800" letter-spacing="1.5">SELLO INSTITUCIONAL</text>
+  <text x="256" y="397" text-anchor="middle" fill="#0b2050" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" letter-spacing="1">CERTIFICADO DE FINALIZACIÓN</text>
+  <text x="256" y="429" text-anchor="middle" fill="#64748b" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" letter-spacing=".8">EDUCACIÓN FÍSICA · DEPORTE · SALUD</text>
+  <circle cx="72" cy="256" r="8" fill="#fc7000"/>
+  <circle cx="440" cy="256" r="8" fill="#fc7000"/>
+</svg>

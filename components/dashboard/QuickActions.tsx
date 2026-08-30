@@ -42,6 +42,14 @@ const actions = [
     access: "Cuenta docente",
   },
   {
+    title: "Academia",
+    description:
+      "Avanza en cursos breves, evaluaciones y certificados de formación docente.",
+    href: "/academia",
+    icon: "🎓",
+    access: "Curso Free",
+  },
+  {
     title: "Tienda",
     description:
       "Descubre productos digitales y herramientas para docentes.",
