@@ -18,6 +18,32 @@ const starterPrompts = [
   "Adapta una actividad mediante DUA y apoyos NEE sin cambiar el objetivo.",
 ];
 
+function duaLineClass(line: string): string {
+  const normalized = line.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+  if (normalized.includes("compromiso") || normalized.includes("motivacion") || line.includes("🟢")) {
+    return "border-emerald-200 bg-emerald-50 text-emerald-900";
+  }
+
+  if (normalized.includes("representacion") || line.includes("🔵")) {
+    return "border-blue-200 bg-blue-50 text-blue-900";
+  }
+
+  if (normalized.includes("accion y expresion") || line.includes("🟣")) {
+    return "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900";
+  }
+
+  return "";
+}
+
+function AgentMessageContent({ content }: { content: string }) {
+  return <div className="mt-3 text-sm leading-7">{content.split("\n").map((line, index) => {
+    const duaClass = duaLineClass(line);
+    if (!line) return <div key={index} className="h-3" aria-hidden="true" />;
+    return <div key={index} className={duaClass ? `my-1 rounded-xl border px-3 py-2 font-semibold ${duaClass}` : "whitespace-pre-wrap"}>{line}</div>;
+  })}</div>;
+}
+
 export default function AgentsWorkspace({ initialConversations, initialMessages, initialConversationId, initialRemaining, monthlyLimit }: { initialConversations: AgentConversation[]; initialMessages: AgentMessage[]; initialConversationId: string | null; initialRemaining: number; monthlyLimit: number }) {
   const [conversations, setConversations] = useState(initialConversations);
   const [conversationId, setConversationId] = useState(initialConversationId);
@@ -72,7 +98,7 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
       <div className="min-h-[420px] space-y-5 bg-slate-50 p-5 sm:p-7">
         {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 lg:grid-cols-3">{starterPrompts.map((prompt) => <button key={prompt} onClick={() => setMessage(prompt)} className="rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt}</button>)}</div></div> : messages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
           <p className={`text-xs font-black uppercase tracking-[.14em] ${item.role === "user" ? "text-blue-100" : "text-violet-700"}`}>{item.role === "user" ? "Docente" : specialistLabel[item.specialist ?? "coordinator"]}</p>
-          <div className="mt-3 whitespace-pre-wrap text-sm leading-7">{item.content}</div>
+          <AgentMessageContent content={item.content} />
           {item.role === "assistant" ? <button onClick={() => void saveResult(item.id)} disabled={Boolean(item.saved_at)} className="mt-4 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800 disabled:opacity-70">{item.saved_at ? "✓ Resultado guardado" : "Guardar resultado"}</button> : null}
         </article>)}
         {working ? <div className="mr-auto max-w-md rounded-2xl border border-violet-200 bg-white p-5 font-bold text-violet-800 shadow-sm" aria-live="polite">Los agentes están analizando y revisando la solicitud…</div> : null}

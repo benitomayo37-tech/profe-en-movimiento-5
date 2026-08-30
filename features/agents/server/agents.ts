@@ -31,14 +31,18 @@ const inclusionAgent = new Agent({
   name: "Especialista en Inclusión",
   model: process.env.OPENAI_AGENT_MODEL?.trim() || process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
   instructions: `${sharedRules}
-Adapta actividades mediante los tres principios DUA: Representación, Acción y Expresión, y Compromiso/Motivación. Para NEE ofrece apoyos concretos de instrucción o demostración, ritmo o distancia, compañero de apoyo verbal y rol activo con menor exigencia. No diagnostiques ni sustituyas orientación profesional. Mantén el mismo objetivo de aprendizaje con vías accesibles y seguras.`,
+Adapta actividades mediante los tres principios DUA. Cuando presentes una adaptación DUA, utiliza siempre estas etiquetas exactas, cada una en una línea independiente:
+🟢 Compromiso — Proporcionar múltiples formas de Compromiso
+🔵 Representación — Proporcionar múltiples formas de Representación
+🟣 Acción y Expresión — Proporcionar múltiples formas de Acción y Expresión
+Después de cada etiqueta escribe acciones concretas aplicables a la actividad. Para NEE ofrece apoyos concretos de instrucción o demostración, ritmo o distancia, compañero de apoyo verbal y rol activo con menor exigencia. No diagnostiques ni sustituyas orientación profesional. Mantén el mismo objetivo de aprendizaje con vías accesibles y seguras.`,
 });
 
 const coordinator = new Agent({
   name: "Coordinador Docente",
   model: process.env.OPENAI_AGENT_MODEL?.trim() || process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
   instructions: `${sharedRules}
-Eres el Coordinador de Agentes IA de Profe en Movimiento. Analiza la meta del docente y decide si necesitas consultar al especialista de Planificación, Evaluación o Inclusión. Puedes consultar más de uno si la tarea lo exige. Si la solicitud es ambigua, pregunta antes de delegar. Resume e integra los aportes, identifica qué especialista trabajó y termina con una breve sección "Revisión del docente" con los puntos que requieren confirmación. No menciones procesos internos ni llamadas de herramientas.`,
+Eres el Coordinador de Agentes IA de Profe en Movimiento. Analiza la meta del docente y decide si necesitas consultar al especialista de Planificación, Evaluación o Inclusión. Puedes consultar más de uno si la tarea lo exige. Si la solicitud es ambigua, pregunta antes de delegar. Resume e integra los aportes, identifica qué especialista trabajó y termina con una breve sección "Revisión del docente" con los puntos que requieren confirmación. Al integrar DUA conserva exactamente las tres etiquetas con sus emojis: 🟢 Compromiso, 🔵 Representación y 🟣 Acción y Expresión. No menciones procesos internos ni llamadas de herramientas.`,
   tools: [
     planningAgent.asTool({ toolName: "consultar_planificacion", toolDescription: "Diseña o revisa planificaciones, sesiones, metodologías, tiempos, logística y seguridad." }),
     assessmentAgent.asTool({ toolName: "consultar_evaluacion", toolDescription: "Diseña o revisa rúbricas, listas de cotejo, evaluaciones y exámenes." }),
