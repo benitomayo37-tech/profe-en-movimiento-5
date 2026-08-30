@@ -30,9 +30,17 @@ const faqs = [
 ];
 
 const platformStats = [
-  ["19", "Herramientas para profes"],
+  ["34", "Herramientas para profes"],
   ["3", "Asistentes inteligentes"],
   ["1", "Biblioteca profesional"],
+  ["1", "Curso en Academia"],
+] as const;
+
+const platformStatBorders = [
+  "",
+  "border-l border-slate-200",
+  "border-t border-slate-200 sm:border-l sm:border-t-0",
+  "border-l border-t border-slate-200 sm:border-t-0",
 ] as const;
 
 const publicNavigation = [
@@ -117,7 +125,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto -mt-7 max-w-6xl px-4 sm:px-6"><div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl sm:grid-cols-3">{platformStats.map(([number, label], index) => <div key={label} className={`flex items-center justify-center gap-4 px-6 py-6 ${index ? "border-t border-slate-200 sm:border-l sm:border-t-0" : ""}`}><span className="text-3xl font-black text-blue-800">{number}</span><span className="max-w-36 text-sm font-bold text-slate-600">{label}</span></div>)}</div></section>
+      <section className="relative z-10 mx-auto -mt-7 max-w-6xl px-4 sm:px-6"><div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl sm:grid-cols-4">{platformStats.map(([number, label], index) => <div key={label} className={`flex items-center justify-center gap-4 px-4 py-6 sm:px-6 ${platformStatBorders[index]}`}><span className="text-3xl font-black text-blue-800">{number}</span><span className="max-w-36 text-sm font-bold text-slate-600">{label}</span></div>)}</div></section>
 
             {/* =========================
           MUEVESEGURO — ACCESO FREE
@@ -385,7 +393,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
           <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
             <div className="flex flex-col gap-4 border-b border-slate-200 bg-gradient-to-r from-[#0b2050] to-blue-800 px-6 py-6 text-white sm:flex-row sm:items-center sm:justify-between">
               <div><p className="text-xs font-black uppercase tracking-[.18em] text-orange-300">Tu espacio de trabajo</p><h3 className="mt-1 text-2xl font-black">Herramientas listas para tu clase</h3></div>
-              <span className="w-fit rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black">19 soluciones integradas</span>
+              <span className="w-fit rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black">34 soluciones integradas</span>
             </div>
             <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
               {featuredTools.map((tool) => (

@@ -66,7 +66,7 @@ const actions = [
   },
   {
     title: "App para profes",
-    description: "Accede a 19 herramientas para organizar y dinamizar tus clases.",
+    description: "Accede a 34 herramientas para organizar y dinamizar tus clases.",
     href: "/apps",
     icon: "📱",
     access: "Free + Pro",
