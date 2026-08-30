@@ -12,9 +12,34 @@ const defaults:Saved={completed:[],lessonSteps:{},lastActivity:"",currentLesson:
 
 export default function ChessStudentApp(){
  const[saved,setSaved]=useState<Saved>(defaults),[tab,setTab]=useState<"learn"|"play">("learn"),[level,setLevel]=useState<ChessLevel>(1),[lesson,setLesson]=useState<ChessLesson>(chessLessons[0]),[state,setState]=useState<ChessState>(initialState),[history,setHistory]=useState<ChessState[]>([]),[selected,setSelected]=useState<number|null>(null),[pending,setPending]=useState<Move|null>(null),[flipped,setFlipped]=useState(false),[contrast,setContrast]=useState(false),[large,setLarge]=useState(false),[message,setMessage]=useState("Las blancas comienzan."),[drawOffer,setDrawOffer]=useState<Color|null>(null);
- useEffect(()=>{try{const value=JSON.parse(localStorage.getItem(STORAGE)||"null") as Saved|null;if(value){const merged={...defaults,...value};setSaved(merged);if(merged.game)setState(merged.game);const found=chessLessons.find(x=>x.id===merged.currentLesson);if(found){setLesson(found);setLevel(found.level)}}}catch{}},[]);
+ useEffect(()=>{
+  let cancelled=false;
+
+  async function hydrateProgress(){
+   let resolved:Saved=defaults;
+
+   try{
+    const local=JSON.parse(localStorage.getItem(STORAGE)||"null") as Saved|null;
+    if(local)resolved={...defaults,...local};
+   }catch{}
+
+   try{
+    const response=await fetch("/api/students/chess/progress");
+    const remote=response.ok?await response.json():null;
+    if(remote?.progress&&(!resolved.lastActivity||remote.progress.lastActivity>resolved.lastActivity))resolved={...defaults,...remote.progress};
+   }catch{}
+
+   if(cancelled)return;
+   setSaved(resolved);
+   if(resolved.game)setState(resolved.game);
+   const found=chessLessons.find(x=>x.id===resolved.currentLesson);
+   if(found){setLesson(found);setLevel(found.level)}
+  }
+
+  void hydrateProgress();
+  return()=>{cancelled=true};
+ },[]);
  function persist(next:Saved){const value={...next,lastActivity:new Date().toISOString()};setSaved(value);try{localStorage.setItem(STORAGE,JSON.stringify(value))}catch{}void fetch("/api/students/chess/progress",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(value)}).catch(()=>null);}
- useEffect(()=>{void fetch("/api/students/chess/progress").then(r=>r.ok?r.json():null).then(remote=>{if(remote?.progress&&(!saved.lastActivity||remote.progress.lastActivity>saved.lastActivity)){setSaved(remote.progress);if(remote.progress.game)setState(remote.progress.game)}}).catch(()=>null)},[]);// eslint-disable-line react-hooks/exhaustive-deps
  const moves=useMemo(()=>selected===null?[]:legalMoves(state,selected),[state,selected]);
  const order=flipped?[...Array(64).keys()].reverse():[...Array(64).keys()];
  function choose(square:number){if(state.result!=="playing")return;const piece=state.board[square];if(selected===null){if(piece?.color===state.turn){setSelected(square);setMessage(`${pieceNames[piece.type]} ${piece.color==="w"?"blanco":"negro"} en ${squareName(square)} seleccionado.`)}return;}if(piece?.color===state.turn){setSelected(square);return;}const candidates=moves.filter(m=>m.to===square);if(!candidates.length){setSelected(null);setMessage("Movimiento no disponible.");return;}if(candidates.some(m=>m.promotion)){setPending(candidates[0]);return;}play(candidates[0]);}
@@ -37,6 +62,6 @@ function Learning({saved,level,lesson,setLevel,setLesson,persist}:{saved:Saved;l
  return <div className="grid gap-6 lg:grid-cols-[300px_1fr]"><aside className="rounded-3xl bg-slate-950 p-4 text-white"><div className="flex gap-2">{([1,2,3] as ChessLevel[]).map(x=><button key={x} onClick={()=>setLevel(x)} className={`rounded-lg px-3 py-2 text-sm font-black ${level===x?"bg-amber-400 text-slate-950":"bg-white/10"}`}>Nivel {x}</button>)}</div><div className="mt-4 grid gap-2">{lessons.map(x=><button key={x.id} onClick={()=>setLesson(x)} className={`rounded-xl p-3 text-left text-sm font-bold ${lesson.id===x.id?"bg-white text-slate-950":"bg-white/10"}`}>{saved.completed.includes(x.id)?"✓ ":""}{x.title}</button>)}</div></aside><article className="rounded-3xl border bg-white p-6 shadow-lg sm:p-8"><p className="text-xs font-black uppercase tracking-widest text-amber-700">Nivel {lesson.level} · {complete?"Superada":"Paso "+(step+1)+" de 3"}</p><h4 className="mt-2 text-3xl font-black">{lesson.title}</h4><p className="mt-4 text-lg leading-8 text-slate-700">{lesson.summary}</p>{complete?<div className="mt-6 rounded-2xl bg-emerald-100 p-5 font-black text-emerald-900">🏆 Lección superada con tres comprobaciones.</div>:<div className="mt-7"><h5 className="text-xl font-black">{question.question}</h5><div className="mt-4 grid gap-3 sm:grid-cols-3">{question.options.map((option,index)=><button key={option} onClick={()=>answer(index)} className="rounded-xl border-2 border-slate-200 p-4 font-bold hover:border-amber-500 hover:bg-amber-50">{option}</button>)}</div><p className="mt-3 text-sm text-slate-500">Debes completar tres comprobaciones diferentes para superar la lección.</p></div>}</article></div>
 }
 
-function Board({state,order,selected,moves,choose,contrast,large}:{state:ChessState;order:number[];selected:number|null;moves:Move[];choose:(x:number)=>void;contrast:boolean;large:boolean}){const targets=new Set(moves.map(m=>m.to));return <div role="grid" aria-label="Tablero de ajedrez" className={`grid grid-cols-8 overflow-hidden rounded-xl border-4 shadow-2xl ${large?"max-w-[760px]":"max-w-[620px]"}`}>{order.map(square=>{const piece=state.board[square],light=(Math.floor(square/8)+square%8)%2===0,isSelected=selected===square,isTarget=targets.has(square);return <button role="gridcell" aria-label={`${piece?`${pieceNames[piece.type]} ${piece.color==="w"?"blanco":"negro"}`:"casilla vacía"} en ${squareName(square)}`} aria-selected={isSelected} key={square} onClick={()=>choose(square)} className={`relative aspect-square text-[clamp(26px,6vw,58px)] leading-none outline-none focus-visible:ring-4 focus-visible:ring-cyan-400 ${contrast?(light?"bg-white":"bg-black"):(light?"bg-amber-100":"bg-amber-700")} ${isSelected?"ring-4 ring-inset ring-blue-500":""}`}>{piece?symbols[piece.color+piece.type]:""}{isTarget?<span aria-hidden="true" className={`absolute inset-[38%] rounded-full ${state.board[square]?"ring-4 ring-red-500":"bg-emerald-500"}`}/>:null}<span aria-hidden="true" className="absolute bottom-1 left-1 text-[9px] font-bold opacity-60">{squareName(square)}</span></button>})}</div>}
+function Board({state,order,selected,moves,choose,contrast,large}:{state:ChessState;order:number[];selected:number|null;moves:Move[];choose:(x:number)=>void;contrast:boolean;large:boolean}){const targets=new Set(moves.map(m=>m.to));return <div role="grid" aria-label="Tablero de ajedrez" className={`student-chess-board grid grid-cols-8 overflow-hidden rounded-xl border-4 shadow-2xl ${large?"max-w-[760px]":"max-w-[620px]"}`}>{order.map(square=>{const piece=state.board[square],light=(Math.floor(square/8)+square%8)%2===0,isSelected=selected===square,isTarget=targets.has(square);return <button role="gridcell" aria-label={`${piece?`${pieceNames[piece.type]} ${piece.color==="w"?"blanco":"negro"}`:"casilla vacía"} en ${squareName(square)}`} aria-selected={isSelected} key={square} onClick={()=>choose(square)} className={`relative aspect-square text-[clamp(26px,6vw,58px)] leading-none outline-none focus-visible:ring-4 focus-visible:ring-cyan-400 ${contrast?(light?"bg-white":"bg-black"):(light?"bg-amber-100":"bg-amber-700")} ${isSelected?"ring-4 ring-inset ring-blue-500":""}`}>{piece?<span aria-hidden="true" className={piece.color==="w"?"student-chess-piece-white":"student-chess-piece-black"}>{symbols[piece.color+piece.type]}</span>:null}{isTarget?<span aria-hidden="true" className={`absolute inset-[38%] rounded-full ${state.board[square]?"ring-4 ring-red-500":"bg-emerald-500"}`}/>:null}<span aria-hidden="true" className={`student-chess-coordinate absolute bottom-1 left-1 text-[9px] font-bold opacity-70 ${light?"student-chess-coordinate-light":"student-chess-coordinate-dark"}`}>{squareName(square)}</span></button>})}</div>}
 function tabClass(active:boolean){return`rounded-xl px-5 py-3 font-black ${active?"bg-slate-950 text-white":"border bg-white text-slate-800"}`}
 function describe(state:ChessState){if(state.result==="checkmate")return`Jaque mate. Ganan ${state.winner==="w"?"las blancas":"las negras"}.`;if(state.result==="stalemate")return"Tablas por ahogado.";if(state.result==="draw-50")return"Tablas por la regla de 50 movimientos.";if(state.result==="draw-repetition")return"Tablas por triple repetición.";if(state.result==="draw-material")return"Tablas por material insuficiente.";return`${state.turn==="w"?"Turno de blancas":"Turno de negras"}${inCheck(state,state.turn)?". Jaque.":"."}`}

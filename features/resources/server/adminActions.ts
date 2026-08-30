@@ -31,7 +31,7 @@ async function requireAdmin() {
 
 export async function importCurrentCatalogAction() {
   const supabase = await requireAdmin();
-  if (!supabase) redirect("/login?returnTo=/resources/admin");
+  if (!supabase) redirect("/login?next=/resources/admin");
 
   const { data: existingResources, error: readError } = await supabase
     .from("library_resources")
@@ -65,7 +65,7 @@ export async function importCurrentCatalogAction() {
 
 export async function saveResourceAction(formData: FormData) {
   const supabase = await requireAdmin();
-  if (!supabase) redirect("/login?returnTo=/resources/admin");
+  if (!supabase) redirect("/login?next=/resources/admin");
 
   const databaseId = text(formData, "databaseId", 80);
   const slug = text(formData, "slug", 160).toLowerCase();
@@ -128,7 +128,7 @@ export async function saveResourceAction(formData: FormData) {
 
 export async function toggleResourcePublishedAction(formData: FormData) {
   const supabase = await requireAdmin();
-  if (!supabase) redirect("/login?returnTo=/resources/admin");
+  if (!supabase) redirect("/login?next=/resources/admin");
   const databaseId = text(formData, "databaseId", 80);
   const published = formData.get("published") === "true";
   if (!databaseId) return;
@@ -142,7 +142,7 @@ export async function toggleResourcePublishedAction(formData: FormData) {
 
 export async function toggleResourceFeaturedAction(formData: FormData) {
   const supabase = await requireAdmin();
-  if (!supabase) redirect("/login?returnTo=/resources/admin");
+  if (!supabase) redirect("/login?next=/resources/admin");
   const databaseId = text(formData, "databaseId", 80);
   const featured = formData.get("featured") === "true";
   if (!databaseId) return;

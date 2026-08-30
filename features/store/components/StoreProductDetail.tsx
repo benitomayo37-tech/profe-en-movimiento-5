@@ -141,6 +141,11 @@ export default function StoreProductDetail({
                 </div>
               ))}
             </div>
+            {product.billing === "monthly" || product.billing === "annual" ? (
+              <p className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold leading-6 text-blue-950">
+                La suscripción incluye los servicios y contenidos digitales de la plataforma. Los ebooks, archivos editables y paquetes comerciales identificados en la Tienda se adquieren por separado.
+              </p>
+            ) : null}
           </article>
 
           <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -203,7 +208,7 @@ export default function StoreProductDetail({
                 ) : null}
                 <p className="text-4xl font-black tracking-tight text-blue-700">
                   {formatStorePrice(product.price)}
-                  {product.billing === "monthly" ? <span className="ml-2 text-sm font-bold text-slate-500">/ mes</span> : null}
+                  {product.billing === "monthly" ? <span className="ml-2 text-sm font-bold text-slate-500">/ mes</span> : product.billing === "annual" ? <span className="ml-2 text-sm font-bold text-slate-500">/ año</span> : null}
                 </p>
               </div>
             ) : null}
@@ -232,7 +237,7 @@ export default function StoreProductDetail({
               </div>
             ) : product.purchaseStatus === "included" ? (
               <Link
-                href="/store/suite-19-miniapps-docentes"
+                href="/store/plan-pro-mensual"
                 className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 text-center font-black text-white transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-100"
               >
                 Ver Suite Pro de miniapps

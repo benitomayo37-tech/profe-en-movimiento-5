@@ -38,12 +38,13 @@ export default function RefundsPage() {
         },
         {
           id: "renovacion",
-          title: "2. Renovación mensual",
+          title: "2. Renovación de las suscripciones",
           content: (
             <p>
-              El Plan Pro mensual se renueva automáticamente y genera un nuevo cobro cada mes
-              hasta que canceles la suscripción. Mientras el pago esté aprobado, conservarás
-              el acceso a las funciones Pro incluidas en la oferta.
+              El Plan Pro se ofrece con periodicidad mensual o anual. La modalidad elegida se
+              renueva automáticamente al finalizar cada período hasta que canceles la
+              suscripción. Mientras el pago esté aprobado, conservarás el mismo acceso a las
+              funciones Pro incluidas en la oferta.
             </p>
           ),
         },

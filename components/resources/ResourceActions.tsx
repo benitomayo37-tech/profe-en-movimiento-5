@@ -46,7 +46,7 @@ export default function ResourceActions({
 
   async function handleFavorite() {
     if (!authenticated) {
-      window.location.href = `/login?returnTo=${encodeURIComponent(`/resources/${slug}`)}`;
+      window.location.href = `/login?next=${encodeURIComponent(`/resources/${slug}`)}`;
       return;
     }
 
@@ -95,7 +95,7 @@ export default function ResourceActions({
         stats?: { view_count?: number; download_count?: number };
       };
       if (response.status === 401) {
-        window.location.href = `/login?returnTo=${encodeURIComponent(`/resources/${slug}`)}`;
+        window.location.href = `/login?next=${encodeURIComponent(`/resources/${slug}`)}`;
         return;
       }
       if (!response.ok || !result.downloadUrl) {

@@ -56,7 +56,7 @@ export default async function HistoryPage({
   searchParams: Promise<{ tipo?: string }>;
 }) {
   const access = await getAuthAccess();
-  if (!access.authenticated || !access.userId) redirect("/login?returnTo=/historial");
+  if (!access.authenticated || !access.userId) redirect("/login?next=/historial");
 
   const params = await searchParams;
   const activeFilter = isHistoryFilter(params.tipo) ? params.tipo : "all";

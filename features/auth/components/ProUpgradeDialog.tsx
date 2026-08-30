@@ -94,15 +94,15 @@ export default function ProUpgradeDialog({
           </p>
 
           <div className="mt-6 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-blue-950">
-            <strong>Plan Pro: $4,99 al mes.</strong> Tu cuenta Free conserva 3 planificaciones y 3 sesiones de entrenamiento gratuitas cada mes.
+            <strong>Plan Pro desde $4,99 al mes o $49,99 al año.</strong> Tu cuenta Free conserva 3 planificaciones y 3 sesiones de entrenamiento gratuitas cada mes.
           </div>
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/checkout?product=suite-19-miniapps-docentes"
+              href="/store/plan-pro-anual"
               className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-orange-500 px-6 py-3 text-center font-black text-slate-950 hover:bg-orange-400"
             >
-              Activar Plan Pro
+              Comparar planes Pro
             </Link>
             <button
               type="button"

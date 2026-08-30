@@ -27,7 +27,7 @@ export default async function ResourcesAdminPage({
   searchParams: Promise<{ edit?: string; saved?: string; imported?: string; error?: string }>;
 }) {
   const access = await getAuthAccess();
-  if (!access.authenticated) redirect("/login?returnTo=/resources/admin");
+  if (!access.authenticated) redirect("/login?next=/resources/admin");
   if (access.role !== "admin") redirect("/resources");
 
   const params = await searchParams;

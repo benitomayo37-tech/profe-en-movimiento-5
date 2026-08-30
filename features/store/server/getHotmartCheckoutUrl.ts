@@ -1,19 +1,20 @@
 import "server-only";
 
-const checkoutEnvironmentKeys: Record<string, string> = {
-  "games-cooperative-volume-1": "HOTMART_CHECKOUT_GAMES_COOPERATIVE_VOLUME_1",
-  "physical-education-planning": "HOTMART_CHECKOUT_PHYSICAL_EDUCATION_PLANNING",
-  "evaluation-toolkit": "HOTMART_CHECKOUT_EVALUATION_TOOLKIT",
-  "ebook-games": "HOTMART_CHECKOUT_EBOOK_GAMES",
-  "ebook-active-methodologies": "HOTMART_CHECKOUT_EBOOK_ACTIVE_METHODOLOGIES",
-  "teacher-pro-pack": "HOTMART_CHECKOUT_TEACHER_PRO_PACK",
-  "fundamentos-tendencias-educacion-fisica": "HOTMART_CHECKOUT_FUNDAMENTOS_TENDENCIAS",
-  "suite-19-miniapps-docentes": "HOTMART_CHECKOUT_SUITE_19_MINIAPPS",
+const checkoutEnvironmentKeys: Record<string, string[]> = {
+  "games-cooperative-volume-1": ["HOTMART_CHECKOUT_GAMES_COOPERATIVE_VOLUME_1"],
+  "physical-education-planning": ["HOTMART_CHECKOUT_PHYSICAL_EDUCATION_PLANNING"],
+  "evaluation-toolkit": ["HOTMART_CHECKOUT_EVALUATION_TOOLKIT"],
+  "ebook-games": ["HOTMART_CHECKOUT_EBOOK_GAMES"],
+  "ebook-active-methodologies": ["HOTMART_CHECKOUT_EBOOK_ACTIVE_METHODOLOGIES"],
+  "teacher-pro-pack": ["HOTMART_CHECKOUT_TEACHER_PRO_PACK"],
+  "fundamentos-tendencias-educacion-fisica": ["HOTMART_CHECKOUT_FUNDAMENTOS_TENDENCIAS"],
+  "plan-pro-mensual": ["HOTMART_CHECKOUT_PLAN_PRO_MONTHLY", "HOTMART_CHECKOUT_SUITE_19_MINIAPPS"],
+  "plan-pro-anual": ["HOTMART_CHECKOUT_PLAN_PRO_ANNUAL"],
 };
 
 export function getHotmartCheckoutUrl(productId: string) {
-  const environmentKey = checkoutEnvironmentKeys[productId];
-  const candidate = environmentKey ? process.env[environmentKey] : undefined;
+  const environmentKeys = checkoutEnvironmentKeys[productId];
+  const candidate = environmentKeys?.map((key) => process.env[key]?.trim()).find(Boolean);
 
   if (!candidate) {
     return undefined;

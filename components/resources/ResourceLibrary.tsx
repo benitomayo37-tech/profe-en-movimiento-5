@@ -345,7 +345,7 @@ export default function ResourceLibrary({
               )}
               <button
                 type="button"
-                onClick={() => authenticated ? setFavoritesOnly((current) => !current) : window.location.assign("/login?returnTo=/resources")}
+                onClick={() => authenticated ? setFavoritesOnly((current) => !current) : window.location.assign("/login?next=/resources")}
                 aria-pressed={favoritesOnly}
                 className={`rounded-full border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${favoritesOnly ? "border-rose-500 bg-rose-500 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-rose-300 hover:text-rose-700"}`}
               >

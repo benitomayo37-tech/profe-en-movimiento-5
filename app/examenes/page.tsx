@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Crear examen | Profe en Movimiento" 
 
 export default async function TeacherExamsPage() {
   const access = await getAuthAccess();
-  if (!access.authenticated) redirect("/login?returnTo=/examenes");
+  if (!access.authenticated) redirect("/login?next=/examenes");
   return (
     <AppLayout sidebar={<Sidebar />} header={<div className="flex min-h-16 items-center justify-between px-6"><div><h1 className="text-lg font-bold">Exámenes estudiantiles</h1><p className="text-sm text-slate-500">Crea y comparte una evaluación con código</p></div><AccountBadge authenticated fullName={access.fullName} email={access.email} className="bg-blue-700" /></div>}>
       <Container size="wide" className="space-y-7 py-8">

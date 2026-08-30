@@ -22,10 +22,30 @@ export default function AuthPageShell({ eyebrow, title, description, children, a
           <div className="absolute -right-20 -top-20 -z-10 h-72 w-72 rounded-full border-[54px] border-white/[0.035]" />
           <div className="absolute -bottom-24 -left-20 -z-10 h-72 w-72 rounded-full border-[44px] border-orange-400/[0.08]" />
           <div className="relative flex w-full flex-col">
-            <Link href="/" className="inline-flex w-fit items-center gap-3 rounded-2xl border border-white/15 bg-white/95 p-2 pr-4 shadow-xl backdrop-blur" aria-label="Ir a la página principal">
-              <Image src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width={92} height={92} priority className="h-16 w-16 object-contain" />
-              <span className="max-w-32 text-sm font-black leading-tight text-[#0b2050]">Profe en Movimiento</span>
-            </Link>
+            <Link
+  href="/"
+  className="inline-flex w-fit items-center gap-3 rounded-2xl border border-white/20 bg-white/[0.08] p-3 pr-5 shadow-xl backdrop-blur-sm"
+  aria-label="Ir a la página principal"
+>
+  <span
+    className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl p-1.5"
+    style={{ backgroundColor: "#ffffff" }}
+  >
+    <Image
+      src="/logos/logo-profe-en-movimiento.png"
+      alt="Profe en Movimiento"
+      width={92}
+      height={92}
+      priority
+      className="h-full w-full object-contain"
+    />
+  </span>
+
+  <span className="flex max-w-40 flex-col text-base font-black leading-tight">
+    <span className="text-white">Profe en</span>
+    <span className="text-[#fc7000]">Movimiento</span>
+  </span>
+</Link>
 
             <div className="my-auto py-12 lg:py-16">
               <p className="text-xs font-black uppercase tracking-[0.24em] text-orange-300">{eyebrow}</p>

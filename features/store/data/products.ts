@@ -32,7 +32,7 @@ export interface StoreProduct {
   access: string;
   price?: number;
   compareAtPrice?: number;
-  billing?: "one-time" | "monthly";
+  billing?: "one-time" | "monthly" | "annual";
   purchaseStatus: "available" | "included" | "coming-soon";
   image?: string;
   imageAlt?: string;
@@ -259,7 +259,7 @@ const existingStoreProducts: StoreProduct[] = [
     commercialNote: "La edición Kindle estará disponible próximamente en Amazon.",
   },
   {
-    id: "suite-19-miniapps-docentes",
+    id: "plan-pro-mensual",
     title: "Suite Pro de miniapps para docentes",
     description:
       "Herramientas en línea para organizar clases, evaluar, crear recursos y gestionar actividades desde cualquier dispositivo.",
@@ -269,7 +269,18 @@ const existingStoreProducts: StoreProduct[] = [
     accent: "from-orange-600 via-amber-500 to-yellow-400",
     badge: "Suite en crecimiento",
     format: "Suite de aplicaciones web",
-    contents: ["Organización y gestión de clases", "Herramientas deportivas", "Generadores pedagógicos"],
+    contents: [
+      "20 miniapps docentes",
+      "Profe IA con todas sus herramientas",
+      "Entrenador IA y planificación deportiva",
+      "MueveSeguro: registros e historial",
+      "Movimiento para Todos completo",
+      "Biblioteca Premium de la plataforma",
+      "Academia, progreso y certificados",
+      "Exámenes con códigos y resultados",
+      "Experiencias y juegos estudiantiles",
+      "Comunidad, Dashboard e historial",
+    ],
     longDescription:
       "Un ecosistema de miniaplicaciones en línea que crece con nuevas herramientas para reducir tareas repetitivas y facilitar el trabajo diario del docente. Reúne recursos deportivos, organizativos y pedagógicos que funcionan desde el navegador, sin instalaciones.",
     idealFor: ["Docentes de Educación Física", "Docentes de otras asignaturas", "Entrenadores y monitores", "Instituciones educativas"],
@@ -280,30 +291,64 @@ const existingStoreProducts: StoreProduct[] = [
     price: 4.99,
     billing: "monthly",
     purchaseStatus: "available",
-    commercialNote: "Incluye las miniapps disponibles y las nuevas incorporaciones del Plan Pro durante la suscripción.",
+    commercialNote: "Incluye las herramientas y contenidos digitales de la plataforma durante la suscripción. Los ebooks, archivos editables y paquetes comerciales de la Tienda se venden por separado.",
     appList: [
+      "Creador de Juegos",
+      "Pizarra Táctica Multideporte",
+      "Creador de Certificados",
+      "Generador de Retos de 30 Días",
+      "Planificador de Clases Express",
+      "Planificador de Cívica y Acompañamiento Integral",
+      "Planificador de Animación a la Lectura",
+      "Evalúa en Movimiento",
+      "Guía Interactiva de Juegos en Movimiento",
+      "Yoga en Movimiento",
+      "CitaProfe APA 7",
+      "Fundamentos y Tendencias Contemporáneas en Educación Física",
+      "Metodologías Activas en Educación Física",
+      "Desagregador de Destrezas con Criterio de Desempeño",
+      "Ajedrez Educativo",
+      "Alimentación en Movimiento",
       "Sorteador de equipos",
       "Generador de sesiones y entrenamientos",
       "Marcador y cronómetro deportivo",
-      "Calculadora de intensidad y calorías",
-      "Rueda de retos y juegos",
       "Cronómetro de circuitos HIIT",
-      "Generador de diplomas",
-      "Banco de dinámicas rompehielos",
-      "Registro de test físicos",
-      "Generador de torneos relámpago",
-      "Generador de pausas activas",
-      "Desagregador de Destrezas con Criterio de Desempeño",
-      "Generador de estrategias de activación de conocimientos previos",
-      "Formulador de objetivos de clase",
-      "Calculadora de Frecuencia Cardíaca Máxima",
-      "Calculadora de IMC",
-      "Generador de rúbricas de evaluación",
-      "Armador de plan de clase completo",
-      "Generador de dinámicas de cierre y tickets de salida",
-      "Pizarra Táctica Multideporte",
-      "Creador de Certificados",
     ],
+  },
+  {
+    id: "plan-pro-anual",
+    title: "Plan Pro anual",
+    description: "Acceso durante 12 meses a las 20 miniapps, Profe IA, Entrenador IA y los contenidos Pro de la plataforma.",
+    category: "apps",
+    categoryLabel: "Suscripción Pro",
+    icon: "⭐",
+    accent: "from-violet-700 via-blue-700 to-cyan-500",
+    badge: "Ahorra USD 9,89",
+    format: "Plataforma web",
+    contents: [
+      "20 miniapps docentes",
+      "Profe IA con todas sus herramientas",
+      "Entrenador IA y planificación deportiva",
+      "MueveSeguro: registros e historial",
+      "Movimiento para Todos completo",
+      "Biblioteca Premium de la plataforma",
+      "Academia, progreso y certificados",
+      "Exámenes con códigos y resultados",
+      "Experiencias y juegos estudiantiles",
+      "Comunidad, Dashboard e historial",
+      "12 meses de acceso Pro",
+    ],
+    longDescription: "La modalidad anual ofrece el mismo acceso que el Plan Pro mensual durante doce meses, con un ahorro frente a doce pagos mensuales. Los ebooks, planificaciones y paquetes descargables se comercializan por separado.",
+    idealFor: ["Docentes que utilizan la plataforma todo el año", "Entrenadores y monitores", "Profesionales que desean ahorrar", "Usuarios frecuentes de herramientas con IA"],
+    benefits: ["Mismo acceso completo del Plan Pro mensual", "Ahorro de USD 9,89 al año", "Activación automática mediante Hotmart", "Acceso desde móvil o computadora"],
+    howToUse: ["Compra el plan con tu correo habitual", "Confirma o inicia sesión con ese mismo correo", "Espera la aprobación automática de Hotmart", "Utiliza las funciones Pro durante la vigencia"],
+    delivery: "Activación de acceso en línea",
+    access: "Suscripción anual Pro",
+    price: 49.99,
+    compareAtPrice: 59.88,
+    billing: "annual",
+    purchaseStatus: "available",
+    commercialNote: "Doce meses de Plan Pro. Los productos descargables de la tienda se venden por separado.",
   },
 ];
 
@@ -319,7 +364,8 @@ export function getStoreProductStatusLabel(product: StoreProduct) {
 }
 
 export function getStoreProductBySlug(slug: string) {
-  return storeProducts.find((product) => product.id === slug);
+  const normalizedSlug = slug === "suite-19-miniapps-docentes" ? "plan-pro-mensual" : slug;
+  return storeProducts.find((product) => product.id === normalizedSlug);
 }
 
 export function formatStorePrice(price: number) {

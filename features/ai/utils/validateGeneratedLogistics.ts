@@ -809,7 +809,7 @@ function validateLessonPlanMaterialFeasibility(
 
   if (/\bobservador(?:-coevaluador)?\b/.test(visibleText)) {
     return createInvalidResult(
-      'La planificaciÃ³n asigna a estudiantes el rol de "observador". La coevaluaciÃ³n debe realizarse mientras el estudiante mantiene una funciÃ³n motriz activa como pasador, receptor o participante en desplazamiento.',
+      'La planificación asigna a estudiantes el rol de "observador". La coevaluación debe realizarse mientras el estudiante mantiene una función motriz activa como pasador, receptor o participante en desplazamiento.',
     );
   }
 
@@ -841,7 +841,7 @@ function validateLessonPlanMaterialFeasibility(
     declaresSimultaneousPairBallUse
   ) {
     return createInvalidResult(
-      `La evaluaciÃ³n propone que ${pairCount} parejas utilicen balÃ³n simultÃ¡neamente, pero solamente hay ${availableBalls} balones disponibles. Organiza microturnos por zonas y mantÃ©n activas a las parejas que esperan el balÃ³n.`,
+      `La evaluación propone que ${pairCount} parejas utilicen balón simultáneamente, pero solamente hay ${availableBalls} balones disponibles. Organiza microturnos por zonas y mantén activas a las parejas que esperan el balón.`,
     );
   }
 
@@ -879,7 +879,7 @@ function validateLessonPlanMaterialFeasibility(
 
     if (evaluationMinutes === undefined || evaluationMinutes < 9) {
       return createInvalidResult(
-        "La evaluaciÃ³n de pase de pecho, pase de pique y pase sobre la cabeza para 40 estudiantes con 4 balones necesita 9 minutos: 1 minuto de explicaciÃ³n, 15 microturnos de 30 segundos y 30 segundos de cierre.",
+        "La evaluación de pase de pecho, pase de pique y pase sobre la cabeza para 40 estudiantes con 4 balones necesita 9 minutos: 1 minuto de explicación, 15 microturnos de 30 segundos y 30 segundos de cierre.",
       );
     }
 
@@ -889,7 +889,7 @@ function validateLessonPlanMaterialFeasibility(
       !assignsOnePassTypePerMicroturn
     ) {
       return createInvalidResult(
-        "La evaluaciÃ³n debe organizar 3 rondas por zona y 15 microturnos en total. Cada pareja realiza 5 intentos de un solo tipo de pase en cada microturno de 30 segundos; no debe evaluar los tres tipos en el mismo turno.",
+        "La evaluación debe organizar 3 rondas por zona y 15 microturnos en total. Cada pareja realiza 5 intentos de un solo tipo de pase en cada microturno de 30 segundos; no debe evaluar los tres tipos en el mismo turno.",
       );
     }
   }

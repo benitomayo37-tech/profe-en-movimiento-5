@@ -141,7 +141,8 @@ export default function TermsPage() {
               <p>
                 Los cobros se procesan mediante Hotmart. El precio, moneda, periodicidad,
                 impuestos y métodos disponibles aparecen antes de confirmar la compra. Una
-                suscripción mensual se renueva automáticamente hasta su cancelación.
+                suscripción mensual o anual se renueva automáticamente según la periodicidad
+                elegida hasta su cancelación.
               </p>
               <p>
                 Cancelar evita cobros futuros, pero no equivale por sí mismo a reembolsar un

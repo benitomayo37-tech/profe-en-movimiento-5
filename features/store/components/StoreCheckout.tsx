@@ -33,6 +33,13 @@ export default function StoreCheckout({
     );
   }
 
+  const isSubscription = product.billing === "monthly" || product.billing === "annual";
+  const billingLabel = product.billing === "monthly"
+    ? "Suscripción mensual"
+    : product.billing === "annual"
+      ? "Suscripción anual"
+      : "Pago único";
+
   return (
     <div className="space-y-8">
       <nav aria-label="Migas de pan" className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
@@ -107,7 +114,7 @@ export default function StoreCheckout({
               {[
                 ["1", "Checkout seguro", "Hotmart solicitará los datos necesarios para procesar el pago."],
                 ["2", "Confirmación", "Recibirás la confirmación de la compra en el correo registrado."],
-                ["3", "Entrega o acceso", product.billing === "monthly" ? "Se habilitará el acceso correspondiente a la suscripción." : "Hotmart gestionará la entrega del producto digital."],
+                ["3", "Entrega o acceso", isSubscription ? "Se habilitará el acceso correspondiente a la suscripción." : "Hotmart gestionará la entrega del producto digital."],
               ].map(([number, title, description]) => (
                 <li key={number} className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-sm font-black text-white">{number}</span>
@@ -135,7 +142,7 @@ export default function StoreCheckout({
               </div>
               <div className="p-4">
                 <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">Modalidad</dt>
-                <dd className="mt-1 font-black text-slate-900">{product.billing === "monthly" ? "Suscripción mensual" : "Pago único"}</dd>
+                <dd className="mt-1 font-black text-slate-900">{billingLabel}</dd>
               </div>
             </dl>
 
@@ -147,7 +154,7 @@ export default function StoreCheckout({
                   <p className="text-3xl font-black text-slate-950">
                     {formatStorePrice(product.price ?? 0)}
                   </p>
-                  {product.billing === "monthly" ? <p className="text-xs font-semibold text-slate-500">al mes</p> : null}
+                  {product.billing === "monthly" ? <p className="text-xs font-semibold text-slate-500">al mes</p> : product.billing === "annual" ? <p className="text-xs font-semibold text-slate-500">al año</p> : null}
                 </div>
               </div>
               <p className="mt-3 text-xs leading-5 text-slate-500">

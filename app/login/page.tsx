@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 interface LoginPageProps {
-  searchParams: Promise<{ next?: string; error?: string; rol?: string }>;
+  searchParams: Promise<{ next?: string; returnTo?: string; error?: string; rol?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
@@ -26,7 +26,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const studentSession = await getStudentSession();
   const query = await searchParams;
   const isStudent = query.rol === "estudiante";
-  const returnTo = normalizeReturnTo(query.next, "/dashboard");
+  const returnTo = normalizeReturnTo(query.next ?? query.returnTo, "/dashboard");
   const encodedReturnTo = encodeURIComponent(returnTo);
 
   if (access.authenticated) redirect(isStudent ? "/estudiantes" : returnTo);

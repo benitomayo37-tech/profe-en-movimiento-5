@@ -26,6 +26,7 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
     { label: "Movimiento para Todos", href: "/movimiento-para-todos" },
   ] },
   { title: "Recursos y cuenta", items: [
+    { label: "Comunidad", href: "/comunidad" },
     { label: "Academia", href: "/academia" },
     { label: "Biblioteca", href: "/resources" },
     { label: "Tienda", href: "/store" },
@@ -33,7 +34,7 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
   ] },
 ];
 
-const upcoming = ["Comunidad"];
+const upcoming: string[] = [];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -80,10 +81,10 @@ export function Sidebar() {
             </div>
           </div>
         ))}
-        <div>
+        {upcoming.length ? <div>
           <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">Próximamente</p>
           <div className="mt-2 flex flex-wrap gap-2 px-4">{upcoming.map((label) => <span key={label} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-400">{label}</span>)}</div>
-        </div>
+        </div> : null}
       </nav>
 
       <div className="mt-auto border-t border-slate-200 pt-6">

@@ -31,24 +31,27 @@ const appPlans = [
     price: "$0",
     priceDetail: "para comenzar",
     featured: false,
+    href: null,
   },
   {
-    name: "Pro",
-    eyebrow: "Para el trabajo diario",
+    name: "Pro mensual",
+    eyebrow: "Flexibilidad mensual",
     description: "La suite completa de herramientas docentes en línea.",
     features: ["Miniapps disponibles y nuevas incorporaciones", "Actualizaciones del kit", "Uso desde cualquier dispositivo", "1 cuenta docente"],
     price: "$4,99",
     priceDetail: "al mes",
-    featured: true,
+    featured: false,
+    href: "/store/plan-pro-mensual",
   },
   {
-    name: "Premium",
-    eyebrow: "Ecosistema completo",
-    description: "Inteligencia artificial y biblioteca premium en un solo lugar.",
-    features: ["Todo lo incluido en Pro", "Profe IA", "Entrenador IA", "Exportación Word y PDF"],
-    price: "$9,99",
-    priceDetail: "al mes",
-    featured: false,
+    name: "Pro anual",
+    eyebrow: "Mejor valor",
+    description: "El mismo acceso Pro durante 12 meses con ahorro frente al pago mensual.",
+    features: ["Todo lo incluido en Pro mensual", "Profe IA y Entrenador IA", "20 miniapps docentes", "Ahorro de $9,89 al año"],
+    price: "$49,99",
+    priceDetail: "al año",
+    featured: true,
+    href: "/store/plan-pro-anual",
   },
   {
     name: "Institucional",
@@ -58,6 +61,7 @@ const appPlans = [
     price: "Cotización",
     priceDetail: "según licencias",
     featured: false,
+    href: null,
   },
 ];
 
@@ -184,7 +188,7 @@ export default function StoreCatalog() {
               Suite Pro de miniapps para docentes
             </h2>
             <p className="mt-4 max-w-xl leading-7 text-slate-600">
-              Diecinueve herramientas en línea para acompañarte antes, durante y después de la clase. Organiza grupos, controla tiempos, crea materiales y evalúa desde un mismo lugar.
+              Veinte herramientas activas para acompañarte antes, durante y después de la clase. Organiza grupos, controla tiempos, crea materiales y evalúa desde un mismo lugar.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -235,12 +239,12 @@ export default function StoreCatalog() {
                     </li>
                   ))}
                 </ul>
-                {plan.name === "Pro" ? (
+                {plan.href ? (
                   <Link
-                    href="/store/suite-19-miniapps-docentes"
+                    href={plan.href}
                     className="mt-auto pt-6 text-sm font-black text-orange-300 hover:text-orange-200"
                   >
-                    Ver Suite Pro de miniapps →
+                    Ver Plan {plan.name} →
                   </Link>
                 ) : (
                   <span className={`mt-auto pt-6 text-sm font-black ${plan.featured ? "text-orange-300" : "text-blue-700"}`}>
@@ -348,7 +352,7 @@ export default function StoreCatalog() {
                           <>
                             {product.compareAtPrice ? <p className="text-xs font-semibold text-slate-400 line-through">{formatStorePrice(product.compareAtPrice)}</p> : null}
                             <p className="text-xl font-black text-blue-700">{formatStorePrice(product.price)}</p>
-                            {product.billing === "monthly" ? <p className="text-xs font-semibold text-slate-500">al mes</p> : null}
+                            {product.billing === "monthly" ? <p className="text-xs font-semibold text-slate-500">al mes</p> : product.billing === "annual" ? <p className="text-xs font-semibold text-slate-500">al año</p> : null}
                           </>
                         ) : (
                           <p className="text-xs font-black text-orange-700">
@@ -370,7 +374,7 @@ export default function StoreCatalog() {
                         <HotmartPurchaseButton productId={product.id} compact />
                       ) : product.purchaseStatus === "included" ? (
                         <Link
-                          href="/store/suite-19-miniapps-docentes"
+                          href="/store/plan-pro-mensual"
                           className="inline-flex min-h-10 items-center justify-center rounded-xl border border-orange-300 bg-orange-50 px-4 py-2 text-xs font-black text-orange-800 transition hover:bg-orange-100"
                         >
                           Ver Suite

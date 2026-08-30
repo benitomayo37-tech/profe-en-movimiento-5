@@ -10,7 +10,7 @@ const services = [
   {
     title: "App para profes",
     description:
-      "Diecinueve herramientas en línea para organizar, evaluar y acompañar tus clases.",
+      "Veinte herramientas activas para organizar, evaluar y acompañar tus clases.",
     icon: "📱",
     href: "/apps",
     color: "bg-emerald-50 text-emerald-900",

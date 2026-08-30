@@ -179,6 +179,67 @@ html[data-theme="sepia"] {
   background-color: #f1f5f9 !important;
 }
 
+@media (max-width: 640px) {
+  .academy-certificate {
+    aspect-ratio: auto !important;
+    min-height: 0 !important;
+    padding: 24px 16px !important;
+    border-width: 6px !important;
+    overflow: hidden !important;
+  }
+
+  .academy-certificate-logo {
+    width: 76px !important;
+    height: 76px !important;
+  }
+
+  .academy-certificate > :is(.mt-2, .mt-3, .mt-4, .mt-5, .mt-7) {
+    margin-top: 16px !important;
+  }
+
+  .academy-certificate h1 {
+    max-width: 100% !important;
+    font-size: 2.15rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .academy-certificate > p.border-b-2 {
+    max-width: 100% !important;
+    padding-inline: 8px !important;
+    font-size: 1.75rem !important;
+    line-height: 1.08 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .academy-certificate h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .academy-certificate-signature {
+    height: 104px !important;
+  }
+
+  .academy-certificate-seal {
+    position: static !important;
+    width: 92px !important;
+    height: 92px !important;
+    margin-top: 18px !important;
+  }
+
+  .academy-certificate > p.font-bold.uppercase {
+    max-width: 100% !important;
+    font-size: 9px !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .academy-certificate-note {
+    max-width: 100% !important;
+    line-height: 1.4 !important;
+  }
+}
+
 @media print {
   html,
 body {
@@ -756,6 +817,45 @@ html[data-theme="sepia"] .theme-sidebar-link:hover:not([aria-current="page"]) {
 html[data-theme="sepia"] .theme-sidebar-link[aria-current="page"] {
   background-color: #e2e8f0 !important;
   color: #1d4ed8 !important;
+}
+
+/* El tablero usa glifos Unicode cuya apariencia depende de currentColor.
+   El tema global no debe recolorear las piezas ni sus coordenadas. */
+html[data-theme] .chess-board .chess-piece {
+  color: #020617 !important;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.28);
+}
+
+html[data-theme] .chess-board .chess-coordinate {
+  color: #1e293b !important;
+}
+
+/* Las piezas estudiantiles conservan su bando en todos los temas y también
+   en el modo de alto contraste del tablero. */
+html[data-theme] .student-chess-board .student-chess-piece-white {
+  color: #f8fafc !important;
+  text-shadow: -1px -1px 0 #020617, 1px -1px 0 #020617,
+    -1px 1px 0 #020617, 1px 1px 0 #020617;
+}
+
+html[data-theme] .student-chess-board .student-chess-piece-black {
+  color: #020617 !important;
+  text-shadow: -1px -1px 0 #f8fafc, 1px -1px 0 #f8fafc,
+    -1px 1px 0 #f8fafc, 1px 1px 0 #f8fafc;
+}
+
+html[data-theme] .student-chess-board .student-chess-coordinate-light {
+  color: #334155 !important;
+}
+
+html[data-theme] .student-chess-board .student-chess-coordinate-dark {
+  color: #f8fafc !important;
+}
+
+/* Los números del puzzle deben conservar contraste sobre las fichas rosadas. */
+html[data-theme] .student-sports-puzzle .student-sports-puzzle-number {
+  color: #3b0764 !important;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
 }
 
 html[data-theme="dark"] .theme-selectable-card[data-selected="true"] {

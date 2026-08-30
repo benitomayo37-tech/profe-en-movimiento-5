@@ -257,8 +257,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🔥",
     accent: "from-orange-600 to-amber-400",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "calculadora-intensidad-calorias.html",
+    status: "planned",
   },
   {
     id: "rueda-retos-juegos",
@@ -269,8 +268,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🎡",
     accent: "from-fuchsia-600 to-violet-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "rueda-retos-juegos.html",
+    status: "planned",
   },
   {
     id: "cronometro-circuitos-hiit",
@@ -292,8 +290,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🎓",
     accent: "from-amber-500 to-yellow-400",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "generador-diplomas.html",
+    status: "planned",
   },
   {
     id: "banco-dinamicas-rompehielos",
@@ -304,8 +301,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🧊",
     accent: "from-sky-600 to-cyan-400",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "banco-dinamicas-rompehielos.html",
+    status: "planned",
   },
   {
     id: "registro-test-fisicos",
@@ -316,8 +312,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "📊",
     accent: "from-indigo-600 to-blue-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "registro-test-fisicos.html",
+    status: "planned",
   },
   {
     id: "generador-torneos-relampago",
@@ -328,8 +323,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🥇",
     accent: "from-yellow-500 to-orange-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "generador-torneos-relampago.html",
+    status: "planned",
   },
   {
     id: "generador-pausas-activas",
@@ -340,8 +334,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🤸",
     accent: "from-emerald-500 to-lime-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "generador-pausas-activas.html",
+    status: "planned",
   },
   {
     id: "desagregador-destrezas",
@@ -364,8 +357,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "💭",
     accent: "from-violet-600 to-fuchsia-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "activacion-conocimientos-previos.html",
+    status: "planned",
   },
   {
     id: "formulador-objetivos-clase",
@@ -376,8 +368,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🎯",
     accent: "from-blue-700 to-indigo-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "formulador-objetivos-clase.html",
+    status: "planned",
   },
   {
     id: "calculadora-frecuencia-cardiaca",
@@ -388,8 +379,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "❤️",
     accent: "from-rose-600 to-red-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "calculadora-frecuencia-cardiaca.html",
+    status: "planned",
   },
   {
     id: "calculadora-imc",
@@ -400,8 +390,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "⚖️",
     accent: "from-teal-600 to-emerald-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "calculadora-imc.html",
+    status: "planned",
   },
   {
     id: "generador-rubricas",
@@ -412,8 +401,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "✅",
     accent: "from-green-600 to-emerald-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "generador-rubricas.html",
+    status: "planned",
   },
   {
     id: "armador-plan-clase",
@@ -424,8 +412,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "📝",
     accent: "from-cyan-700 to-blue-600",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "armador-plan-clase.html",
+    status: "planned",
   },
   {
     id: "dinamicas-cierre-ticket-salida",
@@ -436,8 +423,7 @@ export const miniApps: MiniAppDefinition[] = [
     icon: "🚪",
     accent: "from-orange-600 to-rose-500",
     plan: "Pro",
-    status: "available",
-    embeddedAsset: "dinamicas-cierre-ticket-salida.html",
+    status: "planned",
   },
 ];
 

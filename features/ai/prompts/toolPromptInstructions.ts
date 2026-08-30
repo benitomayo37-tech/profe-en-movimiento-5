@@ -1,40 +1,40 @@
-﻿import type { AIToolId } from "@/features/ai/types/ai";
+import type { AIToolId } from "@/features/ai/types/ai";
 
 const TOOL_PROMPT_INSTRUCTIONS: Record<AIToolId, string> = {
   "lesson-plan": `
-INSTRUCCIONES ESPECÃFICAS PARA CREAR PLANIFICACIÃ“N
+INSTRUCCIONES ESPECÍFICAS PARA CREAR PLANIFICACIÓN
 
-Crea una planificaciÃ³n de EducaciÃ³n FÃ­sica segura, aplicable y coherente con el nivel, duraciÃ³n, cantidad de estudiantes y materiales proporcionados.
+Crea una planificación de Educación Física segura, aplicable y coherente con el nivel, duración, cantidad de estudiantes y materiales proporcionados.
 
 REGLAS GENERALES
 
-- Conserva literalmente el nivel educativo y el cÃ³digo curricular.
-- No inventes cÃ³digos curriculares.
+- Conserva literalmente el nivel educativo y el código curricular.
+- No inventes códigos curriculares.
 - Utiliza exclusivamente los materiales indicados.
 - El campo "rubric" debe ser null.
-- Escribe completamente en espaÃ±ol.
-- Evita repeticiones y utiliza pÃ¡rrafos breves.
-- No escribas tÃ©rminos como checklist, coaching, feedback, observations, tablero, ficha, pizarra o telÃ©fono.
-- No reproduzcas instrucciones internas, propiedades tÃ©cnicas ni valores JSON.
+- Escribe completamente en español.
+- Evita repeticiones y utiliza párrafos breves.
+- No escribas términos como checklist, coaching, feedback, observations, tablero, ficha, pizarra o teléfono.
+- No reproduzcas instrucciones internas, propiedades técnicas ni valores JSON.
 
 SECCIONES OBLIGATORIAS Y ORDEN
 
 Genera exactamente estas secciones y conserva este orden:
 
-1. Datos y propÃ³sito de la sesiÃ³n.
+1. Datos y propósito de la sesión.
 2. Objetivo de aprendizaje.
-3. OrganizaciÃ³n del grupo, espacio y materiales.
-MetodologÃ­a aplicada.
+3. Organización del grupo, espacio y materiales.
+Metodología aplicada.
 4. Inicio.
 5. Desarrollo.
 6. Cierre y vuelta a la calma.
-7. EvaluaciÃ³n del aprendizaje.
+7. Evaluación del aprendizaje.
 8. Medidas de seguridad.
-9. Estrategias DUA integradas, Ãºnicamente si DUA estÃ¡ activado.
-10. Apoyos para adaptaciÃ³n NEE, Ãºnicamente si NEE estÃ¡ activado.
+9. Estrategias DUA integradas, únicamente si DUA está activado.
+10. Apoyos para adaptación NEE, únicamente si NEE está activado.
 
-La secciÃ³n debe titularse exactamente "MetodologÃ­a aplicada", sin nÃºmero,
-y debe aparecer inmediatamente despuÃ©s de "OrganizaciÃ³n del grupo, espacio
+La sección debe titularse exactamente "Metodología aplicada", sin número,
+y debe aparecer inmediatamente después de "Organización del grupo, espacio
 y materiales" y antes de "Inicio".
 
 No combines estas secciones, no cambies su orden y no repitas su contenido
@@ -42,263 +42,263 @@ en otras partes.
 
 TIEMPO
 
-- Inicio, Desarrollo, Cierre y EvaluaciÃ³n deben sumar exactamente la duraciÃ³n solicitada.
-- Indica el tiempo de cada acciÃ³n interna.
+- Inicio, Desarrollo, Cierre y Evaluación deben sumar exactamente la duración solicitada.
+- Indica el tiempo de cada acción interna.
 - Las acciones internas deben sumar exactamente el tiempo del momento correspondiente.
-- Las explicaciones, demostraciones, transiciones, recuperaciÃ³n, reflexiÃ³n y evaluaciÃ³n deben estar contabilizadas.
-- Las actividades simultÃ¡neas se contabilizan una sola vez.
-- No agregues acciones despuÃ©s de completar el tiempo total.
-- Las medidas de seguridad se aplican durante la sesiÃ³n y no aÃ±aden minutos.
+- Las explicaciones, demostraciones, transiciones, recuperación, reflexión y evaluación deben estar contabilizadas.
+- Las actividades simultáneas se contabilizan una sola vez.
+- No agregues acciones después de completar el tiempo total.
+- Las medidas de seguridad se aplican durante la sesión y no añaden minutos.
 
-ORGANIZACIÃ“N Y PARTICIPACIÃ“N
+ORGANIZACIÓN Y PARTICIPACIÓN
 
 - Distribuye exactamente la cantidad de estudiantes solicitada.
 - Explica la cantidad de grupos, sus integrantes y las zonas de trabajo.
-- Todos los estudiantes deben tener una acciÃ³n activa simultÃ¡nea.
-- No utilices filas, eliminaciÃ³n, espera pasiva ni observadores inmÃ³viles.
-- Nunca escribas "esperan su turno", "espera su turno" ni "aguardan su turno". Al describir una rotaciÃ³n, indica la tarea motriz activa que realiza cada pareja o grupo mientras intercambia funciones.
-- No asignes a ningÃºn estudiante el rol de "observador" ni "observador-coevaluador". La coevaluaciÃ³n debe realizarla un pasador, receptor o participante en desplazamiento mientras conserva una funciÃ³n motriz activa.
-- La coevaluaciÃ³n debe ser verbal, breve, rotativa y combinarse con una acciÃ³n motriz segura.
-- Las respuestas o reflexiones grupales deben realizarse simultÃ¡neamente cuando no exista tiempo para escucharlas una por una.
+- Todos los estudiantes deben tener una acción activa simultánea.
+- No utilices filas, eliminación, espera pasiva ni observadores inmóviles.
+- Nunca escribas "esperan su turno", "espera su turno" ni "aguardan su turno". Al describir una rotación, indica la tarea motriz activa que realiza cada pareja o grupo mientras intercambia funciones.
+- No asignes a ningún estudiante el rol de "observador" ni "observador-coevaluador". La coevaluación debe realizarla un pasador, receptor o participante en desplazamiento mientras conserva una función motriz activa.
+- La coevaluación debe ser verbal, breve, rotativa y combinarse con una acción motriz segura.
+- Las respuestas o reflexiones grupales deben realizarse simultáneamente cuando no exista tiempo para escucharlas una por una.
 
-DISTRIBUCIÃ“N DE MATERIALES
+DISTRIBUCIÓN DE MATERIALES
 
-- Todos los grupos deben practicar realmente cada habilidad que requiera balÃ³n u otro material.
-- La simulaciÃ³n sin material puede preparar o reforzar la tÃ©cnica, pero no puede sustituir toda la prÃ¡ctica real.
+- Todos los grupos deben practicar realmente cada habilidad que requiera balón u otro material.
+- La simulación sin material puede preparar o reforzar la técnica, pero no puede sustituir toda la práctica real.
 - Cuando existan menos balones que grupos, forma zonas compartidas y realiza intercambios dentro de cada bloque de aprendizaje.
 - No mantengas a un grupo durante un bloque completo sin el material necesario.
-- Cada grupo debe utilizar el material en todos los contenidos tÃ©cnicos principales.
+- Cada grupo debe utilizar el material en todos los contenidos técnicos principales.
 
 CASO DE 4 BALONES Y 8 GRUPOS
 
 - Organiza exactamente 4 zonas principales.
-- En cada zona trabajan 2 grupos de 5 estudiantes y comparten 1 balÃ³n.
-- En cada bloque tÃ©cnico, ambos grupos alternan el uso del balÃ³n mediante intervalos breves.
+- En cada zona trabajan 2 grupos de 5 estudiantes y comparten 1 balón.
+- En cada bloque técnico, ambos grupos alternan el uso del balón mediante intervalos breves.
 - Los intercambios se realizan dentro del mismo bloque, no solamente al terminarlo.
-- Mientras un grupo utiliza el balÃ³n, el otro realiza una tarea motriz complementaria.
-- DespuÃ©s intercambian funciones.
-- Los 8 grupos deben practicar con balÃ³n cada tÃ©cnica escrita expresamente por el docente. No agregues pase de pecho, pase de pique, pase sobre la cabeza ni ninguna otra tÃ©cnica que no aparezca en el tema o en las instrucciones adicionales.
-- Antes de responder, compara el objetivo, el desarrollo y la evaluaciÃ³n con el tema. Si una tÃ©cnica no fue escrita por el docente, elimÃ­nala completamente de las tres secciones.
-- Dentro de cada zona con 10 estudiantes y 1 balÃ³n, organiza 5 parejas y microturnos de 30 segundos: una pareja utiliza el balÃ³n y las otras cuatro realizan desplazamientos, desmarques, postura de recepciÃ³n y retroalimentaciÃ³n verbal en movimiento. DespuÃ©s rota la pareja que utiliza el balÃ³n.
+- Mientras un grupo utiliza el balón, el otro realiza una tarea motriz complementaria.
+- Después intercambian funciones.
+- Los 8 grupos deben practicar con balón cada técnica escrita expresamente por el docente. No agregues pase de pecho, pase de pique, pase sobre la cabeza ni ninguna otra técnica que no aparezca en el tema o en las instrucciones adicionales.
+- Antes de responder, compara el objetivo, el desarrollo y la evaluación con el tema. Si una técnica no fue escrita por el docente, elimínala completamente de las tres secciones.
+- Dentro de cada zona con 10 estudiantes y 1 balón, organiza 5 parejas y microturnos de 30 segundos: una pareja utiliza el balón y las otras cuatro realizan desplazamientos, desmarques, postura de recepción y retroalimentación verbal en movimiento. Después rota la pareja que utiliza el balón.
 
 DUA
 
-- Si DUA estÃ¡ activado, escribe sus estrategias solamente en la secciÃ³n "Estrategias DUA integradas".
-- No escribas DUA dentro de Inicio, Desarrollo, Cierre, EvaluaciÃ³n o Seguridad.
+- Si DUA está activado, escribe sus estrategias solamente en la sección "Estrategias DUA integradas".
+- No escribas DUA dentro de Inicio, Desarrollo, Cierre, Evaluación o Seguridad.
 - Incluye exactamente tres elementos independientes:
-  1. REPRESENTACIÃ“N.
-  2. ACCIÃ“N Y EXPRESIÃ“N.
-  3. COMPROMISO / MOTIVACIÃ“N.
+  1. REPRESENTACIÓN.
+  2. ACCIÓN Y EXPRESIÓN.
+  3. COMPROMISO / MOTIVACIÓN.
 - Cada principio debe comenzar en un elemento independiente del arreglo content para que reciba su color correcto.
-- Relaciona cada estrategia con actividades concretas de la planificaciÃ³n.
+- Relaciona cada estrategia con actividades concretas de la planificación.
 - No repitas los principios ni escribas un segundo resumen DUA.
 
-ADAPTACIÃ“N NEE
+ADAPTACIÓN NEE
 
-- Si NEE estÃ¡ activado, escribe todos los apoyos Ãºnicamente en la secciÃ³n "Apoyos para adaptaciÃ³n NEE".
+- Si NEE está activado, escribe todos los apoyos únicamente en la sección "Apoyos para adaptación NEE".
 - No escribas apoyos NEE dentro de otras secciones.
-- No supongas dificultades motrices, visuales, atencionales ni diagnÃ³sticos no proporcionados.
-- Presenta opciones generales mediante demostraciÃ³n, instrucciones verbales, ajuste de ritmo, distancia o espacio y compaÃ±ero de apoyo.
-- MantÃ©n al estudiante dentro del grupo y conserva el objetivo esencial.
-- No propongas contacto fÃ­sico, guÃ­a manual ni manipulaciÃ³n corporal, aunque exista autorizaciÃ³n.
+- No supongas dificultades motrices, visuales, atencionales ni diagnósticos no proporcionados.
+- Presenta opciones generales mediante demostración, instrucciones verbales, ajuste de ritmo, distancia o espacio y compañero de apoyo.
+- Mantén al estudiante dentro del grupo y conserva el objetivo esencial.
+- No propongas contacto físico, guía manual ni manipulación corporal, aunque exista autorización.
 - Un rol de menor exigencia debe continuar siendo activo, breve y rotativo.
 
-EVALUACIÃ“N
+EVALUACIÓN
 
-- Utiliza Ãºnicamente observaciÃ³n docente, autoevaluaciÃ³n verbal y coevaluaciÃ³n oral cuando no existan materiales para escribir.
+- Utiliza únicamente observación docente, autoevaluación verbal y coevaluación oral cuando no existan materiales para escribir.
 - Incluye entre 3 y 5 indicadores observables relacionados con el objetivo.
-- No menciones listas escritas, fichas, rÃºbricas ni registros materiales que no hayan sido solicitados.
-- La evaluaciÃ³n debe realizarse dentro del tiempo declarado.
-- La cantidad de ejecuciones simultÃ¡neas con balÃ³n nunca puede superar la cantidad de balones disponibles.
-- No afirmes que todas las parejas realizan pases o una prueba con balÃ³n simultÃ¡neamente cuando existen menos balones que parejas.
-- Para 40 estudiantes y 4 balones, organiza 4 zonas de evaluaciÃ³n con 5 parejas por zona: una pareja ejecuta con el balÃ³n durante cada microturno de 30 segundos y las otras cuatro parejas mantienen tareas motrices activas.
-- Cuenta solamente las tÃ©cnicas que el docente haya escrito expresamente en el tema o en las instrucciones adicionales. No conviertas un tema de una sola tÃ©cnica en una evaluaciÃ³n de tres tÃ©cnicas.
+- No menciones listas escritas, fichas, rúbricas ni registros materiales que no hayan sido solicitados.
+- La evaluación debe realizarse dentro del tiempo declarado.
+- La cantidad de ejecuciones simultáneas con balón nunca puede superar la cantidad de balones disponibles.
+- No afirmes que todas las parejas realizan pases o una prueba con balón simultáneamente cuando existen menos balones que parejas.
+- Para 40 estudiantes y 4 balones, organiza 4 zonas de evaluación con 5 parejas por zona: una pareja ejecuta con el balón durante cada microturno de 30 segundos y las otras cuatro parejas mantienen tareas motrices activas.
+- Cuenta solamente las técnicas que el docente haya escrito expresamente en el tema o en las instrucciones adicionales. No conviertas un tema de una sola técnica en una evaluación de tres técnicas.
 - Si el docente solicita expresamente pase de pecho, pase de pique y pase sobre la cabeza, realiza exactamente 3 rondas por zona, una por cada tipo de pase. Cada ronda contiene 5 microturnos de 30 segundos, uno por pareja. En cada microturno la pareja evaluada realiza solamente 5 intentos de un tipo de pase; nunca debe intentar los tres tipos dentro del mismo microturno.
-- En ese caso se completan 15 microturnos por zona: 3 rondas x 5 parejas x 30 segundos = 7 minutos 30 segundos. Reserva 1 minuto para explicar y 30 segundos para cerrar la evaluaciÃ³n; el bloque independiente de evaluaciÃ³n debe durar exactamente 9 minutos.
-- Para una sesiÃ³n de 45 minutos en la que el docente haya solicitado expresamente esos tres pases, utiliza esta distribuciÃ³n: Inicio 6 minutos, Desarrollo 26 minutos, Cierre 4 minutos y EvaluaciÃ³n 9 minutos. La suma debe ser 45 minutos.
-- Si el docente solicita solamente un tipo de pase, evalÃºa exclusivamente ese pase mediante 5 microturnos por zona y no apliques la distribuciÃ³n especial de tres rondas.
+- En ese caso se completan 15 microturnos por zona: 3 rondas x 5 parejas x 30 segundos = 7 minutos 30 segundos. Reserva 1 minuto para explicar y 30 segundos para cerrar la evaluación; el bloque independiente de evaluación debe durar exactamente 9 minutos.
+- Para una sesión de 45 minutos en la que el docente haya solicitado expresamente esos tres pases, utiliza esta distribución: Inicio 6 minutos, Desarrollo 26 minutos, Cierre 4 minutos y Evaluación 9 minutos. La suma debe ser 45 minutos.
+- Si el docente solicita solamente un tipo de pase, evalúa exclusivamente ese pase mediante 5 microturnos por zona y no apliques la distribución especial de tres rondas.
 
 SEGURIDAD
 
-- Incluye separaciÃ³n entre zonas, control de trayectorias y revisiÃ³n del espacio.
-- Si conos o silbato no aparecen expresamente entre los materiales proporcionados, no los menciones ni siquiera como recursos opcionales. Delimita con lÃ­neas o referencias naturales del espacio y dirige los cambios mediante una seÃ±al verbal o una palmada.
-- Incluye alternativas de menor intensidad y seÃ±ales observables de esfuerzo.
+- Incluye separación entre zonas, control de trayectorias y revisión del espacio.
+- Si conos o silbato no aparecen expresamente entre los materiales proporcionados, no los menciones ni siquiera como recursos opcionales. Delimita con líneas o referencias naturales del espacio y dirige los cambios mediante una señal verbal o una palmada.
+- Incluye alternativas de menor intensidad y señales observables de esfuerzo.
 - No inventes equipamiento, dispositivos o recursos institucionales.
-- Expresa la prevenciÃ³n de colisiones con lenguaje pedagÃ³gico natural.
+- Expresa la prevención de colisiones con lenguaje pedagógico natural.
 
-EXTENSIÃ“N
+EXTENSIÓN
 
-- Redacta cada secciÃ³n de manera compacta.
-- No repitas organizaciÃ³n, tiempos, DUA, NEE, evaluaciÃ³n o seguridad.
-- Evita explicaciones innecesarias para que la planificaciÃ³n pueda imprimirse en un mÃ¡ximo de tres pÃ¡ginas.
+- Redacta cada sección de manera compacta.
+- No repitas organización, tiempos, DUA, NEE, evaluación o seguridad.
+- Evita explicaciones innecesarias para que la planificación pueda imprimirse en un máximo de tres páginas.
 `,
 
   rubric: `
-INSTRUCCIONES ESPECÃFICAS PARA CREAR RÃšBRICA
+INSTRUCCIONES ESPECÍFICAS PARA CREAR RÚBRICA
 
-- El campo "rubric" debe contener una rÃºbrica estructurada completa.
-- Genera entre 4 y 6 criterios especÃ­ficos, observables y directamente relacionados con la habilidad solicitada.
-- Evita criterios genÃ©ricos cuando sea posible evaluar aspectos tÃ©cnicos, motrices, cooperativos o de seguridad.
+- El campo "rubric" debe contener una rúbrica estructurada completa.
+- Genera entre 4 y 6 criterios específicos, observables y directamente relacionados con la habilidad solicitada.
+- Evita criterios genéricos cuando sea posible evaluar aspectos técnicos, motrices, cooperativos o de seguridad.
 - Cada criterio debe contener exactamente cinco descriptores:
-  - excellent: desempeÃ±o Excelente (10).
-  - good: desempeÃ±o Bien (9).
-  - regular: desempeÃ±o Regular (8).
-  - acceptable: desempeÃ±o Aceptable (7).
-  - improvable: desempeÃ±o Mejorable (5).
+  - excellent: desempeño Excelente (10).
+  - good: desempeño Bien (9).
+  - regular: desempeño Regular (8).
+  - acceptable: desempeño Aceptable (7).
+  - improvable: desempeño Mejorable (5).
 
-PROGRESIÃ“N OBLIGATORIA DE LOS DESCRIPTORES
+PROGRESIÓN OBLIGATORIA DE LOS DESCRIPTORES
 
-- Excelente (10): desempeÃ±o autÃ³nomo, preciso, consistente y seguro.
-- Bien (9): desempeÃ±o mayormente consistente, con errores menores o correcciones ocasionales.
-- Regular (8): desempeÃ±o intermitente, con errores identificables y apoyo ocasional.
+- Excelente (10): desempeño autónomo, preciso, consistente y seguro.
+- Bien (9): desempeño mayormente consistente, con errores menores o correcciones ocasionales.
+- Regular (8): desempeño intermitente, con errores identificables y apoyo ocasional.
 - Aceptable (7): demuestra parcialmente la habilidad esencial y necesita apoyo frecuente.
-- Mejorable (5): todavÃ­a no demuestra de forma suficiente la habilidad esencial y necesita enseÃ±anza guiada.
+- Mejorable (5): todavía no demuestra de forma suficiente la habilidad esencial y necesita enseñanza guiada.
 
 REGLAS DE COHERENCIA
 
 - Redacta todos los descriptores mediante conductas que el docente pueda observar.
-- Cada nivel debe representar un desempeÃ±o claramente diferente.
+- Cada nivel debe representar un desempeño claramente diferente.
 - No repitas el mismo descriptor cambiando solamente una palabra.
 - Redacta cada descriptor de forma compacta, preferentemente entre 18 y 32 palabras, sin perder la conducta observable ni la diferencia entre niveles.
 - No utilices rangos que se superpongan entre dos niveles.
-- No utilices porcentajes, proporciones ni cantidades como Â«8 de 10 intentosÂ», salvo que el docente los solicite expresamente.
+- No utilices porcentajes, proporciones ni cantidades como «8 de 10 intentos», salvo que el docente los solicite expresamente.
 - Si se solicitan cantidades o porcentajes, utiliza la misma cantidad de intentos en las instrucciones y en todos los descriptores.
-- No presentes el nivel Mejorable como una repeticiÃ³n ambigua del nivel Aceptable.
+- No presentes el nivel Mejorable como una repetición ambigua del nivel Aceptable.
 - Evita expresiones punitivas, descalificadoras o que etiqueten al estudiante.
-- Conserva literalmente el nivel educativo, el grado o curso y la destreza con criterio de desempeÃ±o proporcionados.
+- Conserva literalmente el nivel educativo, el grado o curso y la destreza con criterio de desempeño proporcionados.
 
-APLICACIÃ“N DE LA RÃšBRICA
+APLICACIÓN DE LA RÚBRICA
 
 - Las instrucciones deben ser realistas para la cantidad de estudiantes, el tiempo y los materiales disponibles.
-- PropÃ³n observaciones representativas durante la ejecuciÃ³n de las actividades.
-- Utiliza la propia tabla de la rÃºbrica como instrumento de registro. No la denomines lista de cotejo, hoja de cotejo, lista de control, hoja de control, ficha de control ni propongas otro instrumento diferente.
-- Una misma ejecuciÃ³n observada puede aportar evidencia para varios criterios relacionados; no exijas una ejecuciÃ³n separada por cada criterio.
-- No exijas una cantidad de intentos individual imposible de observar dentro de la duraciÃ³n solicitada.
+- Propón observaciones representativas durante la ejecución de las actividades.
+- Utiliza la propia tabla de la rúbrica como instrumento de registro. No la denomines lista de cotejo, hoja de cotejo, lista de control, hoja de control, ficha de control ni propongas otro instrumento diferente.
+- Una misma ejecución observada puede aportar evidencia para varios criterios relacionados; no exijas una ejecución separada por cada criterio.
+- No exijas una cantidad de intentos individual imposible de observar dentro de la duración solicitada.
 - La cantidad de observaciones debe ser suficiente para valorar todos los criterios y habilidades declarados.
-- Si se evalÃºan varios tipos de ejecuciÃ³n, distribuye observaciones breves y representativas durante las estaciones, sin exigir una cantidad imposible para el grupo.
-- No limites la evaluaciÃ³n a dos intentos cuando la rÃºbrica incluya mÃ¡s de dos habilidades o criterios diferentes.
-- Integra toda la observaciÃ³n durante la prÃ¡ctica activa. No agregues una demostraciÃ³n o ejecuciÃ³n final individual que produzca filas, turnos de espera o estudiantes inactivos.
-- No organices filas, colas ni turnos en los que solamente una pareja o un estudiante permanezca activo. La aplicaciÃ³n de la rÃºbrica debe observar el desempeÃ±o dentro de una prÃ¡ctica en la que todo el grupo mantenga una funciÃ³n activa.
-- Si el docente no solicitÃ³ expresamente una organizaciÃ³n nueva, no inventes estaciones, sectores ni rotaciones: explica cÃ³mo aplicar la rÃºbrica durante la actividad prÃ¡ctica ya planificada.
-- No afirmes que todas las parejas realizan pases simultÃ¡neos o continuos cuando existen menos balones que parejas. En ese caso, describe una alternancia breve con funciones motrices activas y explica de forma concreta quÃ© hace cada estudiante mientras no utiliza el balÃ³n.
-- No utilices las expresiones "quienes esperan", "parejas que esperan" ni "estudiantes que esperan". Nombra directamente la funciÃ³n motriz activa que realizan durante la alternancia.
-- Utiliza terminologÃ­a pedagÃ³gica en espaÃ±ol. Escribe "sincronizaciÃ³n", "momento de ejecuciÃ³n" o "elecciÃ³n oportuna" en lugar de "timing".
-- Escribe "acompaÃ±amiento final de manos y muÃ±ecas" y no utilices el anglicismo "follow-through".
-- Calcula obligatoriamente la calificaciÃ³n final mediante una regla de tres explÃ­cita.
-- Indica el puntaje mÃ¡ximo: cantidad de criterios x 10 puntos.
-- Explica la fÃ³rmula exactamente asÃ­: Regla de tres: calificaciÃ³n final = (puntaje obtenido x 10) Ã· puntaje mÃ¡ximo.
-- Incluye un ejemplo numÃ©rico resuelto y expresa el resultado final sobre 10.
-- No presentes el puntaje acumulado como calificaciÃ³n final; el total solamente se utiliza como base de la conversiÃ³n mediante regla de tres.
-- No inventes cÃ³digos curriculares ni modifiques la destreza proporcionada.
+- Si se evalúan varios tipos de ejecución, distribuye observaciones breves y representativas durante las estaciones, sin exigir una cantidad imposible para el grupo.
+- No limites la evaluación a dos intentos cuando la rúbrica incluya más de dos habilidades o criterios diferentes.
+- Integra toda la observación durante la práctica activa. No agregues una demostración o ejecución final individual que produzca filas, turnos de espera o estudiantes inactivos.
+- No organices filas, colas ni turnos en los que solamente una pareja o un estudiante permanezca activo. La aplicación de la rúbrica debe observar el desempeño dentro de una práctica en la que todo el grupo mantenga una función activa.
+- Si el docente no solicitó expresamente una organización nueva, no inventes estaciones, sectores ni rotaciones: explica cómo aplicar la rúbrica durante la actividad práctica ya planificada.
+- No afirmes que todas las parejas realizan pases simultáneos o continuos cuando existen menos balones que parejas. En ese caso, describe una alternancia breve con funciones motrices activas y explica de forma concreta qué hace cada estudiante mientras no utiliza el balón.
+- No utilices las expresiones "quienes esperan", "parejas que esperan" ni "estudiantes que esperan". Nombra directamente la función motriz activa que realizan durante la alternancia.
+- Utiliza terminología pedagógica en español. Escribe "sincronización", "momento de ejecución" o "elección oportuna" en lugar de "timing".
+- Escribe "acompañamiento final de manos y muñecas" y no utilices el anglicismo "follow-through".
+- Calcula obligatoriamente la calificación final mediante una regla de tres explícita.
+- Indica el puntaje máximo: cantidad de criterios x 10 puntos.
+- Explica la fórmula exactamente así: Regla de tres: calificación final = (puntaje obtenido x 10) ÷ puntaje máximo.
+- Incluye un ejemplo numérico resuelto y expresa el resultado final sobre 10.
+- No presentes el puntaje acumulado como calificación final; el total solamente se utiliza como base de la conversión mediante regla de tres.
+- No inventes códigos curriculares ni modifiques la destreza proporcionada.
 
 ESTRUCTURA VISIBLE
 
-- El tÃ­tulo de la rÃºbrica debe mencionar claramente el contenido o habilidad evaluada.
-- Menciona el contenido una sola vez en el tÃ­tulo; no repitas el mismo tema antes y despuÃ©s de dos puntos, guiones o rayas.
-- En "sections" incluye exactamente estas tres secciones, con estos tÃ­tulos y en este orden:
-  1. PropÃ³sito de la rÃºbrica
-  2. Instrucciones de aplicaciÃ³n
+- El título de la rúbrica debe mencionar claramente el contenido o habilidad evaluada.
+- Menciona el contenido una sola vez en el título; no repitas el mismo tema antes y después de dos puntos, guiones o rayas.
+- En "sections" incluye exactamente estas tres secciones, con estos títulos y en este orden:
+  1. Propósito de la rúbrica
+  2. Instrucciones de aplicación
   3. Forma de calcular o interpretar el resultado
-- La tercera secciÃ³n debe mostrar el puntaje mÃ¡ximo, la regla de tres, la fÃ³rmula completa y un ejemplo numÃ©rico resuelto con calificaciÃ³n final sobre 10.
-- No dupliques en "sections" los descriptores completos de la rÃºbrica.
+- La tercera sección debe mostrar el puntaje máximo, la regla de tres, la fórmula completa y un ejemplo numérico resuelto con calificación final sobre 10.
+- No dupliques en "sections" los descriptores completos de la rúbrica.
 - Si no se solicitaron DUA o NEE, no agregues secciones ni estrategias correspondientes.
 - Para esta herramienta, "durationPlan" y "logisticsPlan" deben ser null.
 `,
 
   checklist: `
-INSTRUCCIONES ESPECÃFICAS PARA CREAR LISTA DE COTEJO
+INSTRUCCIONES ESPECÍFICAS PARA CREAR LISTA DE COTEJO
 
-- Crea una lista de cotejo lista para observar una actividad prÃ¡ctica.
+- Crea una lista de cotejo lista para observar una actividad práctica.
 - Incluye exactamente estas cuatro secciones y no agregues otras:
-  1. PropÃ³sito e instrucciones de aplicaciÃ³n.
+  1. Propósito e instrucciones de aplicación.
   2. Indicadores observables.
   3. Escala o forma de registro.
-  4. InterpretaciÃ³n y retroalimentaciÃ³n.
-- Integra la organizaciÃ³n, los materiales, las rotaciones y las medidas de seguridad dentro de "PropÃ³sito e instrucciones de aplicaciÃ³n".
-- No crees una secciÃ³n adicional de organizaciÃ³n, resumen operativo, seguridad o materiales.
-- Evita repetir en la Ãºltima secciÃ³n informaciÃ³n organizativa ya explicada en las instrucciones.
-- MantÃ©n el contenido suficientemente compacto para que la lista completa pueda imprimirse preferentemente en dos pÃ¡ginas.
+  4. Interpretación y retroalimentación.
+- Integra la organización, los materiales, las rotaciones y las medidas de seguridad dentro de "Propósito e instrucciones de aplicación".
+- No crees una sección adicional de organización, resumen operativo, seguridad o materiales.
+- Evita repetir en la última sección información organizativa ya explicada en las instrucciones.
+- Mantén el contenido suficientemente compacto para que la lista completa pueda imprimirse preferentemente en dos páginas.
 - Genera entre 6 y 12 indicadores.
 - Redacta cada indicador con una sola conducta observable, concreta y verificable.
-- Evita expresiones ambiguas como "lo hace bien", "comprende" o "participa adecuadamente" sin indicar quÃ© se observarÃ¡.
-- Combina, cuando corresponda, aspectos tÃ©cnicos, cognitivos, actitudinales, de cooperaciÃ³n y seguridad.
-- En el pase de pecho, describe la tÃ©cnica como balÃ³n frente al pecho, codos inicialmente flexionados, extensiÃ³n de brazos y finalizaciÃ³n de muÃ±ecas; no indiques que el balÃ³n se impulsa con los codos.
+- Evita expresiones ambiguas como "lo hace bien", "comprende" o "participa adecuadamente" sin indicar qué se observará.
+- Combina, cuando corresponda, aspectos técnicos, cognitivos, actitudinales, de cooperación y seguridad.
+- En el pase de pecho, describe la técnica como balón frente al pecho, codos inicialmente flexionados, extensión de brazos y finalización de muñecas; no indiques que el balón se impulsa con los codos.
 - En el pase de pique, exige un solo bote controlado antes de llegar al receptor.
 - En el pase sobre la cabeza, exige trayectoria controlada y evita lanzamientos dirigidos al rostro.
-- Indica una escala sencilla, por ejemplo: SÃ­ / En proceso / No, sin convertirla en una rÃºbrica por niveles.
+- Indica una escala sencilla, por ejemplo: Sí / En proceso / No, sin convertirla en una rúbrica por niveles.
 - El campo "rubric" debe ser null.
 - Presenta cada indicador en formato directamente utilizable:
-  Indicador â€” [ ] SÃ­ | [ ] En proceso | [ ] No.
-  - La lista debe permitir registrar el desempeÃ±o individual de cada estudiante.
-- Incluye espacios de identificaciÃ³n para nombre del estudiante, curso y fecha.
-- Utiliza una marca por indicador y por estudiante, salvo que el docente solicite expresamente una evaluaciÃ³n grupal.
-- No utilices a un representante para asignar una valoraciÃ³n general a todo el grupo.
-- La observaciÃ³n debe integrarse durante la prÃ¡ctica y las rotaciones, sin concentrar todos los indicadores en una demostraciÃ³n final de pocos segundos.
-- Si se utiliza coevaluaciÃ³n, cada estudiante debe ser observado individualmente por un compaÃ±ero y el docente debe verificar muestras durante toda la prÃ¡ctica.
+  Indicador — [ ] Sí | [ ] En proceso | [ ] No.
+  - La lista debe permitir registrar el desempeño individual de cada estudiante.
+- Incluye espacios de identificación para nombre del estudiante, curso y fecha.
+- Utiliza una marca por indicador y por estudiante, salvo que el docente solicite expresamente una evaluación grupal.
+- No utilices a un representante para asignar una valoración general a todo el grupo.
+- La observación debe integrarse durante la práctica y las rotaciones, sin concentrar todos los indicadores en una demostración final de pocos segundos.
+- Si se utiliza coevaluación, cada estudiante debe ser observado individualmente por un compañero y el docente debe verificar muestras durante toda la práctica.
 - Todos los estudiantes deben mantener una tarea activa: ejecutante, receptor, observador con lista o responsable de seguridad y espacio.
-- No crees mÃ¡s zonas simultÃ¡neas de prÃ¡ctica con balÃ³n que balones disponibles.
-- Si existen mÃ¡s grupos que balones, organiza turnos activos dentro de cada zona o parejas de grupos, sin dejar estudiantes esperando.
-- Describe las alternancias con lenguaje positivo. No escribas "durante su turno", "durante la mayorÃ­a del turno", "sin permanecer inactivo", "quienes esperan" ni expresiones equivalentes.
-- Cuando una zona tenga 10 estudiantes y 1 balÃ³n, utiliza microturnos de 30 segundos y declara exactamente: 1 pasador, 1 receptor y 8 participantes sin balÃ³n con funciones motrices concretas.
-- Distribuye las funciones de los 8 participantes sin balÃ³n entre observaciÃ³n tÃ©cnica mÃ³vil, postura de recepciÃ³n, desplazamientos de apoyo y simulaciÃ³n del gesto. Todos deben rotar por las funciones de pasador, receptor y observaciÃ³n.
-- Redacta esa distribuciÃ³n con concordancia gramatical completa: "2 participantes en observaciÃ³n tÃ©cnica mÃ³vil, 2 en postura de recepciÃ³n, 2 en desplazamientos de apoyo y 2 en simulaciÃ³n del gesto".
-- Si se utiliza coevaluaciÃ³n, escribe "cada estudiante es observado individualmente por un compaÃ±ero asignado". No utilices la expresiÃ³n "uno a uno".
-- Presenta los bloques temporales con el encabezado exacto "DistribuciÃ³n del tiempo:". No escribas "Tiempos (coherentes con el)" ni comentarios internos equivalentes.
-- La suma de pasadores, receptores, observadores y demÃ¡s funciones debe coincidir exactamente con la cantidad de estudiantes de la zona.
-- No declares ciclos de 4 minutos de prÃ¡ctica por pareja cuando cinco parejas comparten un solo balÃ³n. Indica la duraciÃ³n de cada microturno y la rotaciÃ³n continua de funciones.
+- No crees más zonas simultáneas de práctica con balón que balones disponibles.
+- Si existen más grupos que balones, organiza turnos activos dentro de cada zona o parejas de grupos, sin dejar estudiantes esperando.
+- Describe las alternancias con lenguaje positivo. No escribas "durante su turno", "durante la mayoría del turno", "sin permanecer inactivo", "quienes esperan" ni expresiones equivalentes.
+- Cuando una zona tenga 10 estudiantes y 1 balón, utiliza microturnos de 30 segundos y declara exactamente: 1 pasador, 1 receptor y 8 participantes sin balón con funciones motrices concretas.
+- Distribuye las funciones de los 8 participantes sin balón entre observación técnica móvil, postura de recepción, desplazamientos de apoyo y simulación del gesto. Todos deben rotar por las funciones de pasador, receptor y observación.
+- Redacta esa distribución con concordancia gramatical completa: "2 participantes en observación técnica móvil, 2 en postura de recepción, 2 en desplazamientos de apoyo y 2 en simulación del gesto".
+- Si se utiliza coevaluación, escribe "cada estudiante es observado individualmente por un compañero asignado". No utilices la expresión "uno a uno".
+- Presenta los bloques temporales con el encabezado exacto "Distribución del tiempo:". No escribas "Tiempos (coherentes con el)" ni comentarios internos equivalentes.
+- La suma de pasadores, receptores, observadores y demás funciones debe coincidir exactamente con la cantidad de estudiantes de la zona.
+- No declares ciclos de 4 minutos de práctica por pareja cuando cinco parejas comparten un solo balón. Indica la duración de cada microturno y la rotación continua de funciones.
 - La cantidad de estudiantes, demostraciones e indicadores debe ser viable dentro del tiempo asignado.
-- No declares que la evaluaciÃ³n completa de 40 estudiantes y todos los indicadores se realizarÃ¡ Ãºnicamente en un cierre de 3 minutos.
-- Cuando se solicite DUA, incluye un Ãºnico bloque con exactamente tres estrategias:
-  REPRESENTACIÃ“N, ACCIÃ“N Y EXPRESIÃ“N y COMPROMISO / MOTIVACIÃ“N.
-- Las estrategias DUA deben relacionarse directamente con la aplicaciÃ³n de la lista de cotejo.
+- No declares que la evaluación completa de 40 estudiantes y todos los indicadores se realizará únicamente en un cierre de 3 minutos.
+- Cuando se solicite DUA, incluye un único bloque con exactamente tres estrategias:
+  REPRESENTACIÓN, ACCIÓN Y EXPRESIÓN y COMPROMISO / MOTIVACIÓN.
+- Las estrategias DUA deben relacionarse directamente con la aplicación de la lista de cotejo.
 - No repitas el nombre del principio dentro de una misma estrategia DUA.
-- Si no se solicitÃ³ DUA, no incluyas estrategias, principios ni secciones DUA.
+- Si no se solicitó DUA, no incluyas estrategias, principios ni secciones DUA.
 - Utiliza exclusivamente los materiales indicados por el docente.
-- Comprueba que zonas, estaciones, parejas, turnos y rotaciones sean coherentes entre sÃ­.
-- El nÃºmero de zonas con balÃ³n debe ser menor o igual al nÃºmero de balones disponibles.
-- Las instrucciones de aplicaciÃ³n y la escala de registro deben coincidir en si la evaluaciÃ³n es individual o grupal.
-- En los apoyos NEE no propongas guÃ­a manual, contacto fÃ­sico,
-  manipulaciÃ³n corporal ni asistencia sobre brazos o piernas.
-  Utiliza demostraciones, indicaciones verbales, seÃ±ales,
-  ajustes de distancia y apoyo entre compaÃ±eros.
-- El silbato serÃ¡ utilizado exclusivamente por el docente para controlar la actividad y las rotaciones.
-- Utiliza exclusivamente espaÃ±ol en todo el contenido. Escribe "retroalimentaciÃ³n positiva" y nunca "feedback positivo".
-- En "Escala o forma de registro", explica Ãºnicamente el significado de SÃ­, En proceso y No, junto con el procedimiento para marcar la respuesta.
+- Comprueba que zonas, estaciones, parejas, turnos y rotaciones sean coherentes entre sí.
+- El número de zonas con balón debe ser menor o igual al número de balones disponibles.
+- Las instrucciones de aplicación y la escala de registro deben coincidir en si la evaluación es individual o grupal.
+- En los apoyos NEE no propongas guía manual, contacto físico,
+  manipulación corporal ni asistencia sobre brazos o piernas.
+  Utiliza demostraciones, indicaciones verbales, señales,
+  ajustes de distancia y apoyo entre compañeros.
+- El silbato será utilizado exclusivamente por el docente para controlar la actividad y las rotaciones.
+- Utiliza exclusivamente español en todo el contenido. Escribe "retroalimentación positiva" y nunca "feedback positivo".
+- En "Escala o forma de registro", explica únicamente el significado de Sí, En proceso y No, junto con el procedimiento para marcar la respuesta.
 - No repitas, copies, enumeres ni reformules los indicadores observables dentro de "Escala o forma de registro".
-- Cada indicador debe aparecer una sola vez y exclusivamente en la secciÃ³n "Indicadores observables".
-- La secciÃ³n "Escala o forma de registro" debe contener como mÃ¡ximo 3 elementos breves.
-- En "InterpretaciÃ³n y retroalimentaciÃ³n", asigna obligatoriamente: SÃ­ = 1 punto, En proceso = 0,5 puntos y No = 0 puntos.
-- Indica el puntaje mÃ¡ximo, igual a la cantidad total de indicadores.
-- Calcula la calificaciÃ³n mediante esta regla de tres: calificaciÃ³n final = (puntaje obtenido x 10) Ã· puntaje mÃ¡ximo.
-- Incluye un ejemplo resuelto que muestre cantidades de SÃ­, En proceso y No, el puntaje obtenido y la calificaciÃ³n final sobre 10.
+- Cada indicador debe aparecer una sola vez y exclusivamente en la sección "Indicadores observables".
+- La sección "Escala o forma de registro" debe contener como máximo 3 elementos breves.
+- En "Interpretación y retroalimentación", asigna obligatoriamente: Sí = 1 punto, En proceso = 0,5 puntos y No = 0 puntos.
+- Indica el puntaje máximo, igual a la cantidad total de indicadores.
+- Calcula la calificación mediante esta regla de tres: calificación final = (puntaje obtenido x 10) ÷ puntaje máximo.
+- Incluye un ejemplo resuelto que muestre cantidades de Sí, En proceso y No, el puntaje obtenido y la calificación final sobre 10.
 `,
 
   game: `
-INSTRUCCIONES ESPECÃFICAS PARA INVENTAR UN JUEGO
+INSTRUCCIONES ESPECÍFICAS PARA INVENTAR UN JUEGO
 
 - Crea un juego motor original, comprensible, inclusivo y viable con los materiales disponibles.
 - Incluye obligatoriamente secciones diferenciadas para:
-  1. Nombre y propÃ³sito del juego.
-  2. OrganizaciÃ³n del espacio, grupos y materiales.
+  1. Nombre y propósito del juego.
+  2. Organización del espacio, grupos y materiales.
   3. Desarrollo paso a paso.
   4. Reglas.
   5. Variantes y progresiones.
-  6. EvaluaciÃ³n o evidencias de aprendizaje.
+  6. Evaluación o evidencias de aprendizaje.
   7. Medidas de seguridad.
-- Explica claramente cÃ³mo comienza, cÃ³mo continÃºa y cÃ³mo termina el juego.
-- Evita tiempos de espera prolongados y situaciones de eliminaciÃ³n permanente.
-- Adapta el nÃºmero de equipos, estaciones o turnos a la cantidad de estudiantes.
+- Explica claramente cómo comienza, cómo continúa y cómo termina el juego.
+- Evita tiempos de espera prolongados y situaciones de eliminación permanente.
+- Adapta el número de equipos, estaciones o turnos a la cantidad de estudiantes.
 - Define claramente si la propuesta es un juego continuo o un circuito
   por estaciones.
-- Si es un juego continuo, utiliza una Ãºnica zona general, establece
+- Si es un juego continuo, utiliza una única zona general, establece
   logisticsPlan.stations en 1 y no escribas elementos titulados
-  "EstaciÃ³n 1", "EstaciÃ³n 2", etc. Todos los grupos deben participar
-  simultÃ¡neamente dentro de esa organizaciÃ³n.
+  "Estación 1", "Estación 2", etc. Todos los grupos deben participar
+  simultáneamente dentro de esa organización.
 - Si es un circuito, utiliza logisticsPlan.stations con la cantidad real
-  de estaciones e incluye una Ãºnica secciÃ³n titulada
-  "Estaciones: tareas y organizaciÃ³n". No crees subsecciones numeradas
+  de estaciones e incluye una única sección titulada
+  "Estaciones: tareas y organización". No crees subsecciones numeradas
   como 5.1, continuaciones artificiales ni secciones para completar
-  informaciÃ³n anterior.
+  información anterior.
 - Dentro de esa única sección, describe cada estación exactamente una vez
   y en un elemento independiente del arreglo "content". Cada elemento debe
   comenzar con "Estación N —" e incluir de forma compacta la tarea, los
@@ -346,48 +346,48 @@ INSTRUCCIONES ESPECÃFICAS PARA INVENTAR UN JUEGO
   ya aparece dentro de las estaciones.
 - Mantén el documento completo suficientemente compacto para que pueda
   imprimirse en dos páginas A4 sin reducir la legibilidad.
-- No repitas una estaciÃ³n en otra secciÃ³n. No escribas expresiones internas
-  como "restricciÃ³n de campos", "detalles faltantes", "fixed target",
+- No repitas una estación en otra sección. No escribas expresiones internas
+  como "restricción de campos", "detalles faltantes", "fixed target",
   "logisticsPlan", "durationPlan" o nombres de propiedades del esquema.
-- Diferencia claramente dos tipos de rotaciÃ³n:
-  1. RotaciÃ³n de estaciones: al finalizar cada ciclo, todos los grupos
-     pasan simultÃ¡neamente a la estaciÃ³n siguiente siguiendo una ruta
-     explÃ­cita, por ejemplo E1 â†’ E2 â†’ E3 â†’ E4 â†’ E1.
-  2. RotaciÃ³n de roles: ocurre dentro de cada grupo y no sustituye el cambio
-     de estaciÃ³n.
+- Diferencia claramente dos tipos de rotación:
+  1. Rotación de estaciones: al finalizar cada ciclo, todos los grupos
+     pasan simultáneamente a la estación siguiente siguiendo una ruta
+     explícita, por ejemplo E1 → E2 → E3 → E4 → E1.
+  2. Rotación de roles: ocurre dentro de cada grupo y no sustituye el cambio
+     de estación.
 - Si existen cuatro estaciones, organiza cuatro ciclos iguales para que
-  todos los grupos visiten las cuatro estaciones. Indica expresamente quÃ©
-  grupos comienzan en cada estaciÃ³n y confirma que todos recorren el mismo
+  todos los grupos visiten las cuatro estaciones. Indica expresamente qué
+  grupos comienzan en cada estación y confirma que todos recorren el mismo
   circuito durante el mismo tiempo.
-- No afirmes que todos los grupos visitan una estaciÃ³n si el procedimiento
-  descrito solamente cambia roles dentro de la misma estaciÃ³n.
-- Incluye al menos una variante mÃ¡s sencilla y una variante de mayor desafÃ­o.
-- Si DUA o NEE estÃ¡n activados, integra opciones de participaciÃ³n sin alterar el propÃ³sito del juego.
+- No afirmes que todos los grupos visitan una estación si el procedimiento
+  descrito solamente cambia roles dentro de la misma estación.
+- Incluye al menos una variante más sencilla y una variante de mayor desafío.
+- Si DUA o NEE están activados, integra opciones de participación sin alterar el propósito del juego.
 - El campo "rubric" debe ser null.
-- La distribuciÃ³n completa debe sumar exactamente la duraciÃ³n solicitada,
+- La distribución completa debe sumar exactamente la duración solicitada,
   incluyendo calentamiento, explicaciones, rondas, transiciones y cierre.
 - Las dimensiones propuestas deben caber realmente en una cancha escolar,
-  incluyendo separaciÃ³n de seguridad entre zonas.
+  incluyendo separación de seguridad entre zonas.
 - Utiliza exclusivamente los materiales indicados. No agregues chalecos,
-  carteles, fichas, telÃ©fonos, grabaciones ni otros balones.
-- Si no existen materiales para registrar resultados, utiliza observaciÃ³n docente y retroalimentaciÃ³n oral entre pares.
-- Incluye un Ãºnico bloque DUA con exactamente una estrategia de
-  REPRESENTACIÃ“N, una de ACCIÃ“N Y EXPRESIÃ“N y una de
-  COMPROMISO / MOTIVACIÃ“N. No agregues otro resumen DUA.
+  carteles, fichas, teléfonos, grabaciones ni otros balones.
+- Si no existen materiales para registrar resultados, utiliza observación docente y retroalimentación oral entre pares.
+- Incluye un único bloque DUA con exactamente una estrategia de
+  REPRESENTACIÓN, una de ACCIÓN Y EXPRESIÓN y una de
+  COMPROMISO / MOTIVACIÓN. No agregues otro resumen DUA.
 - Las acciones internas de cada momento deben sumar exactamente
   el tiempo asignado a ese momento.
 - Todas las variantes deben mantener activos a todos los estudiantes.
   Si se propone 4 contra 4 en equipos de 5, el quinto participante
   debe tener un rol activo y rotativo dentro del juego.
-- Cada descripciÃ³n de estaciÃ³n debe incluir literalmente una organizaciÃ³n de microturnos cronometrados, por ejemplo: "Microturnos de 45 segundos".
-- En cada estaciÃ³n escribe tambiÃ©n: "Mientras no utiliza el balÃ³n..." y completa la frase con desplazamientos, recepciÃ³n, apoyo, marcaje, comunicaciÃ³n, observaciÃ³n tÃ©cnica activa o seguridad del espacio.
-- La suma de pasadores, receptores y funciones sin balÃ³n debe coincidir con la cantidad total de participantes de la estaciÃ³n.
-- Aplica la misma alternancia activa durante el calentamiento si existen menos balones que parejas o trÃ­os.
-- Utiliza "observador tÃ©cnico" u "orientador"; no utilices las palabras "coach" ni "coaches".
-- En baloncesto dirige los pases a las manos, al pecho o al espacio de recepciÃ³n adecuado. Nunca propongas pases al pie.
+- Cada descripción de estación debe incluir literalmente una organización de microturnos cronometrados, por ejemplo: "Microturnos de 45 segundos".
+- En cada estación escribe también: "Mientras no utiliza el balón..." y completa la frase con desplazamientos, recepción, apoyo, marcaje, comunicación, observación técnica activa o seguridad del espacio.
+- La suma de pasadores, receptores y funciones sin balón debe coincidir con la cantidad total de participantes de la estación.
+- Aplica la misma alternancia activa durante el calentamiento si existen menos balones que parejas o tríos.
+- Utiliza "observador técnico" u "orientador"; no utilices las palabras "coach" ni "coaches".
+- En baloncesto dirige los pases a las manos, al pecho o al espacio de recepción adecuado. Nunca propongas pases al pie.
 - No confundas "pase y corte" con "pase y cortina". Incluye una cortina o bloqueo solamente cuando haya sido solicitado expresamente.
-- Antes de proponer dimensiones, suma el tamaÃ±o de todas las zonas,
-  pasillos y mÃ¡rgenes. El resultado no puede superar las dimensiones
+- Antes de proponer dimensiones, suma el tamaño de todas las zonas,
+  pasillos y márgenes. El resultado no puede superar las dimensiones
   totales del espacio disponible.
 
   COMPROBACIÓN OBLIGATORIA ANTES DE ENTREGAR
@@ -455,30 +455,30 @@ INSTRUCCIONES ESPECÃFICAS PARA INVENTAR UN JUEGO
 
 
   assessment: `
-INSTRUCCIONES ESPECÃFICAS PARA CREAR EVALUACIÃ“N
+INSTRUCCIONES ESPECÍFICAS PARA CREAR EVALUACIÓN
 
-PROPÃ“SITO
+PROPÓSITO
 
-- Crea una evaluaciÃ³n alineada exclusivamente con el tema, nivel educativo, grado o curso y cÃ³digo curricular proporcionados.
-- No aÃ±adas tÃ©cnicas, contenidos, deportes ni habilidades que no hayan sido solicitados.
-- Combina conocimiento, aplicaciÃ³n, toma de decisiones y ejecuciÃ³n observable.
-- Redacta todo el contenido en espaÃ±ol y con vocabulario apropiado para la edad.
+- Crea una evaluación alineada exclusivamente con el tema, nivel educativo, grado o curso y código curricular proporcionados.
+- No añadas técnicas, contenidos, deportes ni habilidades que no hayan sido solicitados.
+- Combina conocimiento, aplicación, toma de decisiones y ejecución observable.
+- Redacta todo el contenido en español y con vocabulario apropiado para la edad.
 
 ESTRUCTURA OBLIGATORIA Y ORDEN
 
 Genera exactamente estas secciones:
 
 1. Objetivo e indicaciones.
-2. Preguntas o actividades teÃ³ricas.
-3. Tareas prÃ¡cticas o situaciones de aplicaciÃ³n.
-4. Criterios de calificaciÃ³n.
+2. Preguntas o actividades teóricas.
+3. Tareas prácticas o situaciones de aplicación.
+4. Criterios de calificación.
 5. Respuestas esperadas u orientaciones para el docente.
 
-Si DUA estÃ¡ activado, aÃ±ade despuÃ©s:
+Si DUA está activado, añade después:
 6. Estrategias DUA aplicadas.
 
-Si NEE estÃ¡ activado, aÃ±ade al final:
-7. Apoyos para adaptaciÃ³n NEE.
+Si NEE está activado, añade al final:
+7. Apoyos para adaptación NEE.
 
 No combines las cinco secciones principales, no cambies su orden y no coloques
 respuestas dentro de las consignas destinadas al estudiante.
@@ -491,53 +491,53 @@ respuestas dentro de las consignas destinadas al estudiante.
 OBJETIVO E INDICACIONES
 
 - Formula un objetivo evaluativo observable y directamente relacionado con el tema.
-- Explica quÃ© debe realizar el estudiante, los materiales permitidos, el tiempo disponible y las normas de seguridad.
+- Explica qué debe realizar el estudiante, los materiales permitidos, el tiempo disponible y las normas de seguridad.
 - Separa claramente las instrucciones generales de las preguntas y tareas calificadas.
 
 PREGUNTAS Y TAREAS
 
-- Si el docente solicita una cantidad concreta de preguntas teÃ³ricas y tareas prÃ¡cticas, genera exactamente esas cantidades.
+- Si el docente solicita una cantidad concreta de preguntas teóricas y tareas prácticas, genera exactamente esas cantidades.
 - No agregues ni elimines elementos respecto de las cantidades solicitadas.
-- Si el docente no especifica cantidades, incluye al menos dos preguntas teÃ³ricas y una tarea prÃ¡ctica.
-- Identifica los elementos teÃ³ricos exactamente como "Pregunta 1", "Pregunta 2", etc.
-- Identifica los elementos prÃ¡cticos exactamente como "Tarea 3", "Tarea 4", etc.
-- Numera todos los elementos calificables de manera consecutiva y sin reiniciar la numeraciÃ³n.
-- DespuÃ©s de las preguntas teÃ³ricas, continÃºa la numeraciÃ³n en las tareas prÃ¡cticas.
-- Escribe el puntaje inmediatamente despuÃ©s del identificador mediante uno de estos formatos:
+- Si el docente no especifica cantidades, incluye al menos dos preguntas teóricas y una tarea práctica.
+- Identifica los elementos teóricos exactamente como "Pregunta 1", "Pregunta 2", etc.
+- Identifica los elementos prácticos exactamente como "Tarea 3", "Tarea 4", etc.
+- Numera todos los elementos calificables de manera consecutiva y sin reiniciar la numeración.
+- Después de las preguntas teóricas, continúa la numeración en las tareas prácticas.
+- Escribe el puntaje inmediatamente después del identificador mediante uno de estos formatos:
   "Pregunta 1 (2 puntos): ..."
   "Actividad 2 (2 puntos): ..."
   "Tarea 3 (3 puntos): ..."
-- No coloques el puntaje solamente al final del pÃ¡rrafo.
-- No repitas nÃºmeros de preguntas, actividades o tareas.
+- No coloques el puntaje solamente al final del párrafo.
+- No repitas números de preguntas, actividades o tareas.
 - Cada consigna debe evaluar un aprendizaje diferente y directamente relacionado con el tema.
 - Evita preguntas ambiguas, dobles negaciones y tareas que dependan de materiales no proporcionados.
-- Limita todas las preguntas y tareas estrictamente a la tÃ©cnica indicada por el docente.
-- No compares con otras tÃ©cnicas, tipos de pase o contenidos que no hayan sido solicitados.
-- Toda tarea calificada que evalÃºe precisiÃ³n, recepciÃ³n o control del balÃ³n debe realizarse realmente con balÃ³n.
-- La ejecuciÃ³n en sombra solamente puede utilizarse como preparaciÃ³n breve no calificada; nunca puede sustituir los pases reales evaluados.
-- Si existen menos balones que estudiantes o parejas, organiza turnos activos dentro del mismo bloque para garantizar que todos ejecuten con balÃ³n.
+- Limita todas las preguntas y tareas estrictamente a la técnica indicada por el docente.
+- No compares con otras técnicas, tipos de pase o contenidos que no hayan sido solicitados.
+- Toda tarea calificada que evalúe precisión, recepción o control del balón debe realizarse realmente con balón.
+- La ejecución en sombra solamente puede utilizarse como preparación breve no calificada; nunca puede sustituir los pases reales evaluados.
+- Si existen menos balones que estudiantes o parejas, organiza turnos activos dentro del mismo bloque para garantizar que todos ejecuten con balón.
 
-PUNTUACIÃ“N OBLIGATORIA
+PUNTUACIÓN OBLIGATORIA
 
-- El primer elemento de contenido de la secciÃ³n "Objetivo e indicaciones" debe ser exactamente: "Puntaje total: 10 puntos".
-- Escribe esa expresiÃ³n como un elemento independiente, sin agregar otras palabras en la misma lÃ­nea.
-- La expresiÃ³n "Puntaje total: 10 puntos" es obligatoria y no puede omitirse durante una correcciÃ³n o reintento.
-- La evaluaciÃ³n se califica directamente sobre 10 puntos.
+- El primer elemento de contenido de la sección "Objetivo e indicaciones" debe ser exactamente: "Puntaje total: 10 puntos".
+- Escribe esa expresión como un elemento independiente, sin agregar otras palabras en la misma línea.
+- La expresión "Puntaje total: 10 puntos" es obligatoria y no puede omitirse durante una corrección o reintento.
+- La evaluación se califica directamente sobre 10 puntos.
 - La suma de todas las preguntas y tareas debe ser exactamente 10 puntos.
-- Cuando se soliciten exactamente 3 preguntas teÃ³ricas y 2 tareas prÃ¡cticas, utiliza esta distribuciÃ³n estable: 1 + 1 + 2 + 3 + 3 = 10 puntos.
-- No cambies esa distribuciÃ³n durante una correcciÃ³n o reintento.
-- Asigna un valor explÃ­cito a cada pregunta y tarea.
+- Cuando se soliciten exactamente 3 preguntas teóricas y 2 tareas prácticas, utiliza esta distribución estable: 1 + 1 + 2 + 3 + 3 = 10 puntos.
+- No cambies esa distribución durante una corrección o reintento.
+- Asigna un valor explícito a cada pregunta y tarea.
 - No utilices puntajes aproximados ni ajustes posteriores por redondeo.
-- NingÃºn elemento individual puede valer mÃ¡s de 10 puntos.
+- Ningún elemento individual puede valer más de 10 puntos.
 - No utilices escalas sobre 20, 30, 50, 100 ni conversiones posteriores.
 - No utilices regla de tres para esta herramienta.
 - Antes de finalizar, suma nuevamente todos los puntajes y comprueba que el resultado sea exactamente 10.
 
-CRITERIOS DE CALIFICACIÃ“N
+CRITERIOS DE CALIFICACIÓN
 
-- Relaciona cada criterio con el nÃºmero de la pregunta, actividad o tarea correspondiente.
-- Para tareas prÃ¡cticas, utiliza conductas observables, condiciones de ejecuciÃ³n seguras y criterios verificables.
-- Los componentes internos de una tarea prÃ¡ctica deben sumar exactamente el puntaje asignado a esa tarea.
+- Relaciona cada criterio con el número de la pregunta, actividad o tarea correspondiente.
+- Para tareas prácticas, utiliza conductas observables, condiciones de ejecución seguras y criterios verificables.
+- Los componentes internos de una tarea práctica deben sumar exactamente el puntaje asignado a esa tarea.
 - En una evaluación individual del pasador, todos los componentes del puntaje deben depender exclusivamente de sus propios pases y de su propia técnica corporal. No otorgues ni retires puntos al pasador por la recepción o el control realizado por otro estudiante.
 - Para una tarea de pase de pecho valorada en 3 puntos mediante dos microturnos, utiliza esta distribución: pase 1 recepcionable = 1 punto; pase 2 recepcionable = 1 punto; técnica corporal del pasador observable en al menos uno de los dos pases = 1 punto.
 - Cuando el tercer microturno repita uno de los pases, otorga el punto si vuelve a cumplir el criterio técnico observable. No exijas que muestre una mejora respecto al intento anterior.
@@ -550,10 +550,10 @@ CRITERIOS DE CALIFICACIÃ“N
 
 RESPUESTAS Y ORIENTACIONES DOCENTES
 
-- MantÃ©n las respuestas exclusivamente en la secciÃ³n "Respuestas esperadas u orientaciones para el docente".
-- Identifica cada respuesta con el mismo nÃºmero utilizado en la consigna.
+- Mantén las respuestas exclusivamente en la sección "Respuestas esperadas u orientaciones para el docente".
+- Identifica cada respuesta con el mismo número utilizado en la consigna.
 - Si repites el puntaje de una pregunta o tarea, debe coincidir exactamente con el puntaje mostrado al estudiante.
-- Incluye respuestas concretas y orientaciones breves para calificar las tareas prÃ¡cticas.
+- Incluye respuestas concretas y orientaciones breves para calificar las tareas prácticas.
 - No reveles respuestas, pistas ni soluciones en las secciones destinadas al estudiante.
 
 CONTROL FINAL DE REDACCIÓN Y COHERENCIA TÉCNICA
@@ -572,31 +572,31 @@ CONTROL FINAL DE REDACCIÓN Y COHERENCIA TÉCNICA
 - Para presentar una escala escribe "se aplicará la siguiente escala de puntuación"; no utilices la expresión imprecisa "por cada elemento correcto se evaluará la escala completa".
 - Escribe "retroalimentaciones verbales breves" o "indicaciones verbales breves"; nunca utilices la expresión incoherente "fichas verbales".
 
-DURACIÃ“N
+DURACIÓN
 
-- El campo "durationPlan" debe distribuir exactamente la duraciÃ³n solicitada.
-- "requestedMinutes" y "totalMinutes" deben coincidir exactamente con la duraciÃ³n solicitada.
-- La suma matemÃ¡tica de todos los bloques de "durationPlan" debe coincidir exactamente con "totalMinutes".
-- Distribuye el tiempo solamente entre lectura de indicaciones, resoluciÃ³n de preguntas teÃ³ricas, ejecuciÃ³n de tareas prÃ¡cticas y revisiÃ³n o entrega final.
-- No crees bloques temporales para los criterios de calificaciÃ³n ni para las respuestas u orientaciones docentes, porque son referencias para el docente y no acciones adicionales del estudiante.
-- En la secciÃ³n "Objetivo e indicaciones", escribe una sola vez la duraciÃ³n total mediante el formato "DuraciÃ³n total: X minutos".
+- El campo "durationPlan" debe distribuir exactamente la duración solicitada.
+- "requestedMinutes" y "totalMinutes" deben coincidir exactamente con la duración solicitada.
+- La suma matemática de todos los bloques de "durationPlan" debe coincidir exactamente con "totalMinutes".
+- Distribuye el tiempo solamente entre lectura de indicaciones, resolución de preguntas teóricas, ejecución de tareas prácticas y revisión o entrega final.
+- No crees bloques temporales para los criterios de calificación ni para las respuestas u orientaciones docentes, porque son referencias para el docente y no acciones adicionales del estudiante.
+- En la sección "Objetivo e indicaciones", escribe una sola vez la duración total mediante el formato "Duración total: X minutos".
 - No es necesario repetir en el contenido visible los minutos de cada bloque interno.
 - Cada minuto debe pertenecer exclusivamente a un bloque y no puede contabilizarse dos veces.
-- No agregues calentamientos, explicaciones o actividades fuera de la duraciÃ³n solicitada.
+- No agregues calentamientos, explicaciones o actividades fuera de la duración solicitada.
 - Comprueba la viabilidad de cada tarea práctica antes de responder: tiempo mínimo = estudiantes que deben pasar x microturnos por estudiante x segundos por microturno / pasadores simultáneos / 60.
 - Con 10 estudiantes, 1 pasador simultáneo y microturnos de 30 segundos, dos microturnos por estudiante necesitan como mínimo 10 minutos y tres microturnos por estudiante necesitan como mínimo 15 minutos. Nunca declares un tiempo menor.
 
-LOGÃSTICA DE LAS TAREAS PRÃCTICAS
+LOGÍSTICA DE LAS TAREAS PRÁCTICAS
 
 - Organiza exactamente la cantidad de estudiantes solicitada.
-- Todos los estudiantes deben mantener una funciÃ³n activa durante el tiempo de evaluaciÃ³n.
-- No utilices filas, espera pasiva, estudiantes inactivos ni grupos sin funciÃ³n.
-- No escribas la expresiÃ³n "en espera"; describe directamente la funciÃ³n activa de cada grupo.
+- Todos los estudiantes deben mantener una función activa durante el tiempo de evaluación.
+- No utilices filas, espera pasiva, estudiantes inactivos ni grupos sin función.
+- No escribas la expresión "en espera"; describe directamente la función activa de cada grupo.
 - Utiliza exclusivamente los materiales proporcionados por el docente.
-- No agregues carteles, lÃ¡minas, tarjetas, fichas, pizarras, tableros, telÃ©fonos ni recursos visuales fÃ­sicos si no fueron proporcionados.
+- No agregues carteles, láminas, tarjetas, fichas, pizarras, tableros, teléfonos ni recursos visuales físicos si no fueron proporcionados.
 - La cantidad requerida de cada recurso no puede superar la cantidad disponible.
 - Si existen menos balones que parejas o grupos, organiza alternancia activa dentro del mismo bloque.
-- La ejecuciÃ³n en sombra puede ser preparaciÃ³n no calificada, pero todos deben realizar con balÃ³n las repeticiones calificadas.
+- La ejecución en sombra puede ser preparación no calificada, pero todos deben realizar con balón las repeticiones calificadas.
 - "simultaneousParticipants" debe incluir a todos los estudiantes y "waitingParticipants" debe ser 0.
 - Cuando una zona tenga 10 estudiantes y 1 balón, cada tarea práctica debe comunicar con claridad esta distribución por microturno, aunque puede emplear una redacción equivalente:
   "Roles: 1 pasador, 1 receptor y 8 participantes sin balón: 2 en observación técnica móvil, 2 en postura de recepción, 2 en desplazamientos de apoyo y 2 en simulación del gesto".
@@ -619,93 +619,93 @@ LOGÃSTICA DE LAS TAREAS PRÃCTICAS
 
 DUA Y NEE
 
-- Si DUA estÃ¡ activado, aplica REPRESENTACIÃ“N, ACCIÃ“N Y EXPRESIÃ“N y COMPROMISO / MOTIVACIÃ“N directamente a las consignas y formas de respuesta.
-- Si NEE estÃ¡ activado, incluye exactamente cuatro apoyos breves y concretos en una Ãºnica secciÃ³n.
-- Los apoyos deben facilitar acceso y participaciÃ³n sin reducir automÃ¡ticamente la expectativa de aprendizaje ni modificar la puntuaciÃ³n total.
-- En una tarea motriz, DUA puede adaptar distancia, ritmo, apoyo o forma de acceso, pero no sustituir la ejecuciÃ³n por una explicaciÃ³n oral debido a falta de tiempo.
-- Conserva la evidencia esencial, los criterios y el puntaje de la tarea prÃ¡ctica.
+- Si DUA está activado, aplica REPRESENTACIÓN, ACCIÓN Y EXPRESIÓN y COMPROMISO / MOTIVACIÓN directamente a las consignas y formas de respuesta.
+- Si NEE está activado, incluye exactamente cuatro apoyos breves y concretos en una única sección.
+- Los apoyos deben facilitar acceso y participación sin reducir automáticamente la expectativa de aprendizaje ni modificar la puntuación total.
+- En una tarea motriz, DUA puede adaptar distancia, ritmo, apoyo o forma de acceso, pero no sustituir la ejecución por una explicación oral debido a falta de tiempo.
+- Conserva la evidencia esencial, los criterios y el puntaje de la tarea práctica.
 - DUA puede adaptar la distancia, el ritmo, el apoyo, la cantidad por serie o la forma de presentar la consigna.
-- DUA no puede reemplazar el uso real del balÃ³n cuando se evalÃºan precisiÃ³n, recepciÃ³n, direcciÃ³n o control.
-- Todos los estudiantes deben completar con balÃ³n la cantidad total de pases calificados.
-- Las estrategias DUA deben conservar exactamente la organizaciÃ³n, cantidad de grupos, integrantes, zonas y rotaciones definidas en las tareas prÃ¡cticas y en "logisticsPlan".
+- DUA no puede reemplazar el uso real del balón cuando se evalúan precisión, recepción, dirección o control.
+- Todos los estudiantes deben completar con balón la cantidad total de pases calificados.
+- Las estrategias DUA deben conservar exactamente la organización, cantidad de grupos, integrantes, zonas y rotaciones definidas en las tareas prácticas y en "logisticsPlan".
 - Si la tarea práctica distribuye los intentos en dos microturnos, DUA debe conservar esos dos microturnos. No permitas concentrar todos los intentos en uno solo ni escribir alternativas como "6 en 30 segundos".
-- No crees nuevos tamaÃ±os de grupo ni organizaciones diferentes dentro de la secciÃ³n DUA.
+- No crees nuevos tamaños de grupo ni organizaciones diferentes dentro de la sección DUA.
 - No asignes funciones que necesiten materiales no proporcionados.
-- Si utilizas observaciÃ³n entre pares, debe ser verbal, breve, activa y rotativa; no debe requerir anotaciones, fichas, papel ni lÃ¡piz.
-- Todos los roles DUA deben corresponder a la cantidad exacta de integrantes y mantener una funciÃ³n activa.
+- Si utilizas observación entre pares, debe ser verbal, breve, activa y rotativa; no debe requerir anotaciones, fichas, papel ni lápiz.
+- Todos los roles DUA deben corresponder a la cantidad exacta de integrantes y mantener una función activa.
 
-ESTRUCTURA TÃ‰CNICA
+ESTRUCTURA TÉCNICA
 
 - El campo "rubric" debe ser null.
 - El campo "exam" debe ser null.
-- El campo "logisticsPlan" debe contener una distribuciÃ³n logÃ­stica completa y coherente para las tareas prÃ¡cticas.
-- El campo "durationPlan" debe contener la distribuciÃ³n temporal completa.
-- No muestres propiedades JSON, nombres internos, valores booleanos ni instrucciones tÃ©cnicas en el contenido visible.
+- El campo "logisticsPlan" debe contener una distribución logística completa y coherente para las tareas prácticas.
+- El campo "durationPlan" debe contener la distribución temporal completa.
+- No muestres propiedades JSON, nombres internos, valores booleanos ni instrucciones técnicas en el contenido visible.
 `,
 
   exam: `
-INSTRUCCIONES ESPECÃFICAS PARA ELABORAR EXAMEN
+INSTRUCCIONES ESPECÍFICAS PARA ELABORAR EXAMEN
 
-PROPÃ“SITO GENERAL
+PROPÓSITO GENERAL
 
-- Crea un examen completo, claro y apropiado para el nivel educativo, grado, tema y cÃ³digo curricular proporcionados.
-- Conserva literalmente el nivel educativo, el grado o curso y el cÃ³digo curricular.
-- No inventes ni modifiques cÃ³digos curriculares.
-- Utiliza exactamente la configuraciÃ³n seleccionada por el docente.
+- Crea un examen completo, claro y apropiado para el nivel educativo, grado, tema y código curricular proporcionados.
+- Conserva literalmente el nivel educativo, el grado o curso y el código curricular.
+- No inventes ni modifiques códigos curriculares.
+- Utiliza exactamente la configuración seleccionada por el docente.
 - El campo "exam" debe contener la estructura completa del examen.
 - Los campos "rubric", "durationPlan" y "logisticsPlan" deben ser null.
-- Escribe completamente en espaÃ±ol.
-- No muestres nombres de propiedades tÃ©cnicas, identificadores internos ni instrucciones JSON.
+- Escribe completamente en español.
+- No muestres nombres de propiedades técnicas, identificadores internos ni instrucciones JSON.
 
-CONFIGURACIÃ“N OBLIGATORIA
+CONFIGURACIÓN OBLIGATORIA
 
-- Respeta exactamente el tipo de examen seleccionado: teÃ³rico, prÃ¡ctico o mixto.
-- Respeta exactamente la dificultad seleccionada: bÃ¡sica, intermedia o avanzada.
+- Respeta exactamente el tipo de examen seleccionado: teórico, práctico o mixto.
+- Respeta exactamente la dificultad seleccionada: básica, intermedia o avanzada.
 - Genera exactamente la cantidad de preguntas solicitada para cada tipo.
 - Respeta el puntaje asignado a cada pregunta.
 - La suma de los puntajes de todas las preguntas debe coincidir exactamente con el puntaje total del examen.
 - No agregues preguntas, ejercicios, puntos adicionales ni actividades opcionales que alteren el puntaje total.
 - No cambies un tipo de pregunta por otro.
-- Si la configuraciÃ³n contiene solamente la versiÃ³n A, genera Ãºnicamente esa versiÃ³n.
+- Si la configuración contiene solamente la versión A, genera únicamente esa versión.
 - Si se solicitan versiones A y B, genera exactamente dos versiones equivalentes.
 
 TIPOS DE PREGUNTAS
 
-- SelecciÃ³n mÃºltiple: presenta una sola respuesta correcta y distractores plausibles, claros y no ambiguos.
-- Verdadero o falso: redacta afirmaciones inequÃ­vocas, verificables y apropiadas para el contenido solicitado.
-- Comprueba pedagÃ³gicamente cada afirmaciÃ³n antes de asignar su respuesta.
-- No presentes como verdadera una afirmaciÃ³n que dependa del contexto o admita excepciones.
-- Evita expresiones que revelen fÃ¡cilmente la respuesta, como "siempre", "nunca", "todos", "ninguno" o "la mejor opciÃ³n", salvo que sean indispensables y completamente correctas.
+- Selección múltiple: presenta una sola respuesta correcta y distractores plausibles, claros y no ambiguos.
+- Verdadero o falso: redacta afirmaciones inequívocas, verificables y apropiadas para el contenido solicitado.
+- Comprueba pedagógicamente cada afirmación antes de asignar su respuesta.
+- No presentes como verdadera una afirmación que dependa del contexto o admita excepciones.
+- Evita expresiones que revelen fácilmente la respuesta, como "siempre", "nunca", "todos", "ninguno" o "la mejor opción", salvo que sean indispensables y completamente correctas.
 - Distribuye equilibradamente las respuestas verdaderas y falsas; la diferencia entre ambas cantidades no puede ser mayor que uno.
 - En "answerKey", escribe exactamente "Verdadero" o "Falso"; no utilices "True", "False", letras ni valores booleanos.
 - Evita construir afirmaciones falsas mediante negaciones artificiales o palabras como "necesariamente incorrecto", porque facilitan adivinar la respuesta.
-- Cada afirmaciÃ³n debe evaluar directamente un conocimiento tÃ©cnico concreto y no mezclar dos criterios diferentes.
-- RelaciÃ³n de columnas: incluye todos los elementos necesarios y una correspondencia verificable.
+- Cada afirmación debe evaluar directamente un conocimiento técnico concreto y no mezclar dos criterios diferentes.
+- Relación de columnas: incluye todos los elementos necesarios y una correspondencia verificable.
 - Completar espacios: deja claramente identificado el espacio que debe completar el estudiante.
 - Respuesta corta: solicita una respuesta concreta que pueda calificarse con criterios objetivos.
-- Caso de aplicaciÃ³n: plantea una situaciÃ³n apropiada para el nivel y relacionada directamente con el tema.
-- Tarea prÃ¡ctica: describe una ejecuciÃ³n observable e incluye criterios concretos para asignar el puntaje.
+- Caso de aplicación: plantea una situación apropiada para el nivel y relacionada directamente con el tema.
+- Tarea práctica: describe una ejecución observable e incluye criterios concretos para asignar el puntaje.
 
 CALIDAD DE LAS PREGUNTAS
 
-- Alinea todas las preguntas con el tema, el nivel y el cÃ³digo curricular proporcionados.
-- Combina comprensiÃ³n, aplicaciÃ³n y toma de decisiones segÃºn la dificultad seleccionada.
-- Evita preguntas capciosas, informaciÃ³n innecesaria y dobles negaciones.
+- Alinea todas las preguntas con el tema, el nivel y el código curricular proporcionados.
+- Combina comprensión, aplicación y toma de decisiones según la dificultad seleccionada.
+- Evita preguntas capciosas, información innecesaria y dobles negaciones.
 - Evita que una pregunta revele directamente la respuesta de otra.
-- No repitas la misma pregunta mediante pequeÃ±os cambios de redacciÃ³n.
+- No repitas la misma pregunta mediante pequeños cambios de redacción.
 - Utiliza vocabulario comprensible para la edad y el nivel educativo.
-- En preguntas de selecciÃ³n mÃºltiple, utiliza opciones homogÃ©neas en extensiÃ³n y estructura.
-- Distribuye equilibradamente la posiciÃ³n de las respuestas correctas.
-- En tareas prÃ¡cticas, utiliza conductas observables y condiciones seguras de ejecuciÃ³n.
-- El campo prompt debe contener Ãºnicamente el enunciado; no incluyas dentro de prompt el nÃºmero de pregunta ni expresiones como "(2 puntos)", porque la interfaz aÃ±ade esos datos automÃ¡ticamente.
-- Utiliza evaluationCriteria Ãºnicamente para tareas prÃ¡cticas.
-- En preguntas teÃ³ricas, evaluationCriteria debe ser null.
+- En preguntas de selección múltiple, utiliza opciones homogéneas en extensión y estructura.
+- Distribuye equilibradamente la posición de las respuestas correctas.
+- En tareas prácticas, utiliza conductas observables y condiciones seguras de ejecución.
+- El campo prompt debe contener únicamente el enunciado; no incluyas dentro de prompt el número de pregunta ni expresiones como "(2 puntos)", porque la interfaz añade esos datos automáticamente.
+- Utiliza evaluationCriteria únicamente para tareas prácticas.
+- En preguntas teóricas, evaluationCriteria debe ser null.
 - No escribas "respuesta esperada", "respuesta correcta", letras correctas, verdadero o falso resuelto ni pistas del solucionario dentro de prompt, options o evaluationCriteria.
 - Todas las respuestas deben aparecer exclusivamente dentro de answerKey cuando el solucionario haya sido solicitado.
-- Antes de finalizar, verifica nuevamente la exactitud pedagÃ³gica de cada pregunta y de su respuesta.
-- En situaciones deportivas, evita afirmar que una tÃ©cnica es siempre la mejor cuando su conveniencia depende de la distancia, la oposiciÃ³n o la posiciÃ³n de los participantes.
-- Utiliza terminologÃ­a completamente en espaÃ±ol cuando exista un equivalente claro.
-- Escribe "acompaÃ±amiento final de manos y muÃ±ecas" en lugar de "follow-through".
+- Antes de finalizar, verifica nuevamente la exactitud pedagógica de cada pregunta y de su respuesta.
+- En situaciones deportivas, evita afirmar que una técnica es siempre la mejor cuando su conveniencia depende de la distancia, la oposición o la posición de los participantes.
+- Utiliza terminología completamente en español cuando exista un equivalente claro.
+- Escribe "acompañamiento final de manos y muñecas" en lugar de "follow-through".
 - Evita anglicismos innecesarios dentro de las preguntas, opciones y solucionario.
 
 VERSIONES A Y B
@@ -717,43 +717,43 @@ VERSIONES A Y B
   - el mismo nivel de dificultad;
   - el mismo puntaje total;
   - el mismo puntaje por tipo de pregunta.
-- Cambia el orden de las preguntas y de las opciones cuando sea pedagÃ³gicamente vÃ¡lido.
+- Cambia el orden de las preguntas y de las opciones cuando sea pedagógicamente válido.
 - Cuando sea necesario, utiliza situaciones equivalentes sin cambiar la habilidad o conocimiento evaluado.
-- No conviertas la versiÃ³n B en un examen mÃ¡s fÃ¡cil o mÃ¡s difÃ­cil.
-- Numera las preguntas de cada versiÃ³n desde 1.
+- No conviertas la versión B en un examen más fácil o más difícil.
+- Numera las preguntas de cada versión desde 1.
 
 SOLUCIONARIO
 
-- Incluye el solucionario Ãºnicamente cuando haya sido solicitado.
-- Separa claramente las respuestas de la versiÃ³n A y de la versiÃ³n B.
-- Indica el nÃºmero de pregunta y la respuesta correcta.
-- Para preguntas de verdadero o falso, la respuesta debe escribirse completamente en espaÃ±ol como "Verdadero" o "Falso".
+- Incluye el solucionario únicamente cuando haya sido solicitado.
+- Separa claramente las respuestas de la versión A y de la versión B.
+- Indica el número de pregunta y la respuesta correcta.
+- Para preguntas de verdadero o falso, la respuesta debe escribirse completamente en español como "Verdadero" o "Falso".
 - Revisa que cada respuesta del solucionario coincida realmente con la consigna y no sea solamente plausible.
-- En preguntas de respuesta corta, casos o tareas prÃ¡cticas, incluye una respuesta esperada o criterios concretos de calificaciÃ³n.
+- En preguntas de respuesta corta, casos o tareas prácticas, incluye una respuesta esperada o criterios concretos de calificación.
 - No coloques las respuestas dentro de las consignas destinadas al estudiante.
-- No incluyas explicaciones extensas salvo que sean necesarias para orientar la calificaciÃ³n.
+- No incluyas explicaciones extensas salvo que sean necesarias para orientar la calificación.
 
-TABLA DE CALIFICACIÃ“N Y REGLA DE TRES
+TABLA DE CALIFICACIÓN Y REGLA DE TRES
 
-- Incluye la tabla de calificaciÃ³n Ãºnicamente cuando haya sido solicitada.
-- Relaciona el puntaje obtenido con una calificaciÃ³n final sobre 10.
-- Cuando se solicite la regla de tres, utiliza esta fÃ³rmula:
-  CalificaciÃ³n = (puntaje obtenido Ã— 10) Ã· puntaje total.
+- Incluye la tabla de calificación únicamente cuando haya sido solicitada.
+- Relaciona el puntaje obtenido con una calificación final sobre 10.
+- Cuando se solicite la regla de tres, utiliza esta fórmula:
+  Calificación = (puntaje obtenido × 10) ÷ puntaje total.
 - Calcula los valores de manera consistente con el puntaje total seleccionado.
-- No otorgues una calificaciÃ³n superior a 10 ni inferior a 0.
-- La tabla y la fÃ³rmula deben utilizar el mismo puntaje total del examen.
-- Si la regla de tres no fue solicitada, no agregues la fÃ³rmula por iniciativa propia.
+- No otorgues una calificación superior a 10 ni inferior a 0.
+- La tabla y la fórmula deben utilizar el mismo puntaje total del examen.
+- Si la regla de tres no fue solicitada, no agregues la fórmula por iniciativa propia.
 
 ESTRUCTURA VISIBLE
 
 - Presenta primero los datos generales y las instrucciones para el estudiante.
-- Presenta cada versiÃ³n del examen de forma independiente.
+- Presenta cada versión del examen de forma independiente.
 - Separa el material destinado al estudiante del solucionario destinado al docente.
-- MantÃ©n visibles el nÃºmero de cada pregunta y su puntaje.
+- Mantén visibles el número de cada pregunta y su puntaje.
 - Incluye espacios para nombre del estudiante, curso y fecha.
-- Utiliza "sections" Ãºnicamente para una introducciÃ³n breve, orientaciones de aplicaciÃ³n y criterios generales.
+- Utiliza "sections" únicamente para una introducción breve, orientaciones de aplicación y criterios generales.
 - No dupliques dentro de "sections" todas las preguntas almacenadas en el campo "exam".
-- MantÃ©n el contenido organizado para facilitar su visualizaciÃ³n e impresiÃ³n.
+- Mantén el contenido organizado para facilitar su visualización e impresión.
 `,
 
   "dua-adaptation": `

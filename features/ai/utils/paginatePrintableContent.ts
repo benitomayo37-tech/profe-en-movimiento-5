@@ -1,4 +1,4 @@
-﻿import type { GeneratedAIContent } from "@/features/ai/types/ai";
+import type { GeneratedAIContent } from "@/features/ai/types/ai";
 
 export interface PrintableRow {
   sectionTitle: string;
@@ -12,9 +12,9 @@ export interface PrintablePage {
 }
 
 /*
- * Presupuestos calibrados para pÃ¡ginas A4.
- * La primera pÃ¡gina dispone de menos espacio por el encabezado
- * principal y la descripciÃ³n introductoria.
+ * Presupuestos calibrados para páginas A4.
+ * La primera página dispone de menos espacio por el encabezado
+ * principal y la descripción introductoria.
  */
 const FIRST_PAGE_BUDGET = 82;
 const NEXT_PAGE_BUDGET = 82;
@@ -37,15 +37,15 @@ const CHECKLIST_ITEM_EXTRA_LINES = 2;
 
 
 /*
- * La columna del tÃ­tulo es considerablemente mÃ¡s estrecha
+ * La columna del título es considerablemente más estrecha
  * que la columna del contenido.
  */
 const TITLE_CHARS_PER_LINE = 30;
 const CONTENT_CHARS_PER_LINE = 72;
 
 /*
- * Reserva para bordes, relleno vertical y separaciÃ³n
- * entre los diferentes pÃ¡rrafos de una misma secciÃ³n.
+ * Reserva para bordes, relleno vertical y separación
+ * entre los diferentes párrafos de una misma sección.
  */
 const ROW_EXTRA_LINES = 1;
 const CONTENT_ITEM_GAP_LINES = 0.35;
@@ -524,9 +524,9 @@ const isNeeAdaptationContent =
 
   /*
    * Una tarjeta DUA que no cabe en el espacio
-   * restante pasa completa a la pÃ¡gina siguiente.
-   * Solamente podrÃ¡ dividirse si fuera demasiado
-   * extensa incluso para una pÃ¡gina vacÃ­a.
+   * restante pasa completa a la página siguiente.
+   * Solamente podrá dividirse si fuera demasiado
+   * extensa incluso para una página vacía.
    */
   const shouldMoveDuaCardToNextPage =
     isDuaCard(nextItem) &&

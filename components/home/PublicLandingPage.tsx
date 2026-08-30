@@ -30,7 +30,7 @@ const faqs = [
 ];
 
 const platformStats = [
-  ["34", "Herramientas para profes"],
+  ["20", "Herramientas para profes"],
   ["3", "Asistentes inteligentes"],
   ["1", "Biblioteca profesional"],
   ["1", "Curso en Academia"],
@@ -393,7 +393,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
           <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
             <div className="flex flex-col gap-4 border-b border-slate-200 bg-gradient-to-r from-[#0b2050] to-blue-800 px-6 py-6 text-white sm:flex-row sm:items-center sm:justify-between">
               <div><p className="text-xs font-black uppercase tracking-[.18em] text-orange-300">Tu espacio de trabajo</p><h3 className="mt-1 text-2xl font-black">Herramientas listas para tu clase</h3></div>
-              <span className="w-fit rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black">34 soluciones integradas</span>
+              <span className="w-fit rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black">20 soluciones integradas</span>
             </div>
             <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
               {featuredTools.map((tool) => (

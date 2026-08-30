@@ -1370,9 +1370,9 @@ export default function MovimientoParaTodosWorkspace({
               Todos.
             </p>
 
-            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
-              Próximamente
-            </span>
+            <Link href="/comunidad?type=topic" className="mt-4 inline-flex rounded-xl bg-orange-500 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-white hover:bg-orange-600">
+              Enviar propuesta →
+            </Link>
           </article>
 
           <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -1389,9 +1389,9 @@ export default function MovimientoParaTodosWorkspace({
               otras personas.
             </p>
 
-            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
-              Próximamente
-            </span>
+            <Link href="/comunidad?type=experience" className="mt-4 inline-flex rounded-xl bg-orange-500 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-white hover:bg-orange-600">
+              Compartir experiencia →
+            </Link>
           </article>
 
           <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -1408,9 +1408,9 @@ export default function MovimientoParaTodosWorkspace({
               nuestra comunidad.
             </p>
 
-            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
-              Próximamente
-            </span>
+            <Link href="/comunidad?type=question" className="mt-4 inline-flex rounded-xl bg-orange-500 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-white hover:bg-orange-600">
+              Enviar pregunta →
+            </Link>
           </article>
 
           <article className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -1427,9 +1427,9 @@ export default function MovimientoParaTodosWorkspace({
               y accesible.
             </p>
 
-            <span className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-slate-400">
-              Próximamente
-            </span>
+            <Link href="/comunidad?type=improvement" className="mt-4 inline-flex rounded-xl bg-orange-500 px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-white hover:bg-orange-600">
+              Proponer mejora →
+            </Link>
           </article>
         </div>
 

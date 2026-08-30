@@ -719,7 +719,7 @@ if (!checklistValidation.valid) {
 if (!gameValidation.valid) {
   validationMessages.push(
     gameValidation.message ??
-      "El juego generado no cumple la estructura pedagÃ³gica requerida.",
+      "El juego generado no cumple la estructura pedagógica requerida.",
   );
 }
 if (!examValidation.valid) {

@@ -23,7 +23,7 @@ function dateLabel(value: string | null) {
 
 export default async function TeacherExamResultsPage({ searchParams }: { searchParams: Promise<{ exam?: string }> }) {
   const access = await getAuthAccess();
-  if (!access.authenticated || !access.userId) redirect("/login?returnTo=/examenes/resultados");
+  if (!access.authenticated || !access.userId) redirect("/login?next=/examenes/resultados");
   const admin = createAdminClient();
   if (!admin) return <p className="p-8">Supabase no está configurado.</p>;
 
