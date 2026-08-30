@@ -30,6 +30,13 @@ No necesita migración de Supabase ni nuevas variables de entorno.
 - Ajuste de tamaño del texto.
 - Enlaces a fuentes orientadoras.
 - Borrado completo de datos locales.
+- Identidad editorial inspirada en la aplicación original: logo, navy, naranja, tarjetas visuales e iconografía destacada.
+- Laboratorio visual interactivo para construir el mensaje clave de cada lección.
+- Pantalla inicial de biblioteca con las 30 lecciones organizadas en tarjetas por módulos.
+- Las fichas se abren en una ventana amplia sobre la biblioteca desenfocada, como en la aplicación original.
+- Cabecera fija, cierre rápido y desplazamiento interno dentro de cada ficha.
+- Recursos visuales adaptables: plato saludable flexible, guía alimentaria tipo pirámide, hidratación y lectura del semáforo nutricional.
+- Infografía contextual para las demás lecciones, sin depender de imágenes externas.
 
 ## Correcciones de seguridad
 
