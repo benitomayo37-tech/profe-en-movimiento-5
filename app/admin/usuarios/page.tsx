@@ -1,0 +1,82 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { AccountBadge, AppLayout, Sidebar } from "@/components/layout";
+import Container from "@/components/ui/Container";
+import { getPlatformMetrics } from "@/features/admin/server/platformMetrics";
+import { getAuthAccess } from "@/features/auth/server/access";
+
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Usuarios y suscripciones | Profe en Movimiento" };
+
+function MetricCard({ label, value, detail, tone = "blue" }: { label: string; value: number; detail: string; tone?: "blue" | "orange" | "emerald" | "violet" }) {
+  const tones = {
+    blue: "border-blue-200 bg-blue-50 text-blue-800",
+    orange: "border-orange-200 bg-orange-50 text-orange-800",
+    emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    violet: "border-violet-200 bg-violet-50 text-violet-800",
+  };
+  return <article className={`rounded-3xl border p-6 shadow-sm ${tones[tone]}`}><p className="text-xs font-black uppercase tracking-[.16em]">{label}</p><p className="mt-3 text-4xl font-black text-slate-950">{value.toLocaleString("es")}</p><p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{detail}</p></article>;
+}
+
+export default async function AdminUsersPage() {
+  const access = await getAuthAccess();
+  if (!access.authenticated) redirect("/login?next=/admin/usuarios");
+  if (access.role !== "admin") redirect("/dashboard");
+
+  let metrics = null;
+  let loadError = false;
+  try {
+    metrics = await getPlatformMetrics();
+  } catch (error) {
+    console.error("[Administración] No se pudieron cargar las métricas.", error);
+    loadError = true;
+  }
+
+  return (
+    <AppLayout sidebar={<Sidebar />} header={<div className="flex min-h-20 items-center justify-between gap-4 px-6"><div><h1 className="text-lg font-bold text-slate-950">Usuarios y suscripciones</h1><p className="text-sm text-slate-500">Panel privado de administración</p></div><AccountBadge authenticated email={access.email} fullName={access.fullName} /></div>} footer={<div className="px-6 py-4 text-center text-xs text-slate-500">Profe en Movimiento 5.0 · Datos administrativos privados</div>}>
+      <Container size="wide" className="space-y-8 py-8">
+        <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-blue-950 to-violet-900 p-8 text-white shadow-2xl sm:p-10">
+          <p className="text-xs font-black uppercase tracking-[.2em] text-orange-300">Control de acceso</p>
+          <div className="mt-4 flex flex-col justify-between gap-6 lg:flex-row lg:items-end"><div><h2 className="text-4xl font-black">Personas con acceso real a la plataforma</h2><p className="mt-4 max-w-3xl leading-7 text-blue-100">Cifras calculadas directamente desde Supabase. Incluyen cuentas docentes registradas y cuentas estudiantiles activas.</p></div><Link href="/cuenta" className="shrink-0 rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-black text-white">← Volver a mi cuenta</Link></div>
+        </section>
+
+        {!metrics || loadError ? <section className="rounded-3xl border border-red-200 bg-red-50 p-8"><h2 className="text-xl font-black text-red-900">No se pudieron cargar las estadísticas</h2><p className="mt-2 text-red-700">Comprueba la configuración administrativa de Supabase y vuelve a intentarlo.</p></section> : <>
+          <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-blue-700">Plataforma</p><h2 className="mt-2 text-3xl font-black text-slate-950">Acceso general</h2></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              <MetricCard label="Total de personas" value={metrics.totalPeople} detail="Docentes registrados + estudiantes activos." tone="blue" />
+              <MetricCard label="Cuentas docentes" value={metrics.teacherAccounts} detail="Perfiles creados mediante Supabase Auth." tone="violet" />
+              <MetricCard label="Estudiantes activos" value={metrics.activeStudentAccounts} detail="Cuentas estudiantiles habilitadas." tone="emerald" />
+              <MetricCard label="Nuevos este mes" value={metrics.newThisMonth} detail="Altas docentes y estudiantiles del mes actual." tone="orange" />
+            </div>
+          </section>
+
+          <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-orange-600">Planes docentes</p><h2 className="mt-2 text-3xl font-black text-slate-950">Distribución Free y Pro</h2></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <MetricCard label="Plan Free" value={metrics.freeAccounts} detail="Cuentas docentes sin acceso Pro activo." tone="blue" />
+              <MetricCard label="Plan Pro" value={metrics.proAccounts} detail="Cuentas docentes con acceso Pro activo." tone="orange" />
+              <MetricCard label="Administradores" value={metrics.adminAccounts} detail="Cuentas con permisos administrativos." tone="violet" />
+            </div>
+          </section>
+
+          <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-emerald-700">Hotmart</p><h2 className="mt-2 text-3xl font-black text-slate-950">Suscripciones y vinculación</h2></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <MetricCard label="Suscripciones activas" value={metrics.activeSubscriptions} detail="Accesos activos recibidos desde Hotmart." tone="emerald" />
+              <MetricCard label="Plan mensual" value={metrics.monthlySubscriptions} detail="Oferta mensual identificada por Hotmart." tone="blue" />
+              <MetricCard label="Plan anual" value={metrics.annualSubscriptions} detail="Oferta anual identificada por Hotmart." tone="orange" />
+              <MetricCard label="Sin modalidad histórica" value={metrics.uncategorizedSubscriptions} detail="Accesos anteriores sin código de oferta registrado." tone="violet" />
+              <MetricCard label="Pendientes de registro" value={metrics.pendingRegistration} detail="Compradores que aún no crearon una cuenta con el mismo correo." tone="orange" />
+              <MetricCard label="Inactivas" value={metrics.inactiveSubscriptions} detail="Suscripciones canceladas, vencidas o reembolsadas." tone="blue" />
+            </div>
+          </section>
+
+          <p className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-500">Actualizado al abrir esta página: {new Intl.DateTimeFormat("es", { dateStyle: "long", timeStyle: "short", timeZone: "America/Guayaquil" }).format(new Date(metrics.generatedAt))}. Los datos no son públicos.</p>
+        </>}
+      </Container>
+    </AppLayout>
+  );
+}

@@ -58,6 +58,19 @@ export default async function AccountPage() {
                 <form action={signOutAction} className="mt-4"><button className="min-h-11 rounded-xl border border-slate-300 px-5 py-2 font-black text-slate-700 hover:bg-slate-50">Cerrar sesión</button></form>
               </section>
             </div>
+
+            {access.role === "admin" ? (
+              <section className="rounded-3xl border border-amber-200 bg-amber-50 p-6 shadow-sm sm:p-8">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-700">Administración</p>
+                <div className="mt-2 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-950">Usuarios y suscripciones</h2>
+                    <p className="mt-3 max-w-2xl leading-7 text-slate-600">Consulta cuántas personas tienen acceso, la distribución Free y Pro, las cuentas estudiantiles y el estado de las suscripciones de Hotmart.</p>
+                  </div>
+                  <Link href="/admin/usuarios" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-5 py-2 font-black text-white hover:bg-slate-800">Abrir panel →</Link>
+                </div>
+              </section>
+            ) : null}
           </div>
         )}
       </Container>

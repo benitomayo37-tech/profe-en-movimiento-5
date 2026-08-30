@@ -8,6 +8,7 @@ export interface ParsedHotmartWebhook {
   entitlementKey: string;
   eventId: string;
   eventName: string;
+  offerCode: string | null;
   productId: string;
 }
 
@@ -64,6 +65,7 @@ export function parseHotmartWebhook(
   const subscriber = asRecord(data?.subscriber)
     ?? asRecord(subscription?.subscriber);
   const purchase = asRecord(data?.purchase);
+  const offer = asRecord(purchase?.offer) ?? asRecord(data?.offer);
 
   const eventName = asNonEmptyString(body?.event)?.toUpperCase();
   const productId = asNonEmptyString(product?.id);
@@ -80,6 +82,7 @@ export function parseHotmartWebhook(
   if (!action) return null;
 
   const transaction = asNonEmptyString(purchase?.transaction);
+  const offerCode = asNonEmptyString(offer?.code);
   const subscriberCode = asNonEmptyString(subscriber?.code);
   const sourceKey = subscriberCode ?? transaction ?? buyerEmail;
   const eventId = asNonEmptyString(body?.id)
@@ -91,6 +94,7 @@ export function parseHotmartWebhook(
     entitlementKey: `${productId}:${sourceKey}`,
     eventId,
     eventName,
+    offerCode,
     productId,
   };
 }

@@ -81,6 +81,7 @@ export async function POST(request: Request) {
     p_entitlement_key: event.entitlementKey,
     p_event_id: event.eventId,
     p_event_name: event.eventName,
+    p_offer_code: event.offerCode,
     p_product_id: event.productId,
   });
 
