@@ -2,6 +2,13 @@ import Link from "next/link";
 
 const actions = [
   {
+    title: "Agentes IA",
+    description: "Coordina planificación, evaluación e inclusión en una conversación guiada.",
+    href: "/agentes",
+    icon: "🧭",
+    access: "Free + Pro",
+  },
+  {
     title: "Profe IA",
     description:
       "Genera planificaciones, rúbricas, actividades y recursos educativos.",

@@ -16,6 +16,7 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
     { label: "Historial", href: "/historial" },
   ] },
   { title: "Herramientas docentes", items: [
+    { label: "Agentes IA", href: "/agentes" },
     { label: "Profe IA", href: "/ai" },
     { label: "Entrenador IA", href: "/entrenador-ia" },
     { label: "Exámenes estudiantiles", href: "/examenes" },
