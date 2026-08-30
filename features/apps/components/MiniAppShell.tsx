@@ -12,13 +12,18 @@ interface MiniAppShellProps {
 export default function MiniAppShell({ app, children, guidance }: MiniAppShellProps) {
   return (
     <div className="space-y-8">
-      <nav aria-label="Migas de pan" className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
-        <Link href="/dashboard" className="transition hover:text-blue-700">Dashboard</Link>
-        <span aria-hidden="true">/</span>
-        <Link href="/apps" className="transition hover:text-blue-700">App para profes</Link>
-        <span aria-hidden="true">/</span>
-        <span className="text-slate-800" aria-current="page">{app.title}</span>
-      </nav>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <nav aria-label="Migas de pan" className="flex min-w-0 flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
+          <Link href="/dashboard" className="transition hover:text-blue-700">Dashboard</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/apps" className="transition hover:text-blue-700">App para profes</Link>
+          <span aria-hidden="true">/</span>
+          <span className="text-slate-800" aria-current="page">{app.title}</span>
+        </nav>
+        <Link href="/apps" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 text-sm font-black text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">
+          <span aria-hidden="true">←</span><span className="ml-2">Volver a App para profes</span>
+        </Link>
+      </div>
 
       <section className={`relative overflow-hidden rounded-[2rem] bg-gradient-to-br ${app.accent} px-6 py-9 text-white shadow-2xl sm:px-9 lg:px-12`}>
         <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/15" />
@@ -52,7 +57,7 @@ export default function MiniAppShell({ app, children, guidance }: MiniAppShellPr
             <p className="mt-1">La información ingresada se procesa en este dispositivo y no se envía a un servidor.</p>
           </div>
           <Link href="/apps" className="flex min-h-12 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-center font-black text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
-            ← Volver a las miniapps
+            ← Volver a App para profes
           </Link>
         </aside>
       </div>
