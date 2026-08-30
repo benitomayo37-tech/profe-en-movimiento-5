@@ -7,13 +7,14 @@ import { useMemo, useState } from "react";
 import HotmartPurchaseButton from "@/features/store/components/HotmartPurchaseButton";
 import {
   formatStorePrice,
+  getStoreProductStatusLabel,
   storeCategories,
   storeProducts,
   type StoreCategoryId,
 } from "@/features/store/data/products";
 
 const appBenefits = [
-  "19 miniapps en línea",
+  "Suite de miniapps en crecimiento",
   "Sorteador, marcador y cronómetros",
   "Sesiones, torneos y pausas activas",
   "Objetivos, rúbricas y planificación",
@@ -35,7 +36,7 @@ const appPlans = [
     name: "Pro",
     eyebrow: "Para el trabajo diario",
     description: "La suite completa de herramientas docentes en línea.",
-    features: ["Las 19 miniapps", "Actualizaciones del kit", "Uso desde cualquier dispositivo", "1 cuenta docente"],
+    features: ["Miniapps disponibles y nuevas incorporaciones", "Actualizaciones del kit", "Uso desde cualquier dispositivo", "1 cuenta docente"],
     price: "$4,99",
     priceDetail: "al mes",
     featured: true,
@@ -180,7 +181,7 @@ export default function StoreCatalog() {
               Producto destacado
             </span>
             <h2 id="app-title" className="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              Suite de 19 miniapps para docentes
+              Suite Pro de miniapps para docentes
             </h2>
             <p className="mt-4 max-w-xl leading-7 text-slate-600">
               Diecinueve herramientas en línea para acompañarte antes, durante y después de la clase. Organiza grupos, controla tiempos, crea materiales y evalúa desde un mismo lugar.
@@ -196,7 +197,7 @@ export default function StoreCatalog() {
             </div>
 
             <p className="mt-6 rounded-2xl border border-orange-200 bg-orange-50 px-5 py-4 text-sm font-semibold leading-6 text-orange-900">
-              Acceso web sin instalaciones. El plan Pro reúne las 19 miniapps y sus actualizaciones.
+              Acceso web sin instalaciones. El Plan Pro reúne las miniapps disponibles, sus actualizaciones y nuevas incorporaciones.
             </p>
           </div>
 
@@ -239,7 +240,7 @@ export default function StoreCatalog() {
                     href="/store/suite-19-miniapps-docentes"
                     className="mt-auto pt-6 text-sm font-black text-orange-300 hover:text-orange-200"
                   >
-                    Ver Suite de 19 miniapps →
+                    Ver Suite Pro de miniapps →
                   </Link>
                 ) : (
                   <span className={`mt-auto pt-6 text-sm font-black ${plan.featured ? "text-orange-300" : "text-blue-700"}`}>
@@ -350,7 +351,9 @@ export default function StoreCatalog() {
                             {product.billing === "monthly" ? <p className="text-xs font-semibold text-slate-500">al mes</p> : null}
                           </>
                         ) : (
-                          <p className="text-xs font-black text-orange-700">Incluida en la Suite</p>
+                          <p className="text-xs font-black text-orange-700">
+                            {getStoreProductStatusLabel(product)}
+                          </p>
                         )}
                       </div>
                       </div>

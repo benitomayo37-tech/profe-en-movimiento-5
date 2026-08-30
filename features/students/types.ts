@@ -11,7 +11,7 @@ export interface StudentActionState {
   status: "idle" | "error" | "success";
   message: string;
   fieldErrors?: Partial<Record<
-    "fullName" | "institution" | "educationLevel" | "gradeCourse" | "pin" | "confirmPin",
+    "fullName" | "displayName" | "institution" | "educationLevel" | "gradeCourse" | "pin" | "confirmPin",
     string
   >>;
 }

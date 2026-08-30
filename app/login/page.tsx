@@ -6,8 +6,8 @@ import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import AuthSetupNotice from "@/features/auth/components/AuthSetupNotice";
 import { getAuthAccess, normalizeReturnTo } from "@/features/auth/server/access";
 import { signInAction } from "@/features/auth/server/actions";
-import StudentAuthForm from "@/features/students/components/StudentAuthForm";
-import { studentSignInAction } from "@/features/students/server/actions";
+import StudentQuickAccessForm from "@/features/students/components/StudentQuickAccessForm";
+import { studentQuickAccessAction } from "@/features/students/server/actions";
 import { getStudentSession } from "@/features/students/server/session";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +55,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </div>
       {access.configured
         ? isStudent
-          ? <StudentAuthForm mode="login" action={studentSignInAction} />
+          ? <StudentQuickAccessForm action={studentQuickAccessAction} />
           : <AuthForm mode="login" action={signInAction} returnTo={returnTo} notice={notice} />
         : <AuthSetupNotice />}
     </AuthPageShell>

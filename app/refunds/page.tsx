@@ -24,7 +24,7 @@ export default function RefundsPage() {
           content: (
             <>
               <p>
-                Los pagos de la Suite de 19 miniapps se procesan en el entorno seguro de
+                Los pagos de la Suite Pro de miniapps se procesan en el entorno seguro de
                 Hotmart. Antes de comprar verás el precio, la periodicidad, la moneda, los
                 impuestos aplicables y los medios de pago disponibles para tu país.
               </p>
@@ -60,7 +60,7 @@ export default function RefundsPage() {
                   </a>
                   .
                 </li>
-                <li>Selecciona “Suite de 19 miniapps para docentes”.</li>
+                <li>Selecciona “Suite Pro de miniapps para docentes”.</li>
                 <li>Abre “Configurar forma de pago”.</li>
                 <li>Selecciona “Cancelar suscripción” y confirma.</li>
               </ol>
@@ -78,7 +78,7 @@ export default function RefundsPage() {
           title: "4. Garantía de 7 días",
           content: (
             <p>
-              La compra inicial de la Suite de 19 miniapps tiene una garantía de 7 días
+              La compra inicial de la Suite Pro de miniapps tiene una garantía de 7 días
               contados desde su aprobación. Dentro de ese plazo puedes solicitar el reembolso
               de la transacción inicial. Las renovaciones y cancelaciones se sujetan a las
               reglas de suscripción y garantía que Hotmart muestre en los detalles de la

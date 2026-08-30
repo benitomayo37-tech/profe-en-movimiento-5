@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { gameTopics, gameTypes, getQuestions, getWords, type GameQuestion, type GameTopic, type GameType } from "./data";
+import ChessStudentApp from "@/features/students/chess/ChessStudentApp";
 
 type GridCell = { letter: string; word?: string };
 
@@ -75,6 +76,7 @@ export default function StudentGamesWorkspace() {
   const [active, setActive] = useState(false);
   const [sessionKey, setSessionKey] = useState(0);
   const selectedGame = gameTypes.find((game) => game.value === type);
+  const selectedGameAvailable = selectedGame?.status !== "coming-soon";
 
   function startGame() {
     setSessionKey((value) => value + 1);
@@ -90,9 +92,9 @@ export default function StudentGamesWorkspace() {
 
       {!active ? (
         <div className="mt-8 space-y-7">
-          <div><p className="mb-3 text-sm font-black text-slate-900">1. Selecciona un juego</p><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{gameTypes.map((game) => <button key={game.value} type="button" onClick={() => setType(game.value)} className={`rounded-3xl border p-5 text-left transition hover:-translate-y-1 hover:shadow-lg ${type === game.value ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200" : "border-slate-200 bg-white"}`}><span className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-3xl ${game.color}`}>{game.icon}</span><span className="mt-4 block text-lg font-black text-slate-950">{game.label}</span><span className="mt-2 block text-sm leading-6 text-slate-600">{game.description}</span></button>)}</div></div>
+          <div><p className="mb-3 text-sm font-black text-slate-900">1. Selecciona un juego</p><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{gameTypes.map((game) => <button key={game.value} type="button" onClick={() => setType(game.value)} className={`relative rounded-3xl border p-5 text-left transition hover:-translate-y-1 hover:shadow-lg ${type === game.value ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200" : "border-slate-200 bg-white"}`}>{game.status === "coming-soon" ? <span className="absolute right-4 top-4 rounded-full bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-amber-800">En preparación</span> : null}<span className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br text-3xl text-white ${game.color}`}>{game.icon}</span><span className="mt-4 block text-lg font-black text-slate-950">{game.label}</span><span className="mt-2 block text-sm leading-6 text-slate-600">{game.description}</span></button>)}</div></div>
           {!selectedGame?.hasOwnTopics ? <div><p className="mb-3 text-sm font-black text-slate-900">2. Escoge la temática</p><div className="flex flex-wrap gap-3">{gameTopics.map((item) => <button key={item.value} type="button" onClick={() => setTopic(item.value)} className={`rounded-full px-5 py-3 text-sm font-black transition ${topic === item.value ? "bg-slate-950 text-white shadow-lg" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{item.icon} {item.label}</button>)}</div></div> : <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm font-bold text-cyan-950">Este juego ya incluye sus propios niveles y contenidos. Podrás escogerlos al iniciar.</div>}
-          <button type="button" onClick={startGame} className="rounded-2xl bg-gradient-to-r from-orange-500 to-amber-400 px-7 py-4 text-lg font-black text-slate-950 shadow-lg transition hover:-translate-y-0.5">¡Comenzar partida! →</button>
+          {selectedGameAvailable ? <button type="button" onClick={startGame} className="rounded-2xl bg-gradient-to-r from-orange-500 to-amber-400 px-7 py-4 text-lg font-black text-slate-950 shadow-lg transition hover:-translate-y-0.5">¡Comenzar partida! →</button> : <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-950"><p className="font-black">Ajedrez desde Cero está en preparación</p><p className="mt-1">Estamos completando las reglas, el guardado del progreso y la accesibilidad antes de habilitarlo.</p></div>}
           <p className="text-sm text-slate-500">Puedes jugar y repetir las actividades todas las veces que quieras.</p>
         </div>
       ) : (
@@ -103,7 +105,7 @@ export default function StudentGamesWorkspace() {
 }
 
 function GameRunner({ type, topic, onExit }: { type: GameType; topic: GameTopic; onExit: () => void }) {
-  return <div><button type="button" onClick={onExit} className="mb-5 rounded-full border border-slate-300 px-4 py-2 text-sm font-black text-slate-700">← Cambiar de juego</button>{type === "quiz" && <Quiz topic={topic} />}{type === "word-search" && <WordSearch topic={topic} />}{type === "puzzle" && <Puzzle topic={topic} />}{type === "goose" && <Goose topic={topic} />}{type === "arcade-pack" && <EmbeddedGame title="Arcade deportivo — Pack 2" source="/student-games/arcade-deportivo-pack-2.html" />}{type === "puzzle-crossword" && <EmbeddedGame title="Puzle deportivo con crucigrama" source="/student-games/puzle-deportivo-con-crucigrama.html" />}</div>;
+  return <div><button type="button" onClick={onExit} className="mb-5 rounded-full border border-slate-300 px-4 py-2 text-sm font-black text-slate-700">← Cambiar de juego</button>{type === "quiz" && <Quiz topic={topic} />}{type === "word-search" && <WordSearch topic={topic} />}{type === "puzzle" && <Puzzle topic={topic} />}{type === "goose" && <Goose topic={topic} />}{type === "arcade-pack" && <EmbeddedGame title="Arcade deportivo — Pack 2" source="/student-games/arcade-deportivo-pack-2.html" />}{type === "puzzle-crossword" && <EmbeddedGame title="Puzle deportivo con crucigrama" source="/student-games/puzle-deportivo-con-crucigrama.html" />}{type === "chess" && <ChessStudentApp />}</div>;
 }
 
 function EmbeddedGame({ title, source }: { title: string; source: string }) {

@@ -37,7 +37,7 @@ export default async function PurchaseConfirmedPage() {
     ? {
         eyebrow: "Activación completa",
         title: "¡Tu Plan Pro ya está activo!",
-        description: "Tu cuenta ya puede utilizar la Suite completa de 19 miniapps y las herramientas Pro habilitadas.",
+        description: "Tu cuenta ya puede utilizar la Suite completa de miniapps y las herramientas Pro habilitadas.",
         badge: "Plan Pro activo",
         badgeClassName: "bg-emerald-100 text-emerald-800",
       }
@@ -67,7 +67,7 @@ export default async function PurchaseConfirmedPage() {
             <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 px-6 py-10 text-white shadow-2xl sm:px-10 lg:px-12 lg:py-14">
               <div className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl" />
               <div className="relative max-w-4xl">
-                <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-orange-200">Suite de 19 miniapps</span>
+                <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-orange-200">Suite Pro de miniapps</span>
                 <p className="mt-7 text-sm font-black uppercase tracking-[0.18em] text-orange-300">{status.eyebrow}</p>
                 <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{status.title}</h1>
                 <p className="mt-5 max-w-3xl text-base leading-8 text-blue-100 sm:text-lg">{status.description}</p>
@@ -111,7 +111,7 @@ export default async function PurchaseConfirmedPage() {
                   <div className="mt-6 grid gap-3">
                     {access.hasProAccess ? (
                       <>
-                        <Link href="/apps" className="flex min-h-12 items-center justify-center rounded-xl bg-orange-500 px-5 py-3 text-center font-black text-white transition hover:bg-orange-600">Entrar a las 19 miniapps →</Link>
+                        <Link href="/apps" className="flex min-h-12 items-center justify-center rounded-xl bg-orange-500 px-5 py-3 text-center font-black text-white transition hover:bg-orange-600">Entrar a las miniapps →</Link>
                         <Link href="/cuenta" className="flex min-h-12 items-center justify-center rounded-xl border border-slate-300 px-5 py-3 text-center font-black text-slate-700 transition hover:bg-slate-50">Ver mi cuenta</Link>
                       </>
                     ) : access.authenticated ? (

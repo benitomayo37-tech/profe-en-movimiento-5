@@ -9,6 +9,6 @@ export const metadata: Metadata = { title: "Dashboard | Profe en Movimiento" };
 
 export default async function DashboardRoute() {
   const access = await getAuthAccess();
-  if (access.configured && !access.authenticated) redirect("/login?next=/dashboard");
-  return <DashboardPage />;
+  if (!access.authenticated) redirect("/login?next=/dashboard");
+  return <DashboardPage access={access} />;
 }

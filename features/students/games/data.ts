@@ -1,4 +1,4 @@
-export type GameType = "quiz" | "word-search" | "puzzle" | "goose" | "arcade-pack" | "puzzle-crossword";
+export type GameType = "quiz" | "word-search" | "puzzle" | "goose" | "arcade-pack" | "puzzle-crossword" | "chess";
 export type GameTopic = "baloncesto" | "futbol" | "atletismo" | "voleibol" | "mixto";
 
 export interface GameQuestion {
@@ -16,13 +16,14 @@ export const gameTopics: Array<{ value: GameTopic; label: string; icon: string }
   { value: "voleibol", label: "Voleibol", icon: "🏐" },
 ];
 
-export const gameTypes: Array<{ value: GameType; label: string; description: string; icon: string; color: string; hasOwnTopics?: boolean }> = [
+export const gameTypes: Array<{ value: GameType; label: string; description: string; icon: string; color: string; hasOwnTopics?: boolean; status?: "available" | "coming-soon" }> = [
   { value: "quiz", label: "Quiz deportivo", description: "Responde cinco preguntas y supera tu propia marca.", icon: "🧠", color: "from-blue-600 to-cyan-400" },
   { value: "word-search", label: "Sopa de letras", description: "Encuentra seis palabras escondidas en el tablero.", icon: "🔎", color: "from-emerald-500 to-lime-400" },
   { value: "puzzle", label: "Puzzle deportivo", description: "Ordena las nueve piezas con el menor número de movimientos.", icon: "🧩", color: "from-violet-600 to-fuchsia-400" },
   { value: "goose", label: "Oca deportiva", description: "Lanza el dado, responde y llega primero a la meta.", icon: "🎲", color: "from-orange-500 to-amber-300" },
   { value: "arcade-pack", label: "Arcade deportivo", description: "Supera retos de trivia, reflejos, estrategia y circuito corporal.", icon: "🕹️", color: "from-sky-600 to-indigo-500", hasOwnTopics: true },
   { value: "puzzle-crossword", label: "Puzle y crucigrama", description: "Resuelve desafíos deportivos de lógica, ubicación táctica y vocabulario.", icon: "🧩", color: "from-rose-500 to-orange-400", hasOwnTopics: true },
+  { value: "chess", label: "Ajedrez desde Cero", description: "Aprende el tablero, las seis piezas, las reglas completas y supera retos de estrategia.", icon: "♟️", color: "from-slate-900 to-amber-600", hasOwnTopics: true, status: "available" },
 ];
 
 const questions: Record<Exclude<GameTopic, "mixto">, GameQuestion[]> = {

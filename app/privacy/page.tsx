@@ -17,7 +17,7 @@ export default function PrivacyPage() {
       eyebrow="Protección de datos"
       title="Política de privacidad"
       description="Explicamos qué información utilizamos, para qué la necesitamos y cómo puedes ejercer tus derechos sobre tus datos personales."
-      updatedAt="8 de agosto de 2026"
+      updatedAt="26 de agosto de 2026"
       sections={[
         {
           id: "responsable",
@@ -63,6 +63,12 @@ export default function PrivacyPage() {
                 procesada por nuestros proveedores de infraestructura.
               </li>
               <li>Mensajes y archivos que compartas al solicitar soporte.</li>
+              <li>
+                Registros educativos de incidentes creados voluntariamente en
+                MueveSeguro, como institución, docente responsable, estudiante o
+                identificador interno, fecha, lugar, hechos observables, actuaciones,
+                notificaciones, seguimientos y estado del caso.
+              </li>
             </ul>
           ),
         },
@@ -79,6 +85,10 @@ export default function PrivacyPage() {
                 <li>generar los materiales que solicites mediante inteligencia artificial;</li>
                 <li>atender soporte, prevenir fraude y mantener la seguridad;</li>
                 <li>cumplir obligaciones legales y resolver reclamos.</li>
+                <li>
+                  conservar la trazabilidad de los incidentes y seguimientos que el
+                  usuario decida documentar mediante MueveSeguro;
+                </li>
               </ul>
               <p>
                 El tratamiento se sustenta, según corresponda, en la ejecución del
@@ -156,13 +166,22 @@ export default function PrivacyPage() {
             <>
               <p>
                 La cuenta está dirigida a docentes, entrenadores y personas adultas. No
-                solicites a estudiantes que creen cuentas ni introduzcas nombres completos,
-                fotografías, diagnósticos, calificaciones u otros datos identificables de
-                menores en las herramientas de IA.
+                solicites a estudiantes que creen cuentas ni introduzcas fotografías,
+                diagnósticos, calificaciones u otros datos identificables de menores en
+                las herramientas de IA.
               </p>
               <p>
                 Para actividades de clase, utiliza datos anónimos, iniciales o ejemplos
                 ficticios y respeta las autorizaciones de tu institución educativa.
+              </p>
+              <p>
+                MueveSeguro es una herramienta separada de las funciones de IA y permite
+                registrar incidentes educativos. Utiliza únicamente los datos mínimos
+                necesarios, evita diagnósticos o información clínica innecesaria y
+                asegúrate de contar con la autorización, competencia institucional y base
+                legítima aplicable antes de identificar a un estudiante. El acceso queda
+                limitado a la cuenta que creó el registro mediante controles de seguridad
+                en la base de datos.
               </p>
             </>
           ),

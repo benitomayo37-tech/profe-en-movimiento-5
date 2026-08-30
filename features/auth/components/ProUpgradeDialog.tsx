@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 interface ProUpgradeDialogProps {
   open: boolean;
@@ -15,16 +15,41 @@ export default function ProUpgradeDialog({
   onClose,
 }: ProUpgradeDialogProps) {
   const titleId = useId();
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
 
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
+
+      if (event.key === "Tab") {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable?.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     }
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus();
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -37,6 +62,7 @@ export default function ProUpgradeDialog({
       }}
     >
       <section
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -44,6 +70,7 @@ export default function ProUpgradeDialog({
       >
         <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-orange-200/70 blur-3xl" />
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
           aria-label="Cerrar"
@@ -63,7 +90,7 @@ export default function ProUpgradeDialog({
             {toolName}
           </h2>
           <p className="mt-4 leading-7 text-slate-600">
-            Esta herramienta pertenece al Plan Pro. Actívalo para utilizar todas las herramientas de Profe IA, la planificación deportiva completa y la Suite de 19 miniapps.
+            Esta herramienta pertenece al Plan Pro. Actívalo para utilizar todas las herramientas de Profe IA, la planificación deportiva completa y la Suite Pro de miniapps.
           </p>
 
           <div className="mt-6 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-blue-950">

@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import type { MiniAppDefinition } from "@/features/apps/data/miniApps";
 
 interface EmbeddedMiniAppProps {
@@ -5,6 +9,52 @@ interface EmbeddedMiniAppProps {
 }
 
 export default function EmbeddedMiniApp({ app }: EmbeddedMiniAppProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const allowedKeys = new Set([
+      "profe_retos_last",
+      "profe_retos_completados",
+      "profe_retos",
+      "profe_planes_clase",
+      "pem-evaluador-inclusivo-v2",
+    ]);
+
+    const handleMessage = (event: MessageEvent) => {
+      const frameWindow = iframeRef.current?.contentWindow;
+      if (!frameWindow || event.source !== frameWindow) return;
+
+      const message = event.data as
+        | { type?: string; action?: string; key?: string; value?: string }
+        | undefined;
+      if (message?.type !== "pem-miniapp-storage") return;
+
+      if (message.action === "ready") {
+        const values: Record<string, string | null> = {};
+        for (const key of allowedKeys) {
+          try {
+            values[key] = window.localStorage.getItem(key);
+          } catch {
+            values[key] = null;
+          }
+        }
+        frameWindow.postMessage({ type: "pem-miniapp-storage-response", values }, "*");
+        return;
+      }
+
+      if (message.action === "set" && message.key && allowedKeys.has(message.key)) {
+        try {
+          window.localStorage.setItem(message.key, message.value ?? "");
+        } catch {
+          // The miniapp keeps an in-memory fallback when storage is unavailable.
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
   if (!app.embeddedAsset) return null;
 
   return (
@@ -24,11 +74,32 @@ export default function EmbeddedMiniApp({ app }: EmbeddedMiniAppProps) {
       </div>
 
       <iframe
+        ref={iframeRef}
+        onLoad={() => {
+          const frameWindow = iframeRef.current?.contentWindow;
+          if (!frameWindow) return;
+          const values: Record<string, string | null> = {};
+          for (const key of [
+            "profe_retos_last",
+            "profe_retos_completados",
+            "profe_retos",
+            "profe_planes_clase",
+            "pem-evaluador-inclusivo-v2",
+          ]) {
+            try {
+              values[key] = window.localStorage.getItem(key);
+            } catch {
+              values[key] = null;
+            }
+          }
+          frameWindow.postMessage({ type: "pem-miniapp-storage-response", values }, "*");
+        }}
         src={`/api/miniapps/${app.id}`}
         title={app.title}
         loading="eager"
         referrerPolicy="no-referrer"
-        sandbox="allow-scripts allow-downloads allow-modals"
+        sandbox="allow-scripts allow-downloads allow-modals allow-same-origin"
+        allow="web-share"
         className="h-[780px] w-full border-0 bg-white sm:h-[900px] lg:h-[980px]"
       />
     </section>

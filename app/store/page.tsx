@@ -1,31 +1,18 @@
 import type { Metadata } from "next";
 
-import { AccountBadge, AppLayout, Sidebar } from "@/components/layout";
+import { AppLayout, Sidebar } from "@/components/layout";
 import Container from "@/components/ui/Container";
+import { getAuthAccess } from "@/features/auth/server/access";
 import StoreCatalog from "@/features/store/components/StoreCatalog";
+import StorePageHeader from "@/features/store/components/StorePageHeader";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Tienda digital | Profe en Movimiento",
   description:
     "Recursos educativos, aplicaciones para docentes, ebooks y paquetes de Profe en Movimiento.",
 };
-
-function StoreHeader() {
-  return (
-    <div className="flex min-h-20 items-center justify-between gap-4 px-6">
-      <div className="min-w-0">
-        <h1 className="truncate text-lg font-bold text-slate-950">
-          Tienda digital
-        </h1>
-        <p className="truncate text-sm text-slate-500">
-          Herramientas creadas para enseñar con menos esfuerzo
-        </p>
-      </div>
-
-      <AccountBadge authenticated={false} />
-    </div>
-  );
-}
 
 function StoreFooter() {
   return (
@@ -35,11 +22,19 @@ function StoreFooter() {
   );
 }
 
-export default function StorePage() {
+export default async function StorePage() {
+  const access = await getAuthAccess();
+
   return (
     <AppLayout
       sidebar={<Sidebar />}
-      header={<StoreHeader />}
+      header={(
+        <StorePageHeader
+          access={access}
+          title="Tienda digital"
+          description="Herramientas creadas para enseñar con menos esfuerzo"
+        />
+      )}
       footer={<StoreFooter />}
     >
       <Container className="py-8">

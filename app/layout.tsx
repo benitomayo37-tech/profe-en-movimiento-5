@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://profe-en-movimiento-5.vercel.app"),
   title: "Profe en Movimiento 5.0",
   description: "Plataforma educativa inteligente para docentes de Educación Física.",
 };

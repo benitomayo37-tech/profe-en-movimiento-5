@@ -1,0 +1,18 @@
+CORRECCION DEFINITIVA - FREE / PRO Y PDF
+
+1. Cierra el servidor local si esta ejecutandose.
+2. Extrae este ZIP dentro de la carpeta principal del proyecto.
+3. Cuando Windows pregunte, acepta reemplazar los archivos existentes.
+4. No copies node_modules ni elimines .env.local.
+5. Ejecuta:
+
+   npm run build
+   npm run dev
+
+6. Entra con la cuenta Free y comprueba:
+   - Movimiento para Todos: tres ejercicios Free por poblacion; los demas muestran Pro y abren la ventana de actualizacion.
+   - Cuidadores: tres orientaciones Free y tres Pro.
+   - MueveSeguro: Orientacion, Prevencion y Protocolos abiertos; Registro e Historial muestran Pro y abren la ventana de actualizacion.
+   - Al imprimir Movimiento para Todos no aparecen la barra lateral, el encabezado fijo, el boton flotante ni el pie general atravesando las paginas.
+
+No es necesario volver a ejecutar la migracion SQL: ya fue aplicada correctamente.

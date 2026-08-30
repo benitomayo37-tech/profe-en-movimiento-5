@@ -9,7 +9,9 @@ export const STUDENT_SESSION_COOKIE = "pem_student_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30;
 
 function getSessionSecret() {
-  return process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
+  return process.env.SUPABASE_SECRET_KEY?.trim()
+    || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+    || null;
 }
 
 function sign(payload: string, secret: string) {

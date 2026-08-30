@@ -4,9 +4,9 @@ import Link from "next/link";
 interface PublicLandingPageProps { authenticated: boolean }
 
 const featureCards = [
-  { icon: "✨", title: "Crea tu planificación con Profe IA", text: "Genera sesiones completas, adaptadas al nivel, tiempo, materiales y metodología de tu clase.", href: "/ai", image: "/images/profe-ia-robot.png" },
-  { icon: "🏅", title: "Diseña entrenamientos con Entrenador IA", text: "Crea sesiones, microciclos, mesociclos y macrociclos de forma guiada y profesional.", href: "/entrenador-ia", image: "/images/landing-entrenador-armando.png" },
-  { icon: "📝", title: "Evalúa sin repetir la misma prueba", text: "Prepara exámenes, rúbricas y evaluaciones con criterios claros y versiones equivalentes.", href: "/examenes", image: "/images/landing-evaluacion-v2.png" },
+  { icon: "✨", title: "Crea tu planificación con Profe IA", text: "Genera sesiones completas, adaptadas al nivel, tiempo, materiales y metodología de tu clase.", href: "/ai", image: "/images/profe-ia-robot.webp" },
+  { icon: "🏅", title: "Diseña entrenamientos con Entrenador IA", text: "Crea sesiones, microciclos, mesociclos y macrociclos de forma guiada y profesional.", href: "/entrenador-ia", image: "/images/landing-entrenador-armando.webp" },
+  { icon: "📝", title: "Evalúa sin repetir la misma prueba", text: "Prepara exámenes, rúbricas y evaluaciones con criterios claros y versiones equivalentes.", href: "/examenes", image: "/images/landing-evaluacion-v2.webp" },
 ];
 
 const featuredTools = [
@@ -27,6 +27,32 @@ const faqs = [
   ["¿Qué incluye el plan Pro?", "Amplía el acceso a asistentes, miniapps y recursos Premium. Los detalles vigentes se muestran antes de contratar."],
 ];
 
+const platformStats = [
+  ["19", "Herramientas para profes"],
+  ["3", "Asistentes inteligentes"],
+  ["1", "Biblioteca profesional"],
+] as const;
+
+const publicNavigation = [
+  ["Inicio", "#inicio"],
+  ["Producto", "#producto"],
+  ["Herramientas", "#herramientas"],
+  ["Biblioteca", "#biblioteca"],
+  ["Soluciones", "#soluciones-inclusivas"],
+  ["Preguntas", "#preguntas"],
+] as const;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Profe en Movimiento",
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Web",
+  description: "Plataforma educativa inteligente para docentes de Educación Física, entrenadores y estudiantes.",
+  url: "https://profe-en-movimiento-5.vercel.app",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD", category: "Free" },
+};
+
 function ArrowIcon() {
   return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>;
 }
@@ -34,35 +60,47 @@ function ArrowIcon() {
 export default function PublicLandingPage({ authenticated }: PublicLandingPageProps) {
   const primaryHref = authenticated ? "/dashboard" : "/registro";
   const primaryLabel = authenticated ? "Ir al Dashboard" : "Comenzar gratis";
-  const heroLabel = "Iniciar sesión";
-  const heroHref = "/login";
+  const heroLabel = authenticated ? "Ir al Dashboard" : "Iniciar sesión";
+  const heroHref = authenticated ? "/dashboard" : "/login";
   const memberHref = (destination: string) => authenticated
     ? destination
     : `/login?next=${encodeURIComponent(destination)}`;
 
   return (
     <main className="overflow-hidden bg-white text-slate-950">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#071532]/95 text-white shadow-lg backdrop-blur">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2" aria-label="Profe en Movimiento, inicio">
             <Image src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width={58} height={58} priority className="h-12 w-12 rounded-lg bg-white object-contain p-1" />
             <span className="hidden text-sm font-black leading-tight sm:block">PROFE<br/><span className="text-orange-400">EN MOVIMIENTO</span></span>
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-bold lg:flex" aria-label="Navegación pública">
-            <a href="#inicio" className="hover:text-orange-300">Inicio</a><a href="#producto" className="hover:text-orange-300">Producto</a><a href="#herramientas" className="hover:text-orange-300">Herramientas</a><a href="/#biblioteca" className="hover:text-orange-300">Biblioteca</a><a href="#preguntas" className="hover:text-orange-300">Preguntas</a>
+          <nav className="hidden items-center gap-6 text-sm font-bold lg:flex" aria-label="Navegación pública">
+            {publicNavigation.map(([label, href]) => (
+              <a key={href} href={href} className="rounded-md hover:text-orange-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071532]">{label}</a>
+            ))}
           </nav>
           <div className="flex items-center gap-2">
             {!authenticated && <Link href="/login" className="hidden rounded-xl px-4 py-2.5 text-sm font-black hover:bg-white/10 sm:inline-flex">Iniciar sesión</Link>}
             <Link href={primaryHref} className="inline-flex min-h-11 items-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-600">{primaryLabel}</Link>
+            <details className="group relative lg:hidden">
+              <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-white/20 bg-white/10 text-xl font-black hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300" aria-label="Abrir menú de navegación">☰</summary>
+              <nav className="absolute right-0 top-14 z-50 grid min-w-56 gap-1 rounded-2xl border border-white/10 bg-[#071532] p-3 shadow-2xl" aria-label="Navegación móvil">
+                {publicNavigation.map(([label, href]) => (
+                  <a key={href} href={href} className="rounded-xl px-4 py-3 text-sm font-bold hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300">{label}</a>
+                ))}
+                {!authenticated ? <Link href="/login" className="rounded-xl px-4 py-3 text-sm font-bold text-orange-300 hover:bg-white/10">Iniciar sesión</Link> : null}
+              </nav>
+            </details>
           </div>
         </div>
       </header>
 
-      <section id="inicio" className="relative isolate bg-[#071532] text-white">
+      <section id="inicio" className="relative isolate scroll-mt-16 bg-[#071532] text-white">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_80%_20%,rgba(37,99,235,.55),transparent_35%),linear-gradient(115deg,#071532_15%,#0b2b68_100%)]" />
         <div className="mx-auto grid min-h-[610px] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[.9fr_1.1fr] lg:px-8 lg:py-16">
           <div className="relative order-2 h-[410px] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-900 to-slate-950 shadow-2xl lg:order-1 lg:h-[500px]">
-            <Image src="/images/landing-hero-clase-v2.png" alt="Docente observando y orientando una clase activa de Educación Física" fill priority sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover object-center" />
+            <Image src="/images/landing-hero-clase-v2.webp" alt="Docente observando y orientando una clase activa de Educación Física" fill priority sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover object-center" />
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#071532] to-transparent" />
             <div className="absolute bottom-5 left-5 rounded-2xl border border-white/15 bg-slate-950/70 p-4 backdrop-blur"><p className="text-xs font-black uppercase tracking-[.18em] text-orange-300">Creado por docentes</p><p className="mt-1 font-bold">Para la realidad de tus clases</p></div>
           </div>
@@ -76,11 +114,13 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
 
-      <section className="relative z-10 mx-auto -mt-7 max-w-6xl px-4 sm:px-6"><div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl sm:grid-cols-3">{[["19", "Herramientas para profes"], ["3", "Asistentes inteligentes"], ["1", "Biblioteca profesional"]].map(([number, label], index) => <div key={label} className={`flex items-center justify-center gap-4 px-6 py-6 ${index ? "border-t border-slate-200 sm:border-l sm:border-t-0" : ""}`}><span className="text-3xl font-black text-blue-800">{number}</span><span className="max-w-36 text-sm font-bold text-slate-600">{label}</span></div>)}</div></section>
+      <section className="relative z-10 mx-auto -mt-7 max-w-6xl px-4 sm:px-6"><div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl sm:grid-cols-3">{platformStats.map(([number, label], index) => <div key={label} className={`flex items-center justify-center gap-4 px-6 py-6 ${index ? "border-t border-slate-200 sm:border-l sm:border-t-0" : ""}`}><span className="text-3xl font-black text-blue-800">{number}</span><span className="max-w-36 text-sm font-bold text-slate-600">{label}</span></div>)}</div></section>
 
             {/* =========================
           MUEVESEGURO — ACCESO FREE
       ========================== */}
+      <div className="flex flex-col">
+      <div id="soluciones-inclusivas" className="order-2 scroll-mt-20">
       <section className="px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-blue-50 p-7 shadow-xl sm:p-10 lg:p-12">
@@ -274,7 +314,9 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
           </div>
         </div>
       </section>
-      <section id="producto" className="px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 lg:grid-cols-3">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:1024px) 100vw, 33vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 font-black text-blue-700">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
+      </div>
+      <section id="producto" className="order-1 scroll-mt-20 px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 lg:grid-cols-3">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl focus-within:ring-4 focus-within:ring-blue-100"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:1024px) 100vw, 33vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 rounded-md font-black text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
+      </div>
 
       <section className="bg-[#071532] px-4 py-20 text-white sm:px-6">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.8fr_1.2fr]">
@@ -288,7 +330,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
             <div className="rounded-2xl bg-slate-50 p-5 text-slate-950 sm:p-8">
               <div className="flex items-center justify-between border-b border-slate-200 pb-5">
                 <div><p className="text-xs font-black uppercase tracking-[.16em] text-blue-700">Profe IA</p><h3 className="mt-1 text-xl font-black">Planificación de clase</h3></div>
-                <Image src="/images/profe-ia-robot.png" alt="Robot de Profe IA" width={58} height={58} className="h-14 w-14 object-contain" />
+                <Image src="/images/profe-ia-robot.webp" alt="Robot de Profe IA" width={58} height={58} className="h-14 w-14 object-contain" />
               </div>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {["Todos los niveles", "Duración: 45 minutos", "Metodología: Cooperativa", "DUA: Incluido", "Evaluación: Rúbrica", "Materiales: 4 balones"].map(item => <div key={item} className="rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-600">✓ {item}</div>)}
@@ -328,7 +370,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
 
-      <section id="herramientas" className="bg-slate-50 px-4 py-24 sm:px-6">
+      <section id="herramientas" className="scroll-mt-20 bg-slate-50 px-4 py-24 sm:px-6">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.65fr_1.35fr]">
           <div>
             <p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">App para profes</p>
@@ -388,7 +430,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
 
       <section className="relative isolate overflow-hidden bg-[#0b2050] px-4 py-16 text-white sm:px-6"><div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_50%,rgba(249,115,22,.25),transparent_35%)]"/><div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center"><div><p className="text-xs font-black uppercase tracking-[.2em] text-orange-300">Empieza hoy</p><h2 className="mt-3 max-w-3xl text-4xl font-black">Tu experiencia docente, potenciada por herramientas creadas para moverse contigo.</h2></div><Link href={primaryHref} className="inline-flex min-h-14 shrink-0 items-center gap-2 rounded-xl bg-orange-500 px-7 py-3 font-black hover:bg-orange-600">{primaryLabel}<ArrowIcon /></Link></div></section>
 
-      <section id="preguntas" className="px-4 py-20 sm:px-6"><div className="mx-auto max-w-5xl"><div className="text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-blue-700">Información clara</p><h2 className="mt-3 text-4xl font-black">¿Tienes dudas? Te las aclaramos</h2></div><div className="mt-10 grid gap-3 md:grid-cols-2">{faqs.map(([question, answer]) => <details key={question} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black">{question}<span className="text-xl text-blue-700 group-open:rotate-45">+</span></summary><p className="mt-4 border-t border-slate-100 pt-4 text-sm leading-7 text-slate-600">{answer}</p></details>)}</div></div></section>
+      <section id="preguntas" className="scroll-mt-20 px-4 py-20 sm:px-6"><div className="mx-auto max-w-5xl"><div className="text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-blue-700">Información clara</p><h2 className="mt-3 text-4xl font-black">¿Tienes dudas? Te las aclaramos</h2></div><div className="mt-10 grid gap-3 md:grid-cols-2">{faqs.map(([question, answer]) => <details key={question} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md font-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">{question}<span className="text-xl text-blue-700 transition group-open:rotate-45">+</span></summary><p className="mt-4 border-t border-slate-100 pt-4 text-sm leading-7 text-slate-600">{answer}</p></details>)}</div></div></section>
 
       <footer className="bg-[#061027] px-4 py-12 text-white sm:px-6"><div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4"><div className="md:col-span-2"><div className="flex items-center gap-3"><Image src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width={70} height={70} className="h-16 w-16 rounded-xl bg-white object-contain p-1"/><div><p className="font-black">Profe en Movimiento</p><p className="text-xs font-bold uppercase tracking-[.16em] text-orange-300">Educación física, deporte y salud</p></div></div><p className="mt-5 max-w-md text-sm leading-7 text-slate-300">Plataforma educativa inteligente creada para docentes que enseñan con pasión y movimiento.</p></div><div><p className="font-black text-orange-300">Plataforma</p><div className="mt-4 grid gap-3 text-sm text-slate-300"><Link href="/#biblioteca">Biblioteca</Link><Link href="/#herramientas">App para profes</Link><Link href="/#tienda">Tienda</Link><Link href="/login">Iniciar sesión</Link></div></div><div><p className="font-black text-orange-300">Legal</p><div className="mt-4 grid gap-3 text-sm text-slate-300"><Link href="/terms">Términos de uso</Link><Link href="/privacy">Privacidad</Link><Link href="/refunds">Pagos y reembolsos</Link><Link href="/contact">Contacto</Link></div></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-center text-xs text-slate-400">© {new Date().getFullYear()} Profe en Movimiento. Todos los derechos reservados.</div></footer>
     </main>

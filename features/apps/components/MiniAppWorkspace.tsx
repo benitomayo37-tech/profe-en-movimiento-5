@@ -1,4 +1,5 @@
 import EmbeddedMiniApp from "@/features/apps/components/EmbeddedMiniApp";
+import ChessTeacherApp from "@/features/apps/components/ChessTeacherApp";
 import HiitTimerApp from "@/features/apps/components/HiitTimerApp";
 import MiniAppShell from "@/features/apps/components/MiniAppShell";
 import SportsScoreboardApp from "@/features/apps/components/SportsScoreboardApp";
@@ -10,6 +11,71 @@ interface MiniAppWorkspaceProps {
 }
 
 const guidanceByApp: Record<string, string[]> = {
+  "pizarra-tactica-multideporte": [
+    "Selecciona el deporte antes de ubicar jugadores y dibujar recorridos.",
+    "Utiliza el modo Mover para ajustar posiciones y las herramientas de trazo para explicar la jugada.",
+    "Guarda o exporta la propuesta únicamente después de revisar posiciones, recorridos y sentido táctico.",
+  ],
+  "creador-certificados": [
+    "Comprueba nombres, fecha, curso y motivo antes de generar el certificado.",
+    "Utiliza la generación por lote únicamente después de revisar el primer certificado en la vista previa.",
+    "Evita incluir datos sensibles; descarga los archivos y guárdalos conforme a las normas de privacidad de tu institución.",
+  ],
+  "generador-retos-30-dias": [
+    "Configura el reto según la edad, el espacio disponible y el nivel real de los participantes.",
+    "Revisa los 30 días antes de compartir el programa y adapta cualquier actividad que no sea segura para el grupo.",
+    "Registra el avance en el mismo dispositivo y descarga las fichas importantes como respaldo.",
+  ],
+  "planificador-clases-express": [
+    "Define el grado, la duración, el espacio y el propósito antes de generar la planificación.",
+    "Revisa que los tiempos, materiales y actividades sean viables para el grupo y el entorno disponibles.",
+    "Adapta la propuesta a las necesidades del alumnado antes de guardarla, compartirla o descargarla.",
+  ],
+  "planificador-civica-acompanamiento-integral": [
+    "Selecciona el subnivel, la destreza cívica y la habilidad socioemocional antes de generar la planificación.",
+    "Revisa la secuencia ERCA y adapta las actividades al contexto real del grupo.",
+    "Comprueba que los indicadores de la rúbrica de frecuencia sean observables antes de copiar, compartir o imprimir.",
+  ],
+  "planificador-animacion-lectura": [
+    "Define el subnivel, el tipo de texto y el propósito lector antes de utilizar la planificación.",
+    "Revisa que los cinco momentos, los recursos y las preguntas respondan al contexto real del grupo.",
+    "Comprueba la rúbrica y personaliza el documento antes de descargarlo para uso institucional.",
+  ],
+  "evaluador-inclusivo": [
+    "Selecciona Habilidades Motrices Básicas, Capacidades Físicas u Observación Integral y define una tarea concreta.",
+    "Valora evidencias observables, aplica apoyos para la participación y confirma las condiciones de seguridad.",
+    "Utiliza iniciales o códigos y revisa la información antes de guardar, exportar o compartir.",
+  ],
+  "guia-juegos-en-movimiento": [
+    "Elige el juego según el objetivo de la clase, la edad del grupo y el espacio realmente disponible.",
+    "Comprueba el área, los materiales y la señal de detención; ofrece una variante equivalente sin perder el propósito motriz.",
+    "Completa y guarda la ficha del juego en este dispositivo o descárgala como respaldo antes de aplicarla.",
+  ],
+  "yoga-en-movimiento": [
+    "Selecciona el nivel y utiliza la pausa activa o la sesión completa siempre con supervisión adulta.",
+    "Revisa el espacio, la superficie y las adaptaciones; ninguna postura debe producir dolor ni forzar articulaciones.",
+    "Permite respirar normalmente, reducir el movimiento, pausar el temporizador o elegir una alternativa con apoyo.",
+  ],
+  "citaprofe-apa7": [
+    "Selecciona el tipo real de fuente y transcribe los datos directamente desde el documento original.",
+    "Revisa autores, fecha, título, DOI o URL; la herramienta no busca ni inventa metadatos bibliográficos.",
+    "Comprueba la referencia antes de copiarla, añadirla a la bibliografía o descargar el documento DOCX.",
+  ],
+  "fundamentos-tendencias-educacion-fisica": [
+    "Utiliza el índice o la búsqueda para localizar conceptos dentro del manuscrito completo.",
+    "Marca los capítulos leídos, guarda notas privadas y responde las actividades relacionándolas con tu práctica docente.",
+    "Diferencia el texto original de los recuadros de actualización académica y revisa las fuentes antes de citar el libro.",
+  ],
+  "metodologias-activas-educacion-fisica": [
+    "Identifica primero si necesitas una metodología, un modelo pedagógico, un estilo de enseñanza o una estrategia organizativa.",
+    "Adapta los ejemplos al propósito, la edad, el espacio, los recursos y la experiencia real del grupo.",
+    "Aplica las condiciones de seguridad, inclusión y privacidad antes de utilizar cualquier actividad o recurso audiovisual.",
+  ],
+  "ajedrez-educativo": [
+    "Utiliza el modo demostración para explicar movimientos, jaque y decisiones sin exponer datos estudiantiles.",
+    "Crea retos con una consigna observable y comprueba personalmente que la posición tenga una solución legal.",
+    "Combina explicación breve, práctica guiada y reflexión; el código del reto no contiene nombres ni datos personales.",
+  ],
   "sorteador-equipos": [
     "Utiliza nombres, iniciales o números según las normas de privacidad de tu institución.",
     "Repite el sorteo cuando necesites reorganizar la clase.",
@@ -108,6 +174,7 @@ export default function MiniAppWorkspace({ app }: MiniAppWorkspaceProps) {
   if (app.id === "sorteador-equipos") tool = <TeamGeneratorApp />;
   if (app.id === "marcador-cronometro-deportivo") tool = <SportsScoreboardApp />;
   if (app.id === "cronometro-circuitos-hiit") tool = <HiitTimerApp />;
+  if (app.id === "ajedrez-educativo") tool = <ChessTeacherApp />;
   if (app.embeddedAsset) tool = <EmbeddedMiniApp app={app} />;
 
   return (

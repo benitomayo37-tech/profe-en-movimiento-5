@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PreventionChecklist from "@/features/mueve-seguro/components/PreventionChecklist";
 import ProtocolLibrary from "@/features/mueve-seguro/components/ProtocolLibrary";
 import MoveSafeStats from "@/features/mueve-seguro/components/MoveSafeStats";
+import ProUpgradeDialog from "@/features/auth/components/ProUpgradeDialog";
 
 type Situation = "golpe" | "respiracion" | "calor" | "sangrado" | "articulacion" | "emocional" | "ambiente" | "otra";
 type CriticalAnswer = "yes" | "no" | "unsure";
@@ -37,10 +38,32 @@ function determineLevel(critical: CriticalAnswer | null, severity: Severity | nu
   return "yellow";
 }
 
+const ECUADOR_TIME_ZONE = "America/Guayaquil";
+
+function currentEcuadorDate() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: ECUADOR_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+function currentEcuadorTime() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: ECUADOR_TIME_ZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date());
+}
+
 export default function MoveSafeWorkspace({
   authenticated,
+  hasProAccess,
 }: {
   authenticated: boolean;
+  hasProAccess: boolean;
 }) {
   const [mode, setMode] = useState<
   "home" | "guidance" | "prevention" | "protocols" | "incident" | "history"
@@ -50,6 +73,7 @@ export default function MoveSafeWorkspace({
   const [situation, setSituation] = useState<Situation | null>(null);
   const [critical, setCritical] = useState<CriticalAnswer | null>(null);
   const [severity, setSeverity] = useState<Severity | null>(null);
+  const [lockedFeatureTitle, setLockedFeatureTitle] = useState<string | null>(null);
 
   const result = useMemo(() => determineLevel(critical, severity, situation), [critical, severity, situation]);
   const selectedSituation = situations.find((item) => item.id === situation);
@@ -91,18 +115,21 @@ export default function MoveSafeWorkspace({
           <button onClick={() => setMode("protocols")} className="group rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-2xl text-white" aria-hidden="true">📘</span><h2 className="mt-5 text-xl font-black">Consultar protocolos</h2><p className="mt-3 text-sm leading-6 text-slate-600">Guías rápidas, revisadas y organizadas por situación.</p><span className="mt-5 inline-flex text-sm font-black text-blue-700">Consultar guía →</span></button>
           <button
   onClick={() => {
-    if (!authenticated) return;
+    if (!hasProAccess) {
+      setLockedFeatureTitle("Registrar incidentes en MueveSeguro");
+      return;
+    }
     setMode("incident");
   }}
   className={`group relative rounded-3xl border p-6 text-left shadow-sm transition ${
-    authenticated
+    hasProAccess
       ? "border-violet-200 bg-gradient-to-br from-violet-50 to-white hover:-translate-y-1 hover:shadow-xl"
       : "border-slate-200 bg-slate-50/80 hover:shadow-md"
   }`}
 >
   <span
     className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white ${
-      authenticated ? "bg-violet-700" : "bg-slate-500"
+      hasProAccess ? "bg-violet-700" : "bg-slate-500"
     }`}
     aria-hidden="true"
   >
@@ -112,7 +139,7 @@ export default function MoveSafeWorkspace({
   <div className="mt-5 flex items-center gap-2">
     <h2 className="text-xl font-black">Registrar incidente</h2>
 
-    {!authenticated ? (
+    {!hasProAccess ? (
       <span className="rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">
         🔒 PRO
       </span>
@@ -126,26 +153,29 @@ export default function MoveSafeWorkspace({
 
   <span
     className={`mt-5 inline-flex text-sm font-black ${
-      authenticated ? "text-violet-700" : "text-slate-500"
+      hasProAccess ? "text-violet-700" : "text-slate-500"
     }`}
   >
-    {authenticated ? "Crear registro →" : "Disponible en PRO 🔒"}
+    {hasProAccess ? "Crear registro →" : authenticated ? "Activa el Plan PRO 🔒" : "Inicia sesión y activa PRO 🔒"}
   </span>
 </button>
           <button
   onClick={() => {
-    if (!authenticated) return;
+    if (!hasProAccess) {
+      setLockedFeatureTitle("Historial y seguimiento de MueveSeguro");
+      return;
+    }
     setMode("history");
   }}
   className={`group relative rounded-3xl border p-6 text-left shadow-sm transition ${
-    authenticated
+    hasProAccess
       ? "border-indigo-200 bg-gradient-to-br from-indigo-50 to-white hover:-translate-y-1 hover:shadow-xl"
       : "border-slate-200 bg-slate-50/80 hover:shadow-md"
   }`}
 >
   <span
     className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white ${
-      authenticated ? "bg-indigo-700" : "bg-slate-500"
+      hasProAccess ? "bg-indigo-700" : "bg-slate-500"
     }`}
     aria-hidden="true"
   >
@@ -155,7 +185,7 @@ export default function MoveSafeWorkspace({
   <div className="mt-5 flex items-center gap-2">
     <h2 className="text-xl font-black">Historial y seguimiento</h2>
 
-    {!authenticated ? (
+    {!hasProAccess ? (
       <span className="rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">
         🔒 PRO
       </span>
@@ -168,10 +198,10 @@ export default function MoveSafeWorkspace({
 
   <span
     className={`mt-5 inline-flex text-sm font-black ${
-      authenticated ? "text-indigo-700" : "text-slate-500"
+      hasProAccess ? "text-indigo-700" : "text-slate-500"
     }`}
   >
-    {authenticated ? "Ver historial →" : "Disponible en PRO 🔒"}
+    {hasProAccess ? "Ver historial →" : authenticated ? "Activa el Plan PRO 🔒" : "Inicia sesión y activa PRO 🔒"}
   </span>
 </button>
         </div>
@@ -199,6 +229,12 @@ export default function MoveSafeWorkspace({
       )}
 
       <p className="rounded-2xl border border-slate-200 bg-white p-5 text-center text-xs leading-6 text-slate-500">MueveSeguro ofrece orientación educativa general. No diagnostica, no prescribe medicamentos y no sustituye la valoración sanitaria, los servicios de emergencia ni los protocolos de tu institución.</p>
+
+      <ProUpgradeDialog
+        open={lockedFeatureTitle !== null}
+        toolName={lockedFeatureTitle ?? "Función profesional de MueveSeguro"}
+        onClose={() => setLockedFeatureTitle(null)}
+      />
     </div>
   );
 }
@@ -258,7 +294,7 @@ type IncidentStatusDb = "pendiente" | "en_seguimiento" | "cerrado";
 type HistoryIncident = {
   id: string; code: string; institution: string; recipient: string; teacher_name: string; teacher_role: string;
   student_name: string | null; student_class: string | null; incident_date: string; incident_time: string | null;
-  location: string; activity: string; situation: string; external_help: boolean; description: string; actions_taken: string;
+  location: string; activity: string; situation: string; external_help: boolean | null; description: string; actions_taken: string;
   people_notified: string | null; family_notified: string | null; witnesses: string | null; institutional_protocol: string | null;
   follow_up_required: string | null; observations: string | null; status: IncidentStatusDb; created_at: string; updated_at: string;
 };
@@ -288,7 +324,7 @@ function dbToIncidentRecord(row: HistoryIncident): IncidentRecord {
   return {
     reportNumber: row.code, date: row.incident_date, time: row.incident_time ?? "", place: row.location, activity: row.activity,
     type: row.situation, description: row.description, actions: row.actions_taken, notified: row.people_notified ?? "",
-    externalHelp: row.external_help ? "Sí" : "No", followUp: row.follow_up_required ?? "",
+    externalHelp: row.external_help === true ? "Sí" : row.external_help === false ? "No" : "No se sabe", followUp: row.follow_up_required ?? "",
     status: row.status === "pendiente" ? "Pendiente" : row.status === "en_seguimiento" ? "En seguimiento" : "Cerrado",
     observations: row.observations ?? "", institution: row.institution, addressedTo: row.recipient, teacherName: row.teacher_name,
     teacherRole: row.teacher_role, studentName: row.student_name ?? "", courseGroup: row.student_class ?? "",
@@ -327,6 +363,8 @@ function IncidentHistory({ onBack }: { onBack: () => void }) {
     } finally { setLoading(false); }
   }
 
+  // La carga inicial sincroniza el componente con Supabase.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void loadHistory(); }, []);
 
   const filtered = records.filter((record) => {
@@ -341,7 +379,17 @@ function IncidentHistory({ onBack }: { onBack: () => void }) {
     cerrado: records.filter((r) => r.status === "cerrado").length,
   };
 
-  if (selected) return <IncidentDetail record={selected} onBack={() => setSelected(null)} />;
+  if (selected) {
+  return (
+    <IncidentDetail
+      record={selected}
+      onBack={() => {
+        setSelected(null);
+        void loadHistory();
+      }}
+    />
+  );
+}
 
   return (
     <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl">
@@ -396,7 +444,7 @@ function IncidentDetail({ record, onBack }: { record: HistoryIncident; onBack: (
     finalObservation: "",
   });
   const [followupForm, setFollowupForm] = useState({
-    date: new Date().toISOString().slice(0, 10),
+    date: currentEcuadorDate(),
     responsible: record.teacher_name,
     status: record.status,
     evolution: "",
@@ -413,10 +461,6 @@ function IncidentDetail({ record, onBack }: { record: HistoryIncident; onBack: (
     setFollowupError(null);
     try {
       const supabase = createClient();
-
-if (!supabase) {
-  throw new Error("No se pudo inicializar Supabase.");
-}
 
 if (!supabase) {
   throw new Error("No se pudo inicializar Supabase.");
@@ -445,6 +489,8 @@ const { data: authData, error: authError } =
     }
   }
 
+  // La carga inicial sincroniza el detalle con las actuaciones persistidas.
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
   useEffect(() => { void loadFollowups(); }, [record.id]);
 
   async function saveFollowup() {
@@ -508,29 +554,27 @@ if (!supabase) {
           ].join("\n")
         : followupForm.evolution.trim();
 
-      const { error: insertError } = await supabase
-        .from("incident_followups")
-        .insert({
-          incident_id: record.id,
-          user_id: authData.user.id,
-          follow_up_date: followupForm.date,
-          responsible: followupForm.responsible.trim(),
-          status: followupForm.status,
-          evolution: evolutionToSave,
-          action_required: isClosing ? false : followupForm.actionRequired,
-          pending_action: isClosing ? null : (followupForm.actionRequired ? followupForm.pendingAction.trim() : null),
-          next_review_date: isClosing ? null : (followupForm.nextReviewDate || null),
-        });
+      const { error: followupError } = await supabase.rpc(
+        "add_incident_followup",
+        {
+          p_incident_id: record.id,
+          p_follow_up_date: followupForm.date,
+          p_responsible: followupForm.responsible.trim(),
+          p_status: followupForm.status,
+          p_evolution: evolutionToSave,
+          p_action_required: isClosing ? false : followupForm.actionRequired,
+          p_pending_action: isClosing
+            ? null
+            : followupForm.actionRequired
+              ? followupForm.pendingAction.trim()
+              : null,
+          p_next_review_date: isClosing
+            ? null
+            : followupForm.nextReviewDate || null,
+        },
+      );
 
-      if (insertError) throw insertError;
-
-      const { error: statusError } = await supabase
-        .from("incident_reports")
-        .update({ status: followupForm.status })
-        .eq("id", record.id)
-        .eq("user_id", authData.user.id);
-
-      if (statusError) throw statusError;
+      if (followupError) throw followupError;
 
       setCurrentStatus(followupForm.status);
       await loadFollowups();
@@ -543,7 +587,7 @@ if (!supabase) {
       setClosureForm({ finalActions: "", finalObservation: "" });
       setFollowupForm((current) => ({
         ...current,
-        date: new Date().toISOString().slice(0, 10),
+        date: currentEcuadorDate(),
         status: followupForm.status,
         evolution: "",
         actionRequired: false,
@@ -559,7 +603,7 @@ if (!supabase) {
   }
 
   if (showReport) {
-    return <IncidentReport record={original} followups={followups} onBack={() => setShowReport(false)} onEdit={() => setShowReport(false)} />;
+    return <IncidentReport record={original} followups={followups} onBack={() => setShowReport(false)} />;
   }
 
   const dateLabel = new Date(`${record.incident_date}T${record.incident_time || "12:00"}`).toLocaleString("es-EC", {
@@ -603,7 +647,7 @@ if (!supabase) {
             ["Fecha y hora", dateLabel],
             ["Lugar", record.location],
             ["Actividad", record.activity],
-            ["Ayuda externa", record.external_help ? "Sí" : "No"],
+            ["Ayuda externa", record.external_help === true ? "Sí" : record.external_help === false ? "No" : "No se sabe"],
           ].map(([label, value]) => (
             <div key={label} className="rounded-2xl bg-slate-50 p-4">
               <p className="text-xs font-black uppercase tracking-wide text-slate-500">{label}</p>
@@ -648,7 +692,7 @@ if (!supabase) {
                 if (!showFollowupForm) {
                   setFollowupForm((current) => ({
                     ...current,
-                    date: new Date().toISOString().slice(0, 10),
+                    date: currentEcuadorDate(),
                     responsible: current.responsible || record.teacher_name,
                     status: currentStatus,
                   }));
@@ -854,11 +898,11 @@ function IncidentRegister({ onBack }: { onBack: () => void }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [form, setForm] = useState<IncidentRecord>(() => ({
-    date: new Date().toISOString().slice(0, 10),
-    time: new Date().toTimeString().slice(0, 5),
+    date: currentEcuadorDate(),
+    time: currentEcuadorTime(),
     place: "", activity: "", type: incidentTypes[0], description: "", actions: "",
     notified: "", externalHelp: "No", followUp: "", status: "Pendiente", observations: "",
-    reportNumber: `MS-${new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 12)}`,
+    reportNumber: `MS-${currentEcuadorDate().replaceAll("-", "")}${currentEcuadorTime().replace(":", "")}`,
     institution: "", addressedTo: "", teacherName: "", teacherRole: "Docente de Educación Física",
     studentName: "", courseGroup: "", witnesses: "", representativeNotified: "", institutionalProtocol: "",
   }));
@@ -908,7 +952,7 @@ if (!supabase) {
           location: form.place.trim(),
           activity: form.activity.trim(),
           situation: form.type,
-          external_help: form.externalHelp === "Sí",
+          external_help: form.externalHelp === "Sí" ? true : form.externalHelp === "No" ? false : null,
           description: form.description.trim(),
           actions_taken: form.actions.trim(),
           people_notified: form.notified.trim() || null,
@@ -945,7 +989,7 @@ if (!supabase) {
   }
 
   if (saved) {
-    return <IncidentReport record={saved} onBack={onBack} onEdit={() => setSaved(null)} />;
+    return <IncidentReport record={saved} onBack={onBack} />;
   }
 
   return (
@@ -975,7 +1019,7 @@ if (!supabase) {
           <Field label="Personas notificadas" value={form.notified} onChange={(v) => update("notified", v)} placeholder="Ej.: inspector, coordinación..." />
           <Field label="Representante / familia notificada" value={form.representativeNotified} onChange={(v) => update("representativeNotified", v)} placeholder="Nombre, cargo o medio, según corresponda" />
           <label><span className="text-sm font-black text-slate-800">¿Se solicitó ayuda externa?</span><select value={form.externalHelp} onChange={(e) => update("externalHelp", e.target.value)} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-violet-500"><option>No</option><option>Sí</option><option>No se sabe</option></select></label>
-          <label><span className="text-sm font-black text-slate-800">Estado</span><select value={form.status} onChange={(e) => update("status", e.target.value as IncidentRecord["status"])} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-violet-500"><option>Pendiente</option><option>En seguimiento</option><option>Cerrado</option></select></label>
+          <label><span className="text-sm font-black text-slate-800">Estado inicial</span><select value={form.status} onChange={(e) => update("status", e.target.value as IncidentRecord["status"])} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-violet-500"><option>Pendiente</option><option>En seguimiento</option></select></label>
           <TextArea label="Seguimiento necesario" value={form.followUp} onChange={(v) => update("followUp", v)} placeholder="Indica qué debe revisarse después del incidente." />
           <TextArea label="Observaciones" value={form.observations} onChange={(v) => update("observations", v)} placeholder="Información adicional estrictamente necesaria." />
         </div>
@@ -1008,12 +1052,10 @@ function IncidentReport({
   record,
   followups = [],
   onBack,
-  onEdit,
 }: {
   record: IncidentRecord;
   followups?: IncidentFollowup[];
   onBack: () => void;
-  onEdit: () => void;
 }) {
   const closureFollowup = [...followups]
     .filter((item) => item.status === "cerrado")
@@ -1093,7 +1135,7 @@ function IncidentReport({
           <div className="print-legal rounded-xl border border-slate-200 bg-slate-50 text-slate-600">
             <strong className="text-slate-800">Constancia de registro:</strong> La información consignada corresponde a hechos observables, comunicaciones y acciones registradas por el responsable. Este documento es un registro educativo interno; no constituye diagnóstico, informe médico ni peritaje. Su uso, comunicación y conservación deberán ajustarse a los protocolos de la institución y a las normas aplicables de protección de datos personales.
           </div>
-          <div className="print-actions mt-7 flex flex-wrap gap-3"><button onClick={() => window.print()} className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-black text-white hover:bg-violet-800">Imprimir / Guardar PDF</button><button onClick={onEdit} className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-black text-slate-700 hover:bg-slate-50">Editar registro</button><button onClick={onBack} className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-black text-slate-700 hover:bg-slate-50">Volver a MueveSeguro</button></div>
+          <div className="print-actions mt-7 flex flex-wrap gap-3"><button onClick={() => window.print()} className="rounded-xl bg-violet-700 px-5 py-3 text-sm font-black text-white hover:bg-violet-800">Imprimir / Guardar PDF</button><button onClick={onBack} className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-black text-slate-700 hover:bg-slate-50">Cerrar informe</button></div>
           <p className="print-note mt-4 text-xs leading-5 text-slate-500">Al imprimir, selecciona «Guardar como PDF». Para incidentes que requieran actuación institucional, conserva y remite el registro según el protocolo vigente de tu institución.</p>
         </div>
       </section>

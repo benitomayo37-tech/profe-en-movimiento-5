@@ -49,7 +49,7 @@ export default function AppsCatalog({ access }: AppsCatalogProps) {
               Organiza grupos, controla actividades y prepara recursos desde un centro diseñado para acompañarte antes, durante y después de la clase.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 text-sm font-bold text-blue-100">
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2">19 miniapps organizadas</span>
+              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2">Suite de miniapps en crecimiento</span>
               <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2">{availableCount} accesos activos</span>
               <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2">Móvil y computadora</span>
             </div>
@@ -79,7 +79,7 @@ export default function AppsCatalog({ access }: AppsCatalogProps) {
           <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-orange-600">Suite docente</p>
-              <h2 id="apps-catalog-title" className="mt-2 text-3xl font-black tracking-tight text-slate-950">Explora las 19 miniapps</h2>
+              <h2 id="apps-catalog-title" className="mt-2 text-3xl font-black tracking-tight text-slate-950">Explora las miniapps docentes</h2>
             </div>
             <label className="block w-full xl:max-w-md">
               <span className="sr-only">Buscar miniapps</span>

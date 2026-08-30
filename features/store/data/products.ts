@@ -5,6 +5,8 @@ export type StoreCategoryId =
   | "ebooks"
   | "bundles";
 
+import { auditedStoreProducts } from "@/features/store/data/auditedProducts";
+
 export interface StoreCategory {
   id: StoreCategoryId;
   label: string;
@@ -46,7 +48,7 @@ export const storeCategories: StoreCategory[] = [
   { id: "bundles", label: "Paquetes", icon: "🎁" },
 ];
 
-export const storeProducts: StoreProduct[] = [
+const existingStoreProducts: StoreProduct[] = [
   {
     id: "games-cooperative-volume-1",
     title: "Banco de juegos cooperativos · Vol. 1",
@@ -134,9 +136,9 @@ export const storeProducts: StoreProduct[] = [
     benefits: ["Forma equipos en segundos", "Evita procesos manuales", "Funciona desde distintos dispositivos", "Facilita reorganizar la clase"],
     howToUse: ["Ingresa los nombres o la cantidad de participantes", "Selecciona el número de equipos", "Genera el sorteo", "Ajusta o repite cuando sea necesario"],
     delivery: "Acceso en línea",
-    access: "Incluido en Suite de 19 miniapps",
+    access: "Incluido en la Suite Pro de miniapps",
     purchaseStatus: "included",
-    commercialNote: "Disponible como parte de la Suite de 19 miniapps para docentes.",
+    commercialNote: "Disponible como parte de la Suite Pro de miniapps para docentes.",
   },
   {
     id: "class-scoreboard",
@@ -156,9 +158,9 @@ export const storeProducts: StoreProduct[] = [
     benefits: ["Centraliza tiempo y puntuación", "Reduce interrupciones", "Mejora la visibilidad del marcador", "Facilita controlar rondas"],
     howToUse: ["Selecciona cronómetro o cuenta regresiva", "Configura equipos y puntuación", "Inicia la actividad", "Registra rondas y resultados"],
     delivery: "Acceso en línea",
-    access: "Incluido en Suite de 19 miniapps",
+    access: "Incluido en la Suite Pro de miniapps",
     purchaseStatus: "included",
-    commercialNote: "Disponible como parte de la Suite de 19 miniapps para docentes.",
+    commercialNote: "Disponible como parte de la Suite Pro de miniapps para docentes.",
   },
   {
     id: "ebook-games",
@@ -258,27 +260,27 @@ export const storeProducts: StoreProduct[] = [
   },
   {
     id: "suite-19-miniapps-docentes",
-    title: "Suite de 19 miniapps para docentes",
+    title: "Suite Pro de miniapps para docentes",
     description:
       "Herramientas en línea para organizar clases, evaluar, crear recursos y gestionar actividades desde cualquier dispositivo.",
     category: "apps",
     categoryLabel: "Aplicaciones para docentes",
     icon: "🧰",
     accent: "from-orange-600 via-amber-500 to-yellow-400",
-    badge: "19 herramientas",
+    badge: "Suite en crecimiento",
     format: "Suite de aplicaciones web",
     contents: ["Organización y gestión de clases", "Herramientas deportivas", "Generadores pedagógicos"],
     longDescription:
-      "Un ecosistema de 19 miniaplicaciones en línea pensado para reducir tareas repetitivas y facilitar el trabajo diario del docente. Reúne herramientas deportivas, organizativas y pedagógicas que funcionan desde el navegador, sin instalaciones.",
+      "Un ecosistema de miniaplicaciones en línea que crece con nuevas herramientas para reducir tareas repetitivas y facilitar el trabajo diario del docente. Reúne recursos deportivos, organizativos y pedagógicos que funcionan desde el navegador, sin instalaciones.",
     idealFor: ["Docentes de Educación Física", "Docentes de otras asignaturas", "Entrenadores y monitores", "Instituciones educativas"],
-    benefits: ["Reúne 19 herramientas en un acceso", "Funciona en línea", "Reduce tiempo de preparación", "Combina gestión, evaluación y actividad física"],
+    benefits: ["Reúne herramientas en un solo acceso", "Incorpora nuevas aplicaciones", "Reduce tiempo de preparación", "Combina gestión, evaluación y actividad física"],
     howToUse: ["Activa tu plan Pro", "Ingresa desde cualquier dispositivo", "Selecciona la miniapp necesaria", "Guarda o exporta el resultado disponible"],
     delivery: "Activación de acceso en línea",
     access: "Suscripción mensual Pro",
     price: 4.99,
     billing: "monthly",
     purchaseStatus: "available",
-    commercialNote: "Incluye las 19 miniapps y sus actualizaciones durante la suscripción.",
+    commercialNote: "Incluye las miniapps disponibles y las nuevas incorporaciones del Plan Pro durante la suscripción.",
     appList: [
       "Sorteador de equipos",
       "Generador de sesiones y entrenamientos",
@@ -299,9 +301,22 @@ export const storeProducts: StoreProduct[] = [
       "Generador de rúbricas de evaluación",
       "Armador de plan de clase completo",
       "Generador de dinámicas de cierre y tickets de salida",
+      "Pizarra Táctica Multideporte",
+      "Creador de Certificados",
     ],
   },
 ];
+
+export const storeProducts: StoreProduct[] = [
+  ...existingStoreProducts,
+  ...auditedStoreProducts,
+];
+
+export function getStoreProductStatusLabel(product: StoreProduct) {
+  if (product.purchaseStatus === "available") return "Disponible";
+  if (product.purchaseStatus === "included") return "Incluido en la Suite";
+  return "Próximamente";
+}
 
 export function getStoreProductBySlug(slug: string) {
   return storeProducts.find((product) => product.id === slug);

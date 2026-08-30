@@ -1,20 +1,18 @@
 "use client";
 
-"use client";
-
 import Link from "next/link";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { movementCategories } from "../data/categories";
-import { chronicDiseasesExercises } from "../data/chronicDiseases";
-import { prenatalExercises } from "../data/prenatal";
-import { reducedMobilityExercises } from "../data/reducedMobility";
-import { caregiverGuidance } from "../data/caregiverGuidance";
 import { movementLibraryResources } from "../data/library";
 import MovementExerciseCard from "./MovementExerciseCard";
+import ProUpgradeDialog from "@/features/auth/components/ProUpgradeDialog";
 import {
-  olderAdultsExercises,
+  isFreeCaregiverGuidance,
+  isFreeExercise,
+} from "../data/access";
+import {
   olderAdultsFallPrevention,
   olderAdultsFlexibility,
   olderAdultsSafety,
@@ -24,7 +22,11 @@ import {
   movementDisclaimer,
   movementSafetyNotice,
 } from "../utils/safety";
-import type { MovementAudience } from "../types";
+import type {
+  MovementAudience,
+  MovementExercise,
+  MovementManeuver,
+} from "../types";
 
 const quickOptions = [
   {
@@ -85,9 +87,27 @@ const categoryStyles: Record<
   },
 };
 
-export default function MovimientoParaTodosWorkspace() {
+interface MovimientoParaTodosWorkspaceProps {
+  hasProAccess: boolean;
+  olderAdultsExercises: MovementExercise[];
+  chronicDiseasesExercises: MovementExercise[];
+  prenatalExercises: MovementExercise[];
+  reducedMobilityExercises: MovementExercise[];
+  caregiverGuidance: MovementManeuver[];
+}
+
+export default function MovimientoParaTodosWorkspace({
+  hasProAccess,
+  olderAdultsExercises,
+  chronicDiseasesExercises,
+  prenatalExercises,
+  reducedMobilityExercises,
+  caregiverGuidance,
+}: MovimientoParaTodosWorkspaceProps) {
   const searchParams = useSearchParams();
   const [openExerciseId, setOpenExerciseId] = useState<string | null>(null);
+  const [openCaregiverId, setOpenCaregiverId] = useState<string | null>(null);
+  const [lockedContentTitle, setLockedContentTitle] = useState<string | null>(null);
   const selectedCategory = searchParams.get("categoria") as MovementAudience | null;
 
   const selected = movementCategories.find(
@@ -285,6 +305,7 @@ export default function MovimientoParaTodosWorkspace() {
                 <div className="grid gap-5 lg:grid-cols-2">
                   {olderAdultsExercises.map((exercise) => {
   const isOpen = openExerciseId === exercise.id;
+  const isLocked = !isFreeExercise(exercise.id) && !hasProAccess;
 
   return (
     <article
@@ -299,9 +320,13 @@ export default function MovimientoParaTodosWorkspace() {
   type="button"
   aria-expanded={isOpen}
   aria-controls={`exercise-${exercise.id}`}
-  onClick={() =>
-    setOpenExerciseId(isOpen ? null : exercise.id)
-  }
+  onClick={() => {
+    if (isLocked) {
+      setLockedContentTitle(exercise.title);
+      return;
+    }
+    setOpenExerciseId(isOpen ? null : exercise.id);
+  }}
   className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-emerald-100 sm:p-6"
 >
         <div className="min-w-0">
@@ -316,6 +341,10 @@ export default function MovimientoParaTodosWorkspace() {
                 : exercise.difficulty === "intermediate"
                   ? "Intermedio"
                   : "Avanzado"}
+            </span>
+
+            <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wide ${isFreeExercise(exercise.id) ? "bg-emerald-100 text-emerald-700" : "bg-violet-100 text-violet-700"}`}>
+              {isFreeExercise(exercise.id) ? "Free" : "Pro"}
             </span>
           </div>
 
@@ -357,11 +386,11 @@ export default function MovimientoParaTodosWorkspace() {
               : "bg-emerald-50 text-emerald-700"
           }`}
         >
-          {isOpen ? "−" : "+"}
+          {isLocked ? "🔒" : isOpen ? "−" : "+"}
         </span>
       </button>
 
-      {isOpen && (
+      {isOpen && !isLocked && (
         <div
           id={`exercise-${exercise.id}`}
           className="border-t border-slate-200 bg-slate-50 p-5 sm:p-6"
@@ -771,17 +800,19 @@ export default function MovimientoParaTodosWorkspace() {
 
             <div className="grid gap-5 lg:grid-cols-2">
               {chronicDiseasesExercises.map((exercise) => (
-  <MovementExerciseCard
-    key={exercise.id}
-    exercise={exercise}
-    accent="rose"
-    isOpen={openExerciseId === exercise.id}
-    onToggle={() =>
-      setOpenExerciseId(
-        openExerciseId === exercise.id ? null : exercise.id
-      )
-    }
-  />
+ <MovementExerciseCard
+  key={exercise.id}
+  exercise={exercise}
+  accent="rose"
+  isOpen={openExerciseId === exercise.id}
+  onToggle={() =>
+    setOpenExerciseId(
+      openExerciseId === exercise.id ? null : exercise.id
+    )
+  }
+  accessLevel={isFreeExercise(exercise.id) ? "free" : "pro"}
+  isLocked={!isFreeExercise(exercise.id) && !hasProAccess}
+/>
 ))}
             </div>
           </section>
@@ -937,16 +968,18 @@ export default function MovimientoParaTodosWorkspace() {
             <div className="grid gap-5 lg:grid-cols-2">
               {prenatalExercises.map((exercise) => (
                 <MovementExerciseCard
-                  key={exercise.id}
-                  exercise={exercise}
-                  accent="violet"
-                  isOpen={openExerciseId === exercise.id}
-                  onToggle={() =>
-                    setOpenExerciseId(
-                      openExerciseId === exercise.id ? null : exercise.id,
-                    )
-                  }
-                />
+  key={exercise.id}
+  exercise={exercise}
+  accent="violet"
+  isOpen={openExerciseId === exercise.id}
+  onToggle={() =>
+    setOpenExerciseId(
+      openExerciseId === exercise.id ? null : exercise.id,
+    )
+  }
+  accessLevel={isFreeExercise(exercise.id) ? "free" : "pro"}
+  isLocked={!isFreeExercise(exercise.id) && !hasProAccess}
+/>
               ))}
             </div>
           </section>
@@ -1004,16 +1037,18 @@ export default function MovimientoParaTodosWorkspace() {
             <div className="grid gap-5 lg:grid-cols-2">
               {reducedMobilityExercises.map((exercise) => (
                 <MovementExerciseCard
-                  key={exercise.id}
-                  exercise={exercise}
-                  accent="blue"
-                  isOpen={openExerciseId === exercise.id}
-                  onToggle={() =>
-                    setOpenExerciseId(
-                      openExerciseId === exercise.id ? null : exercise.id,
-                    )
-                  }
-                />
+  key={exercise.id}
+  exercise={exercise}
+  accent="blue"
+  isOpen={openExerciseId === exercise.id}
+  onToggle={() =>
+    setOpenExerciseId(
+      openExerciseId === exercise.id ? null : exercise.id,
+    )
+  }
+  accessLevel={isFreeExercise(exercise.id) ? "free" : "pro"}
+  isLocked={!isFreeExercise(exercise.id) && !hasProAccess}
+/>
               ))}
             </div>
           </section>
@@ -1069,7 +1104,10 @@ export default function MovimientoParaTodosWorkspace() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-2">
-          {caregiverGuidance.map((item) => (
+          {caregiverGuidance.map((item) => {
+            const isLocked = !isFreeCaregiverGuidance(item.id) && !hasProAccess;
+
+            return (
             <article
               key={item.id}
               className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5"
@@ -1082,16 +1120,51 @@ export default function MovimientoParaTodosWorkspace() {
                 {item.title}
               </h4>
 
+              <span className={`mt-3 inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wide ${isLocked ? "bg-violet-100 text-violet-700" : "bg-emerald-100 text-emerald-700"}`}>
+                {isLocked ? "Pro" : "Free"}
+              </span>
+
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 {item.objective}
               </p>
 
-              <details className="mt-4 rounded-xl border border-blue-100 bg-white p-4">
-                <summary className="cursor-pointer text-sm font-black text-slate-900">
-                  Ver orientación
-                </summary>
+              {isLocked ? (
+                <button
+                  type="button"
+                  onClick={() => setLockedContentTitle(item.title)}
+                  className="mt-4 flex w-full items-center justify-between rounded-xl border border-violet-200 bg-violet-50 p-4 text-left text-sm font-black text-violet-800 hover:bg-violet-100"
+                >
+                  <span>Contenido disponible en el Plan Pro</span>
+                  <span aria-hidden="true">🔒</span>
+                </button>
+              ) : (
+              <div className="mt-4 overflow-hidden rounded-xl border border-blue-100 bg-white">
+                <button
+                  type="button"
+                  aria-expanded={openCaregiverId === item.id}
+                  aria-controls={`caregiver-guidance-${item.id}`}
+                  onClick={() =>
+                    setOpenCaregiverId(
+                      openCaregiverId === item.id ? null : item.id,
+                    )
+                  }
+                  className="flex w-full items-center justify-between gap-4 p-4 text-left text-sm font-black text-slate-900 transition hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-blue-100"
+                >
+                  <span>
+                    {openCaregiverId === item.id
+                      ? "Ocultar orientación"
+                      : "Ver orientación"}
+                  </span>
+                  <span aria-hidden="true" className="text-lg text-blue-700">
+                    {openCaregiverId === item.id ? "−" : "+"}
+                  </span>
+                </button>
 
-                <div className="mt-4 space-y-4 text-sm leading-6">
+                {openCaregiverId === item.id ? (
+                <div
+                  id={`caregiver-guidance-${item.id}`}
+                  className="space-y-4 border-t border-blue-100 p-4 text-sm leading-6"
+                >
                   <div>
                     <p className="font-black text-slate-900">
                       Preparación
@@ -1178,9 +1251,12 @@ export default function MovimientoParaTodosWorkspace() {
                     </div>
                   )}
                 </div>
-              </details>
+                ) : null}
+              </div>
+              )}
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
       <section
@@ -1373,6 +1449,12 @@ export default function MovimientoParaTodosWorkspace() {
           {movementDisclaimer}
         </p>
       </section>
+
+      <ProUpgradeDialog
+        open={lockedContentTitle !== null}
+        toolName={lockedContentTitle ?? "Contenido de Movimiento para Todos"}
+        onClose={() => setLockedContentTitle(null)}
+      />
     </div>
   );
 }

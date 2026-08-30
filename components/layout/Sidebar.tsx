@@ -10,77 +10,29 @@ interface NavigationItem {
   disabled?: boolean;
 }
 
-const navigation: NavigationItem[] = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-  },
-  {
-    label: "Historial",
-    href: "/historial",
-  },
-  {
-    label: "Profe IA",
-    href: "/ai",
-  },
-  {
-    label: "Entrenador IA",
-    href: "/entrenador-ia",
-  },
-  {
-    label: "MueveSeguro",
-    href: "/mueve-seguro",
-  },
-  {
-    label: "Movimiento para Todos",
-    href: "/movimiento-para-todos",
-  },
-  {
-    label: "App para profes",
-    href: "/apps",
-  },
-  {
-    label: "Exámenes estudiantiles",
-    href: "/examenes",
-  },
-  {
-    label: "Recursos",
-    href: "/resources",
-  },
-  {
-    label: "Academia",
-    href: "#",
-    disabled: true,
-  },
-  {
-    label: "Deportes",
-    href: "#",
-    disabled: true,
-  },
-  {
-    label: "Salud",
-    href: "#",
-    disabled: true,
-  },
-  {
-    label: "Tienda",
-    href: "/store",
-  },
-  {
-    label: "Mi cuenta",
-    href: "/cuenta",
-  },
-  {
-    label: "Comunidad",
-    href: "#",
-    disabled: true,
-  },
-  {
-    label: "Configuración",
-    href: "#",
-    disabled: true,
-  },
+const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
+  { title: "Principal", items: [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Historial", href: "/historial" },
+  ] },
+  { title: "Herramientas docentes", items: [
+    { label: "Profe IA", href: "/ai" },
+    { label: "Entrenador IA", href: "/entrenador-ia" },
+    { label: "Exámenes estudiantiles", href: "/examenes" },
+    { label: "App para profes", href: "/apps" },
+  ] },
+  { title: "Seguridad e inclusión", items: [
+    { label: "MueveSeguro", href: "/mueve-seguro" },
+    { label: "Movimiento para Todos", href: "/movimiento-para-todos" },
+  ] },
+  { title: "Recursos y cuenta", items: [
+    { label: "Biblioteca", href: "/resources" },
+    { label: "Tienda", href: "/store" },
+    { label: "Mi cuenta", href: "/cuenta" },
+  ] },
 ];
+
+const upcoming = ["Academia", "Comunidad"];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -111,47 +63,29 @@ export function Sidebar() {
       </Link>
 
       <nav
-        className="mt-8 flex flex-col gap-2"
+        className="mt-6 flex flex-col gap-5"
         aria-label="Navegación principal"
       >
-        {navigation.map((item) => {
-          if (item.disabled) {
-            return (
-              <span
-                key={item.label}
-                className="rounded-xl px-4 py-3 text-sm font-medium text-slate-400"
-              >
-                {item.label}
-              </span>
-            );
-          }
-
-          const isActive =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname === item.href ||
-                pathname.startsWith(`${item.href}/`);
-
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              aria-current={isActive ? "page" : undefined}
-              className={`rounded-xl px-4 py-3 text-sm transition ${
-                isActive
-                  ? "bg-blue-50 font-semibold text-blue-700"
-                  : "font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950"
-              }`}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
+        {navigationGroups.map((group) => (
+          <div key={group.title}>
+            <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">{group.title}</p>
+            <div className="mt-2 flex flex-col gap-1">
+              {group.items.map((item) => {
+                const isActive = item.href === "/dashboard" ? pathname === "/dashboard" : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return <Link key={item.label} href={item.href} aria-current={isActive ? "page" : undefined} className={`rounded-xl px-4 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isActive ? "bg-blue-50 font-semibold text-blue-700" : "font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`}>{item.label}</Link>;
+              })}
+            </div>
+          </div>
+        ))}
+        <div>
+          <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Próximamente</p>
+          <div className="mt-2 flex flex-wrap gap-2 px-4">{upcoming.map((label) => <span key={label} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-400">{label}</span>)}</div>
+        </div>
       </nav>
 
       <div className="mt-auto border-t border-slate-200 pt-6">
         <p className="text-xs font-semibold text-slate-500">
-          Proyecto FARO
+          Profe en Movimiento
         </p>
 
         <p className="mt-1 text-xs text-slate-400">

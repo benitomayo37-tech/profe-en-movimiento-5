@@ -127,12 +127,11 @@ img {
 
 }
 
-a {
-
-  text-decoration: none;
-
-  color: inherit;
-
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 @page {
   size: A4 portrait;
@@ -158,8 +157,28 @@ a {
   body:has(.student-traditional-document) main + footer,
   body:has(.student-sports-document) aside,
   body:has(.student-sports-document) header:has(+ main),
-  body:has(.student-sports-document) main + footer {
+  body:has(.student-sports-document) main + footer,
+  body:has(.movement-for-all-page) aside,
+  body:has(.movement-for-all-page) header:has(+ main),
+  body:has(.movement-for-all-page) main + footer,
+  body:has(.movement-for-all-page) button[aria-label="Abrir menú principal"] {
     display: none !important;
+  }
+
+  body:has(.movement-for-all-page) main,
+  body:has(.movement-for-all-page) main > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .movement-for-all-page {
+    width: 100% !important;
+  }
+
+  .movement-for-all-page article,
+  .movement-for-all-page section {
+    break-inside: avoid;
   }
 
   main,

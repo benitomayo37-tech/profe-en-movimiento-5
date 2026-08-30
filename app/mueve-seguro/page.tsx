@@ -22,7 +22,10 @@ export default async function MoveSafePage() {
       footer={<div className="px-6 py-4 text-center text-xs text-slate-500">MueveSeguro · Orientación educativa para la prevención y respuesta</div>}
     >
       <Container size="wide" className="py-8">
-        <MoveSafeWorkspace authenticated={access.authenticated} />
+        <MoveSafeWorkspace
+          authenticated={access.authenticated}
+          hasProAccess={access.hasProAccess}
+        />
       </Container>
     </AppLayout>
   );

@@ -6,7 +6,9 @@ import { getSupabasePublicConfig } from "@/lib/supabase/config";
 
 export function createAdminClient() {
   const config = getSupabasePublicConfig();
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const serviceRoleKey =
+    process.env.SUPABASE_SECRET_KEY?.trim()
+    || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
   if (!config || !serviceRoleKey) return null;
 

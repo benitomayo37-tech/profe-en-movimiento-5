@@ -145,7 +145,7 @@ export default function TermsPage() {
               </p>
               <p>
                 Cancelar evita cobros futuros, pero no equivale por sí mismo a reembolsar un
-                pago ya realizado. La garantía configurada para la Suite de 19 miniapps es de
+                pago ya realizado. La garantía configurada para la Suite Pro de miniapps es de
                 7 días desde la aprobación de la compra inicial, conforme a las condiciones
                 mostradas en Hotmart. Consulta los detalles en{" "}
                 <Link className="font-bold text-blue-700 underline underline-offset-4" href="/refunds">

@@ -7,6 +7,7 @@ const actions = [
       "Genera planificaciones, rúbricas, actividades y recursos educativos.",
     href: "/ai",
     icon: "✨",
+    access: "Free + Pro",
   },
   {
     title: "Entrenador IA",
@@ -14,6 +15,7 @@ const actions = [
       "Diseña sesiones, microciclos, mesociclos y macrociclos deportivos.",
     href: "/entrenador-ia",
     icon: "🏅",
+    access: "Free + Pro",
   },
   {
     title: "Recursos",
@@ -21,6 +23,7 @@ const actions = [
       "Explora materiales, guías y contenidos listos para utilizar.",
     href: "/resources",
     icon: "📚",
+    access: "Free + Pro",
   },
   {
     title: "MueveSeguro",
@@ -28,6 +31,7 @@ const actions = [
       "Recibe orientación educativa para prevenir riesgos y actuar con seguridad.",
     href: "/mueve-seguro",
     icon: "🛡️",
+    access: "Free + Pro",
   },
   {
     title: "Exámenes estudiantiles",
@@ -35,6 +39,7 @@ const actions = [
       "Crea evaluaciones con código y consulta resultados y calificaciones.",
     href: "/examenes",
     icon: "📝",
+    access: "Cuenta docente",
   },
   {
     title: "Tienda",
@@ -42,6 +47,21 @@ const actions = [
       "Descubre productos digitales y herramientas para docentes.",
     href: "/store",
     icon: "🛍️",
+    access: "Catálogo",
+  },
+  {
+    title: "Movimiento para Todos",
+    description: "Actividad física adaptada, orientaciones para cuidadores y recursos inclusivos.",
+    href: "/movimiento-para-todos",
+    icon: "🌎",
+    access: "Free + Pro",
+  },
+  {
+    title: "App para profes",
+    description: "Accede a 19 herramientas para organizar y dinamizar tus clases.",
+    href: "/apps",
+    icon: "📱",
+    access: "Free + Pro",
   },
 ];
 
@@ -75,6 +95,8 @@ export default function QuickActions() {
             <h3 className="mt-5 text-lg font-black text-slate-900">
               {action.title}
             </h3>
+
+            <span className="mt-3 inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">{action.access}</span>
 
             <p className="mt-2 text-sm leading-6 text-slate-600">
               {action.description}

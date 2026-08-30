@@ -6,8 +6,6 @@ import AuthPageShell from "@/features/auth/components/AuthPageShell";
 import AuthSetupNotice from "@/features/auth/components/AuthSetupNotice";
 import { getAuthAccess } from "@/features/auth/server/access";
 import { signUpAction } from "@/features/auth/server/actions";
-import StudentAuthForm from "@/features/students/components/StudentAuthForm";
-import { studentSignUpAction } from "@/features/students/server/actions";
 import { getStudentSession } from "@/features/students/server/session";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +24,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const studentSession = await getStudentSession();
   const query = await searchParams;
   const isStudent = query.rol === "estudiante";
+  if (isStudent) redirect("/login?rol=estudiante");
   if (access.authenticated) redirect(isStudent ? "/estudiantes" : "/cuenta");
   if (studentSession) redirect("/estudiantes");
 
@@ -41,9 +40,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         <a href="/registro?rol=estudiante" className={`rounded-xl px-4 py-3 text-center text-sm font-black ${isStudent ? "bg-white text-emerald-700 shadow" : "text-slate-500"}`}>Estudiante</a>
       </div>
       {access.configured
-        ? isStudent
-          ? <StudentAuthForm mode="register" action={studentSignUpAction} />
-          : <AuthForm mode="register" action={signUpAction} />
+        ? <AuthForm mode="register" action={signUpAction} />
         : <AuthSetupNotice />}
     </AuthPageShell>
   );

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { AppLayout, Sidebar } from "@/components/layout";
 import Container from "@/components/ui/Container";
+import { getAuthAccess } from "@/features/auth/server/access";
+import StorePageHeader from "@/features/store/components/StorePageHeader";
 import StoreProductDetail from "@/features/store/components/StoreProductDetail";
 import {
   getStoreProductBySlug,
@@ -45,24 +47,6 @@ export async function generateMetadata({
   };
 }
 
-function ProductHeader() {
-  return (
-    <div className="flex min-h-20 items-center justify-between gap-4 px-6">
-      <div className="min-w-0">
-        <h1 className="truncate text-lg font-bold text-slate-950">
-          Ficha de producto
-        </h1>
-        <p className="truncate text-sm text-slate-500">
-          Tienda digital · Profe en Movimiento
-        </p>
-      </div>
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-500 font-bold text-white">
-        AM
-      </div>
-    </div>
-  );
-}
-
 function ProductFooter() {
   return (
     <div className="px-6 py-4 text-center text-xs text-slate-500">
@@ -76,6 +60,7 @@ export default async function StoreProductPage({
 }: StoreProductPageProps) {
   const { slug } = await params;
   const product = getStoreProductBySlug(slug);
+  const access = await getAuthAccess();
 
   if (!product) {
     notFound();
@@ -84,7 +69,13 @@ export default async function StoreProductPage({
   return (
     <AppLayout
       sidebar={<Sidebar />}
-      header={<ProductHeader />}
+      header={(
+        <StorePageHeader
+          access={access}
+          title="Ficha de producto"
+          description="Tienda digital · Profe en Movimiento"
+        />
+      )}
       footer={<ProductFooter />}
     >
       <Container className="py-8">

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface MobileSidebarProps {
   children: ReactNode;
@@ -9,6 +9,8 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ children }: MobileSidebarProps) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -24,16 +26,19 @@ export function MobileSidebar({ children }: MobileSidebarProps) {
 
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", closeOnEscape);
+    requestAnimationFrame(() => panelRef.current?.querySelector<HTMLElement>("button, a")?.focus());
 
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
+      triggerRef.current?.focus();
     };
   }, [open]);
 
   return (
     <div className="lg:hidden">
       <button
+        ref={triggerRef}
         type="button"
         aria-controls="mobile-navigation"
         aria-expanded={open}
@@ -54,7 +59,17 @@ export function MobileSidebar({ children }: MobileSidebarProps) {
           />
 
           <aside
+            ref={panelRef}
             id="mobile-navigation"
+            onKeyDown={(event) => {
+              if (event.key !== "Tab") return;
+              const focusable = panelRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])');
+              if (!focusable?.length) return;
+              const first = focusable[0];
+              const last = focusable[focusable.length - 1];
+              if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+              else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            }}
             onClick={(event) => {
               if ((event.target as HTMLElement).closest("a")) {
                 setOpen(false);

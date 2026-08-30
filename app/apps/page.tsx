@@ -17,7 +17,7 @@ function AppsHeader({ access }: { access: Awaited<ReturnType<typeof getAuthAcces
     <div className="flex min-h-20 items-center justify-between gap-4 px-6">
       <div className="min-w-0">
         <h1 className="truncate text-lg font-bold text-slate-950">App para profes</h1>
-        <p className="truncate text-sm text-slate-500">19 herramientas para acompañar tu trabajo docente</p>
+        <p className="truncate text-sm text-slate-500">Suite de herramientas para acompañar tu trabajo docente</p>
       </div>
       <AccountBadge authenticated={access.authenticated} email={access.email} fullName={access.fullName} />
     </div>

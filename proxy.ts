@@ -28,6 +28,7 @@ export const config = {
     "/cuenta/:path*",
     "/historial/:path*",
     "/mueve-seguro/:path*",
+    "/movimiento-para-todos/:path*",
     "/login",
     "/registro",
     "/recuperar-contrasena",

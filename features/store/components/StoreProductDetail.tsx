@@ -3,7 +3,11 @@ import Link from "next/link";
 
 import HotmartPurchaseButton from "@/features/store/components/HotmartPurchaseButton";
 import type { StoreProduct } from "@/features/store/data/products";
-import { formatStorePrice, storeProducts } from "@/features/store/data/products";
+import {
+  formatStorePrice,
+  getStoreProductStatusLabel,
+  storeProducts,
+} from "@/features/store/data/products";
 
 interface StoreProductDetailProps {
   product: StoreProduct;
@@ -105,7 +109,7 @@ export default function StoreProductDetail({
                 Suite completa
               </p>
               <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">
-                Las 19 miniapps incluidas
+                Miniapps incluidas
               </h2>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {product.appList.map((app, index) => (
@@ -183,9 +187,11 @@ export default function StoreProductDetail({
             <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.14em] ${
               product.purchaseStatus === "available"
                 ? "bg-emerald-100 text-emerald-700"
-                : "bg-orange-100 text-orange-700"
+                : product.purchaseStatus === "included"
+                  ? "bg-orange-100 text-orange-700"
+                  : "bg-slate-100 text-slate-700"
             }`}>
-              {product.purchaseStatus === "available" ? "Disponible" : "Incluido en la Suite"}
+              {getStoreProductStatusLabel(product)}
             </span>
             <h2 className="mt-5 text-2xl font-black text-slate-950">
               {product.title}
@@ -229,7 +235,7 @@ export default function StoreProductDetail({
                 href="/store/suite-19-miniapps-docentes"
                 className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 text-center font-black text-white transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-100"
               >
-                Ver Suite de 19 miniapps
+                Ver Suite Pro de miniapps
               </Link>
             ) : (
               <span className="mt-6 flex min-h-12 w-full items-center justify-center rounded-xl bg-slate-200 px-5 py-3 text-center font-black text-slate-500" aria-disabled="true">

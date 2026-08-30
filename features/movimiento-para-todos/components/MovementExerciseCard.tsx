@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import ProUpgradeDialog from "@/features/auth/components/ProUpgradeDialog";
 import type { MovementExercise } from "../types";
 
 interface MovementExerciseCardProps {
@@ -7,6 +9,8 @@ interface MovementExerciseCardProps {
   accent?: "emerald" | "rose" | "violet" | "blue";
   isOpen: boolean;
   onToggle: () => void;
+  accessLevel: "free" | "pro";
+  isLocked: boolean;
 }
 
 const accentStyles = {
@@ -73,8 +77,20 @@ export default function MovementExerciseCard({
   accent = "emerald",
   isOpen,
   onToggle,
+  accessLevel,
+  isLocked,
 }: MovementExerciseCardProps) {
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const styles = accentStyles[accent];
+
+  function handleToggle() {
+    if (isLocked) {
+      setUpgradeOpen(true);
+      return;
+    }
+
+    onToggle();
+  }
 
   return (
     <article
@@ -84,9 +100,9 @@ export default function MovementExerciseCard({
     >
       <button
         type="button"
-        aria-expanded={isOpen}
+        aria-expanded={isLocked ? false : isOpen}
         aria-controls={`exercise-${exercise.id}`}
-        onClick={onToggle}
+        onClick={handleToggle}
         className={`flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-slate-50 focus:outline-none focus:ring-4 sm:p-6 ${styles.focus}`}
       >
         <div className="min-w-0">
@@ -103,6 +119,10 @@ export default function MovementExerciseCard({
                 : exercise.difficulty === "intermediate"
                   ? "Intermedio"
                   : "Avanzado"}
+            </span>
+
+            <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wide ${accessLevel === "free" ? "bg-emerald-100 text-emerald-700" : "bg-violet-100 text-violet-700"}`}>
+              {accessLevel === "free" ? "Free" : "Pro"}
             </span>
           </div>
 
@@ -128,11 +148,11 @@ export default function MovementExerciseCard({
             isOpen ? styles.iconOpen : styles.iconClosed
           }`}
         >
-          {isOpen ? "−" : "+"}
+          {isLocked ? "🔒" : isOpen ? "−" : "+"}
         </span>
       </button>
 
-      {isOpen ? (
+      {isOpen && !isLocked ? (
   <div
     id={`exercise-${exercise.id}`}
     className="border-t border-slate-200 bg-slate-50 p-5 sm:p-6"
@@ -238,6 +258,11 @@ export default function MovementExerciseCard({
           </div>
         </div>
       ) : null}
+      <ProUpgradeDialog
+        open={upgradeOpen}
+        toolName={exercise.title}
+        onClose={() => setUpgradeOpen(false)}
+      />
     </article>
   );
 }

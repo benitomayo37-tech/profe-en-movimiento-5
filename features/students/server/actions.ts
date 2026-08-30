@@ -59,6 +59,53 @@ export async function studentSignInAction(
   redirect("/estudiantes");
 }
 
+export async function studentQuickAccessAction(
+  _previousState: StudentActionState,
+  formData: FormData,
+): Promise<StudentActionState> {
+  const displayName = value(formData, "displayName");
+  const educationLevel = value(formData, "educationLevel");
+  const gradeCourse = value(formData, "gradeCourse");
+  const fieldErrors: StudentActionState["fieldErrors"] = {};
+
+  if (displayName.length < 2 || displayName.length > 40) {
+    fieldErrors.displayName = "Escribe tu nombre o un apodo de 2 a 40 caracteres.";
+  }
+  if (!educationLevel) fieldErrors.educationLevel = "Selecciona tu nivel educativo.";
+  if (!gradeCourse || gradeCourse.length > 80) fieldErrors.gradeCourse = "Escribe tu grado o curso.";
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return { status: "error", message: "Revisa los datos ingresados.", fieldErrors };
+  }
+
+  const admin = createAdminClient();
+  if (!admin) return configurationError();
+
+  const { data: studentId, error } = await admin.rpc("create_quick_student_profile", {
+    p_display_name: displayName,
+    p_education_level: educationLevel,
+    p_grade_course: gradeCourse,
+  });
+
+  if (error || typeof studentId !== "string") {
+    console.error("[Acceso estudiantil rápido] No se pudo crear el perfil:", error);
+    return {
+      status: "error",
+      message: "No pudimos preparar tu espacio gratuito. Inténtalo nuevamente.",
+    };
+  }
+
+  await setStudentSession({
+    studentId,
+    fullName: displayName,
+    institution: "Acceso gratuito",
+    educationLevel,
+    gradeCourse,
+  });
+
+  redirect("/estudiantes");
+}
+
 export async function studentSignUpAction(
   _previousState: StudentActionState,
   formData: FormData,
