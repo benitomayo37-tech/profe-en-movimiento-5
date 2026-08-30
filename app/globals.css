@@ -654,3 +654,22 @@ html[data-theme="sepia"] .theme-selectable-card[data-selected="false"]:hover {
   background-color: #eee2ca !important;
   border-color: #93a7c0 !important;
 }
+
+/* Tarjetas claras de la portada que incluyen degradados o fondos tintados. */
+html[data-theme="dark"] .landing-adaptive-card {
+  background-color: #0f1d2e !important;
+  background-image: linear-gradient(135deg, #0f1d2e, #17263a) !important;
+  border-color: #3a4c63 !important;
+}
+
+html[data-theme="dark"] .landing-adaptive-inset,
+html[data-theme="dark"] .landing-tinted-card {
+  background-color: #17263a !important;
+  border-color: #3a4c63 !important;
+}
+
+html[data-theme="sepia"] .landing-adaptive-card,
+html[data-theme="sepia"] .landing-adaptive-inset,
+html[data-theme="sepia"] .landing-tinted-card {
+  border-color: #d8c6a8 !important;
+}

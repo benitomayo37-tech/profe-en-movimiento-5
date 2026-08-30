@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+
 interface PublicLandingPageProps { authenticated: boolean }
 
 const featureCards = [
@@ -81,6 +83,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeSwitcher />
             {!authenticated && <Link href="/login" className="hidden rounded-xl px-4 py-2.5 text-sm font-black hover:bg-white/10 sm:inline-flex">Iniciar sesión</Link>}
             <Link href={primaryHref} className="inline-flex min-h-11 items-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-black text-white shadow-lg shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-600">{primaryLabel}</Link>
             <details className="group relative lg:hidden">
@@ -123,7 +126,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
       <div id="soluciones-inclusivas" className="order-2 scroll-mt-20">
       <section className="px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-blue-50 p-7 shadow-xl sm:p-10 lg:p-12">
+          <div className="landing-adaptive-card relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-blue-50 p-7 shadow-xl sm:p-10 lg:p-12">
             <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-orange-200/40 blur-3xl" />
             <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
 
@@ -273,7 +276,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
               </div>
             </article>
 
-            <article className="relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-7 shadow-lg sm:p-9">
+            <article className="landing-adaptive-card relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-7 shadow-lg sm:p-9">
               <div className="absolute -bottom-20 -right-16 h-48 w-48 rounded-full bg-orange-200/50 blur-3xl" />
 
               <div className="relative">
@@ -291,7 +294,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
                   técnicas.
                 </p>
 
-                <div className="mt-6 rounded-2xl border border-orange-100 bg-white/80 p-4">
+                <div className="landing-adaptive-inset mt-6 rounded-2xl border border-orange-100 bg-white/80 p-4">
                   <p className="font-black text-slate-950">
                     Seguridad antes que esfuerzo
                   </p>
@@ -411,10 +414,10 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
                 <h3 className="mt-3 text-3xl font-black">Ebooks y bancos de juegos</h3>
                 <p className="mt-4 leading-7 text-blue-100">Contenidos organizados para consultar, adaptar y aplicar en tus clases.</p>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-orange-50 p-6">
+              <div className="landing-tinted-card rounded-3xl border border-slate-200 bg-orange-50 p-6">
                 <span className="text-3xl" aria-hidden="true">📱</span><h3 className="mt-4 text-xl font-black">Apps docentes</h3><p className="mt-2 text-sm leading-6 text-slate-600">Herramientas digitales para simplificar tareas cotidianas.</p>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-emerald-50 p-6">
+              <div className="landing-tinted-card rounded-3xl border border-slate-200 bg-emerald-50 p-6">
                 <span className="text-3xl" aria-hidden="true">📦</span><h3 className="mt-4 text-xl font-black">Paquetes educativos</h3><p className="mt-2 text-sm leading-6 text-slate-600">Recursos complementarios reunidos por temática y necesidad.</p>
               </div>
             </div>
