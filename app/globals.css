@@ -1022,19 +1022,13 @@ html[data-theme] .dashboard-hero-admin-badge {
     print-color-adjust: exact;
   }
 
-  body * {
-    visibility: hidden !important;
-  }
-
-  .agent-print-sheet,
-  .agent-print-sheet * {
-    visibility: visible !important;
+  body > *:not(.agent-print-sheet) {
+    display: none !important;
   }
 
   .agent-print-sheet {
     display: block !important;
-    position: absolute;
-    inset: 0;
+    position: static;
     width: 100%;
     background: #ffffff !important;
     color: #172033 !important;
