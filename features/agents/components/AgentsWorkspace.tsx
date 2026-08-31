@@ -68,7 +68,7 @@ function printableResult(content: string, fallbackTitle: string) {
   const title = titleIndex >= 0 ? lines[titleIndex].replace(/^#{1,6}\s+/, "").trim() : fallbackTitle.length > 90 ? "Plan de entrenamiento deportivo" : fallbackTitle;
   const withoutTitle = titleIndex >= 0 ? lines.filter((_, index) => index !== titleIndex) : lines;
   const processStart = withoutTitle.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente|revisión del entrenador)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
-  const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad|[-*]\s*supuesto(?:s| breve| pedagógico)?\b)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
+  const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad|(?:[-*]\s*)?supuestos?(?:\s+(?:breves?|pedagógicos?))?\b)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
   return { title, content: printableLines.join("\n").trim() };
 }
 
