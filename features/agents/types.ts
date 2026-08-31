@@ -1,4 +1,4 @@
-export type AgentSpecialist = "coordinator" | "planning" | "assessment" | "inclusion";
+export type AgentSpecialist = "coordinator" | "planning" | "assessment" | "inclusion" | "training";
 
 export interface AgentConversation {
   id: string;

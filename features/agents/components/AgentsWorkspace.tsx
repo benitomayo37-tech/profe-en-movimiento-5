@@ -10,12 +10,14 @@ const specialistLabel: Record<AgentSpecialist, string> = {
   planning: "Agente de Planificación",
   assessment: "Agente de Evaluación",
   inclusion: "Agente de Inclusión",
+  training: "Agente de Entrenamiento Deportivo",
 };
 
 const starterPrompts = [
   "Diseña una clase de 45 minutos con 40 estudiantes y 4 balones.",
   "Crea una rúbrica con criterios observables para evaluar pases de baloncesto.",
   "Adapta una actividad mediante DUA y apoyos NEE sin cambiar el objetivo.",
+  "Diseña un microciclo de entrenamiento deportivo con carga y recuperación progresivas.",
 ];
 
 function duaLineClass(line: string): string {
@@ -184,7 +186,7 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
       <header className="border-b border-slate-200 bg-gradient-to-r from-blue-950 to-violet-900 p-6 text-white"><p className="text-xs font-black uppercase tracking-[.18em] text-orange-300">Coordinación multiagente</p><h2 className="mt-2 text-2xl font-black">{selectedTitle}</h2><p className="mt-2 text-sm text-blue-100">El Coordinador consulta al especialista adecuado y tú apruebas cada resultado.</p></header>
       <div className="min-h-[420px] space-y-5 bg-slate-50 p-5 sm:p-7">
-        {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 lg:grid-cols-3">{starterPrompts.map((prompt) => <button key={prompt} onClick={() => setMessage(prompt)} className="rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt}</button>)}</div></div> : <>{hiddenMessageCount > 0 ? <button type="button" onClick={() => setShowPrevious((current) => !current)} className="mx-auto block rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-100">{showPrevious ? "Ocultar mensajes anteriores" : `Ver ${hiddenMessageCount} mensajes anteriores`}</button> : null}{visibleMessages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
+        {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">{starterPrompts.map((prompt) => <button key={prompt} onClick={() => setMessage(prompt)} className="rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt}</button>)}</div></div> : <>{hiddenMessageCount > 0 ? <button type="button" onClick={() => setShowPrevious((current) => !current)} className="mx-auto block rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-100">{showPrevious ? "Ocultar mensajes anteriores" : `Ver ${hiddenMessageCount} mensajes anteriores`}</button> : null}{visibleMessages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
           <p className={`text-xs font-black uppercase tracking-[.14em] ${item.role === "user" ? "text-blue-100" : "text-violet-700"}`}>{item.role === "user" ? "Docente" : specialistLabel[item.specialist ?? "coordinator"]}</p>
           <AgentMessageContent content={item.content} />
           {item.role === "assistant" ? <div className="mt-4 flex flex-wrap gap-2"><button onClick={() => void saveResult(item.id)} disabled={Boolean(item.saved_at)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800 disabled:opacity-70">{item.saved_at ? "✓ Resultado guardado" : "Guardar resultado"}</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir o guardar en PDF</button></div> : null}
