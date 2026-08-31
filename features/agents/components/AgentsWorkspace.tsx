@@ -51,8 +51,9 @@ function isTableSeparator(line: string) {
 function printableResult(content: string, fallbackTitle: string) {
   const lines = content.split("\n");
   const tableStart = lines.findIndex((line, index) => line.includes("|") && index + 1 < lines.length && isTableSeparator(lines[index + 1]));
+  const meaningfulBeforeTable = tableStart >= 0 ? lines.slice(0, tableStart).filter((line) => line.trim() && !/^#{1,6}\s+/.test(line.trim())) : [];
 
-  if (tableStart >= 0) {
+  if (tableStart >= 0 && meaningfulBeforeTable.length <= 2) {
     let tableEnd = tableStart + 2;
     while (tableEnd < lines.length && lines[tableEnd].includes("|") && lines[tableEnd].trim()) tableEnd += 1;
     let headingIndex = tableStart - 1;
@@ -61,9 +62,12 @@ function printableResult(content: string, fallbackTitle: string) {
     return { title: heading, content: lines.slice(tableStart, tableEnd).join("\n") };
   }
 
-  const processStart = lines.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente)/i.test(line.trim()));
-  const printableLines = (processStart >= 0 ? lines.slice(0, processStart) : lines).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad)/i.test(line.trim()));
-  return { title: fallbackTitle, content: printableLines.join("\n").trim() };
+  const firstHeading = lines.findIndex((line) => /^#\s+/.test(line.trim()));
+  const title = firstHeading >= 0 ? lines[firstHeading].replace(/^#\s+/, "").trim() : fallbackTitle.length > 90 ? "Plan de entrenamiento deportivo" : fallbackTitle;
+  const withoutTitle = firstHeading >= 0 ? lines.filter((_, index) => index !== firstHeading) : lines;
+  const processStart = withoutTitle.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente|revisión del entrenador)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
+  const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
+  return { title, content: printableLines.join("\n").trim() };
 }
 
 function AgentMessageContent({ content }: { content: string }) {
@@ -85,7 +89,9 @@ function AgentMessageContent({ content }: { content: string }) {
     }
 
     const duaClass = duaLineClass(line);
-    blocks.push(!line ? <div key={index} className="h-3" aria-hidden="true" /> : <div key={index} className={duaClass ? `my-1 rounded-xl border px-3 py-2 font-semibold ${duaClass}` : "whitespace-pre-wrap"}>{line}</div>);
+    const heading = line.match(/^(#{2,4})\s+(.+)$/);
+    const sessionHeading = line.match(/^(Sesión\s+\d+|Semana\s+\d+|Periodo\s+\d+)(?:\s*[-—:]\s*)?(.+)?$/i);
+    blocks.push(!line ? <div key={index} className="h-3" aria-hidden="true" /> : heading ? <h3 key={index} className="agent-content-heading">{heading[2]}</h3> : sessionHeading ? <h4 key={index} className="agent-session-heading">{line}</h4> : <div key={index} className={duaClass ? `my-1 rounded-xl border px-3 py-2 font-semibold ${duaClass}` : "agent-content-line whitespace-pre-wrap"}>{line}</div>);
     index += 1;
   }
 
