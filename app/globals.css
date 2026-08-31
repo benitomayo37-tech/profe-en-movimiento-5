@@ -1013,7 +1013,7 @@ html[data-theme] .dashboard-hero-admin-badge {
 @media print {
   @page {
     size: A4;
-    margin: 14mm;
+    margin: 18mm;
   }
 
   body {
@@ -1033,8 +1033,8 @@ html[data-theme] .dashboard-hero-admin-badge {
     background: #ffffff !important;
     color: #172033 !important;
     font-family: Arial, sans-serif;
-    font-size: 10.5px;
-    line-height: 1.5;
+    font-size: 12px;
+    line-height: 1.45;
   }
 
   .agent-print-brand {
@@ -1058,14 +1058,14 @@ html[data-theme] .dashboard-hero-admin-badge {
   }
 
   .agent-print-sheet h2 {
-    margin: 0 0 12px;
+    margin: 0 0 18px;
     color: #172033 !important;
-    font-size: 15px;
+    font-size: 18px;
   }
 
   .agent-print-sheet .text-sm {
-    font-size: 10.5px !important;
-    line-height: 1.5 !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
   }
 
   .agent-print-sheet .leading-7 {
@@ -1081,8 +1081,8 @@ html[data-theme] .dashboard-hero-admin-badge {
   .agent-print-sheet .agent-rubric-table {
     min-width: 0 !important;
     width: 100% !important;
-    font-size: 7.5px !important;
-    line-height: 1.3 !important;
+    font-size: 9.5px !important;
+    line-height: 1.35 !important;
   }
 
   .agent-print-sheet .agent-rubric-table thead {
@@ -1101,7 +1101,7 @@ html[data-theme] .dashboard-hero-admin-badge {
     border-color: #64748b !important;
   }
 
-  .agent-print-sheet .agent-rubric-table tbody td {
+  html[data-theme] .agent-print-sheet .agent-rubric-table tbody tr:nth-child(n) td {
     background: #ffffff !important;
     color: #172033 !important;
   }

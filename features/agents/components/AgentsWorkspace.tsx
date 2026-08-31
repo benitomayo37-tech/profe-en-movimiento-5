@@ -46,6 +46,24 @@ function isTableSeparator(line: string) {
   return cells.length > 1 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
 }
 
+function printableResult(content: string, fallbackTitle: string) {
+  const lines = content.split("\n");
+  const tableStart = lines.findIndex((line, index) => line.includes("|") && index + 1 < lines.length && isTableSeparator(lines[index + 1]));
+
+  if (tableStart >= 0) {
+    let tableEnd = tableStart + 2;
+    while (tableEnd < lines.length && lines[tableEnd].includes("|") && lines[tableEnd].trim()) tableEnd += 1;
+    let headingIndex = tableStart - 1;
+    while (headingIndex >= 0 && !lines[headingIndex].trim()) headingIndex -= 1;
+    const heading = headingIndex >= 0 && /rúbrica/i.test(lines[headingIndex]) ? lines[headingIndex].replace(/^[-*#\s]+/, "").trim() : "Rúbrica de evaluación";
+    return { title: heading, content: lines.slice(tableStart, tableEnd).join("\n") };
+  }
+
+  const processStart = lines.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente)/i.test(line.trim()));
+  const printableLines = (processStart >= 0 ? lines.slice(0, processStart) : lines).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad)/i.test(line.trim()));
+  return { title: fallbackTitle, content: printableLines.join("\n").trim() };
+}
+
 function AgentMessageContent({ content }: { content: string }) {
   const lines = content.split("\n");
   const blocks = [];
@@ -94,6 +112,7 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     }
     return selectedTitle;
   }, [messages, printMessage, selectedTitle]);
+  const printData = useMemo(() => printMessage ? printableResult(printMessage.content, printTitle) : null, [printMessage, printTitle]);
 
   useEffect(() => {
     if (!printMessage) return;
@@ -174,6 +193,6 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
       </div>
       <form onSubmit={submit} className="border-t border-slate-200 bg-white p-5"><label htmlFor="agent-message" className="text-sm font-black text-slate-900">Solicitud para el Coordinador</label><textarea id="agent-message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={6000} rows={4} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-7 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Ejemplo: necesito una clase de 45 minutos para 40 estudiantes…" />{error ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{error}</p> : null}<div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-500">No incluyas nombres ni información personal de estudiantes.</p><button disabled={working || !message.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-blue-700 px-6 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{working ? "Coordinando…" : "Enviar al Coordinador →"}</button></div></form>
     </section>
-    {printMessage && typeof document !== "undefined" ? createPortal(<section className="agent-print-sheet" aria-hidden="true"><header className="agent-print-brand"><img src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width="72" height="72" /><div><h1>Profe en Movimiento 5.0</h1><p>Resultado del Centro de Agentes IA</p></div></header><h2>{printTitle}</h2><AgentMessageContent content={printMessage.content} /><footer>El docente conserva la decisión final · {new Date().toLocaleDateString("es-EC")}</footer></section>, document.body) : null}
+    {printMessage && printData && typeof document !== "undefined" ? createPortal(<section className="agent-print-sheet" aria-hidden="true"><header className="agent-print-brand"><img src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width="72" height="72" /><div><h1>Profe en Movimiento 5.0</h1><p>Recurso educativo generado con Agentes IA</p></div></header><h2>{printData.title}</h2><AgentMessageContent content={printData.content} /><footer>Profe en Movimiento 5.0 · {new Date().toLocaleDateString("es-EC")}</footer></section>, document.body) : null}
   </div>;
 }
