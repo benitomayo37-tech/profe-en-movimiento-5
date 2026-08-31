@@ -785,6 +785,26 @@ html[data-theme="dark"] :is(.text-rose-700, .text-rose-800, .text-rose-900, .tex
   color: #701a75 !important;
 }
 
+.agent-plan-pro-badge,
+.agent-pro-lock-badge {
+  background: #fde68a !important;
+  color: #451a03 !important;
+}
+
+.agent-admin-badge {
+  background: #e9d5ff !important;
+  color: #4c1d95 !important;
+}
+
+.agent-pro-active-badge {
+  background: #ede9fe !important;
+  color: #5b21b6 !important;
+}
+
+.agent-upgrade-link {
+  color: #92400e !important;
+}
+
 html[data-theme="dark"] .agent-dua-compromiso {
   background-color: #123c2b !important;
   border-color: #34d399 !important;

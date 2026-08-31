@@ -260,17 +260,19 @@ const existingStoreProducts: StoreProduct[] = [
   },
   {
     id: "plan-pro-mensual",
-    title: "Suite Pro de miniapps para docentes",
+    title: "Plan Pro mensual",
     description:
-      "Herramientas en línea para organizar clases, evaluar, crear recursos y gestionar actividades desde cualquier dispositivo.",
+      "Acceso mensual completo a Agentes IA, herramientas docentes, entrenamiento deportivo, miniapps y contenidos Pro.",
     category: "apps",
-    categoryLabel: "Aplicaciones para docentes",
+    categoryLabel: "Suscripción Pro",
     icon: "🧰",
     accent: "from-orange-600 via-amber-500 to-yellow-400",
-    badge: "Suite en crecimiento",
-    format: "Suite de aplicaciones web",
+    badge: "Acceso completo",
+    format: "Plataforma web",
     contents: [
       "20 miniapps docentes",
+      "Centro de Agentes IA: 100 ejecuciones mensuales",
+      "Mesociclos y macrociclos con Agentes IA",
       "Profe IA con todas sus herramientas",
       "Entrenador IA y planificación deportiva",
       "MueveSeguro: registros e historial",
@@ -282,7 +284,7 @@ const existingStoreProducts: StoreProduct[] = [
       "Comunidad, Dashboard e historial",
     ],
     longDescription:
-      "Un ecosistema de miniaplicaciones en línea que crece con nuevas herramientas para reducir tareas repetitivas y facilitar el trabajo diario del docente. Reúne recursos deportivos, organizativos y pedagógicos que funcionan desde el navegador, sin instalaciones.",
+      "Una suscripción mensual para trabajar profesionalmente con los Agentes IA y las herramientas de Profe en Movimiento. Incluye planificación, evaluación, inclusión, entrenamiento deportivo, miniapps y contenidos Pro desde cualquier dispositivo.",
     idealFor: ["Docentes de Educación Física", "Docentes de otras asignaturas", "Entrenadores y monitores", "Instituciones educativas"],
     benefits: ["Reúne herramientas en un solo acceso", "Incorpora nuevas aplicaciones", "Reduce tiempo de preparación", "Combina gestión, evaluación y actividad física"],
     howToUse: ["Activa tu plan Pro", "Ingresa desde cualquier dispositivo", "Selecciona la miniapp necesaria", "Guarda o exporta el resultado disponible"],
@@ -318,7 +320,7 @@ const existingStoreProducts: StoreProduct[] = [
   {
     id: "plan-pro-anual",
     title: "Plan Pro anual",
-    description: "Acceso durante 12 meses a las 20 miniapps, Profe IA, Entrenador IA y los contenidos Pro de la plataforma.",
+    description: "Acceso durante 12 meses a Agentes IA, herramientas docentes, entrenamiento deportivo, miniapps y contenidos Pro.",
     category: "apps",
     categoryLabel: "Suscripción Pro",
     icon: "⭐",
@@ -327,6 +329,8 @@ const existingStoreProducts: StoreProduct[] = [
     format: "Plataforma web",
     contents: [
       "20 miniapps docentes",
+      "Centro de Agentes IA: 100 ejecuciones mensuales",
+      "Mesociclos y macrociclos con Agentes IA",
       "Profe IA con todas sus herramientas",
       "Entrenador IA y planificación deportiva",
       "MueveSeguro: registros e historial",
