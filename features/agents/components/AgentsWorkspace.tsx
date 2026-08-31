@@ -78,13 +78,14 @@ function AgentMessageContent({ content }: { content: string }) {
     const line = lines[index];
     if (line.includes("|") && index + 1 < lines.length && isTableSeparator(lines[index + 1])) {
       const headers = tableCells(line);
+      const isRubric = headers.some((header) => /Excelente\s*\(10\)/i.test(header));
       const rows: string[][] = [];
       index += 2;
       while (index < lines.length && lines[index].includes("|") && lines[index].trim()) {
         rows.push(tableCells(lines[index]));
         index += 1;
       }
-      blocks.push(<div key={`table-${index}`} className="agent-rubric-wrap my-4 overflow-x-auto rounded-xl border"><table className="agent-rubric-table min-w-[900px] w-full border-collapse text-left text-xs leading-5"><thead><tr>{headers.map((header, cellIndex) => <th key={cellIndex} className="px-3 py-2 font-black">{header}</th>)}</tr></thead><tbody>{rows.map((row, rowIndex) => <tr key={rowIndex}>{headers.map((_, cellIndex) => <td key={cellIndex} className="px-3 py-2 align-top">{row[cellIndex] ?? ""}</td>)}</tr>)}</tbody></table></div>);
+      blocks.push(<div key={`table-${index}`} className={`agent-table-wrap my-4 overflow-x-auto rounded-xl border ${isRubric ? "agent-rubric-wrap" : "agent-plan-wrap"}`}><table className={`agent-content-table w-full border-collapse text-left text-xs leading-5 ${isRubric ? "agent-rubric-table min-w-[900px]" : "agent-plan-table min-w-[720px]"}`}><thead><tr>{headers.map((header, cellIndex) => <th key={cellIndex} className="px-3 py-2 font-black">{header}</th>)}</tr></thead><tbody>{rows.map((row, rowIndex) => <tr key={rowIndex}>{headers.map((_, cellIndex) => <td key={cellIndex} className="px-3 py-2 align-top">{row[cellIndex] ?? ""}</td>)}</tr>)}</tbody></table></div>);
       continue;
     }
 
