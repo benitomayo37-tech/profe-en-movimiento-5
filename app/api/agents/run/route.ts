@@ -7,6 +7,17 @@ import { createClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 const MAX_MESSAGE_LENGTH = 6000;
 
+function normalized(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function requestsProTrainingPlan(message: string) {
+  const value = normalized(message);
+  return /\b(?:mesociclo|macrociclo)\b/.test(value)
+    || /\b(?:plan|planificacion|programa|ciclo)\b.{0,100}\b(?:semanas?|temporada)\b/.test(value)
+    || /\bperiodo\s+(?:preparatorio|competitivo|de\s+transicion)\b/.test(value);
+}
+
 function response(message: string, status: number, extra: Record<string, unknown> = {}) {
   return NextResponse.json({ success: status < 400, message, ...extra }, { status });
 }
@@ -24,6 +35,15 @@ export async function POST(request: Request) {
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const requestedConversationId = typeof body.conversationId === "string" ? body.conversationId : null;
   if (!message || message.length > MAX_MESSAGE_LENGTH) return response("Escribe una solicitud de hasta 6000 caracteres.", 400);
+  let ownedConversation: { id: string; title: string } | null = null;
+  if (requestedConversationId) {
+    const { data } = await supabase.from("ai_agent_conversations").select("id,title").eq("id", requestedConversationId).eq("user_id", access.userId).maybeSingle();
+    if (!data) return response("La conversación no existe o no está disponible.", 404);
+    ownedConversation = data;
+  }
+  if (!access.hasProAccess && requestsProTrainingPlan(`${ownedConversation?.title ?? ""}\n${message}`)) {
+    return response("Los mesociclos y macrociclos están disponibles con el Plan Pro.", 403, { code: "agents_pro_required", upgradeUrl: "/store/plan-pro-mensual" });
+  }
 
   const { data: usage, error: usageError } = await supabase.rpc("consume_agent_run");
   if (usageError) return response("No se pudo comprobar el límite de uso.", 500);
@@ -31,10 +51,7 @@ export async function POST(request: Request) {
 
   let conversationId = requestedConversationId;
   try {
-    if (conversationId) {
-      const { data: owned } = await supabase.from("ai_agent_conversations").select("id").eq("id", conversationId).eq("user_id", access.userId).maybeSingle();
-      if (!owned) throw new Error("conversation_not_found");
-    } else {
+    if (!conversationId) {
       const title = message.length > 76 ? `${message.slice(0, 73)}…` : message;
       const { data: created, error } = await supabase.from("ai_agent_conversations").insert({ user_id: access.userId, title }).select("id").single();
       if (error || !created) throw new Error("conversation_create_failed");
