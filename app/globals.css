@@ -1014,10 +1014,16 @@ html[data-theme] .dashboard-hero-admin-badge {
   @page {
     size: A4;
     margin: 18mm;
+    background: #ffffff;
   }
 
+  html[data-theme],
+  html[data-theme] body,
+  html,
   body {
-    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color-scheme: light !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
