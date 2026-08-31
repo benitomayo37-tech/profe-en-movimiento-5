@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import Image from "next/image";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import type { AgentConversation, AgentMessage, AgentSpecialist } from "@/features/agents/types";
 
@@ -46,46 +47,6 @@ function isTableSeparator(line: string) {
   return cells.length > 1 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
 }
 
-function escapeHtml(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-
-function printableHtml(content: string) {
-  const lines = content.split("\n");
-  const blocks: string[] = [];
-
-  for (let index = 0; index < lines.length;) {
-    const line = lines[index];
-    if (line.includes("|") && index + 1 < lines.length && isTableSeparator(lines[index + 1])) {
-      const headers = tableCells(line);
-      const rows: string[][] = [];
-      index += 2;
-      while (index < lines.length && lines[index].includes("|") && lines[index].trim()) {
-        rows.push(tableCells(lines[index]));
-        index += 1;
-      }
-      blocks.push(`<table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${headers.map((_, cellIndex) => `<td>${escapeHtml(row[cellIndex] ?? "")}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
-      continue;
-    }
-
-    const duaClass = duaLineClass(line);
-    if (!line) blocks.push("<div class=\"space\"></div>");
-    else blocks.push(`<div${duaClass ? ` class=\"dua ${duaClass}\"` : ""}>${escapeHtml(line)}</div>`);
-    index += 1;
-  }
-
-  return blocks.join("");
-}
-
-function printAgentResult(content: string, title: string) {
-  const printWindow = window.open("", "_blank");
-  if (!printWindow) return;
-  printWindow.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>
-    @page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#172033;font-size:11px;line-height:1.55;margin:0}.brand{display:flex;align-items:center;gap:12px;border-bottom:3px solid #173b78;padding-bottom:10px;margin-bottom:18px}.brand img{width:64px;height:64px;object-fit:contain}.brand h1{font-size:18px;margin:0;color:#0b2050}.brand p{margin:2px 0 0;color:#64748b}.space{height:9px}table{border-collapse:collapse;width:100%;margin:14px 0;font-size:9px;page-break-inside:auto}thead{display:table-header-group}tr{page-break-inside:avoid}th{background:#0b2050;color:#fff;font-weight:700}th,td{border:1px solid #64748b;padding:6px;vertical-align:top;text-align:left}.dua{border:1px solid;border-radius:8px;padding:7px 9px;margin:5px 0;font-weight:700}.agent-dua-compromiso{background:#dcfce7;border-color:#4ade80;color:#14532d}.agent-dua-representacion{background:#dbeafe;border-color:#60a5fa;color:#1e3a8a}.agent-dua-accion-expresion{background:#fae8ff;border-color:#e879f9;color:#701a75}.footer{border-top:1px solid #cbd5e1;margin-top:18px;padding-top:8px;text-align:center;color:#64748b;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-  </style></head><body><header class="brand"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt=""><div><h1>Profe en Movimiento 5.0</h1><p>Resultado del Centro de Agentes IA</p></div></header>${printableHtml(content)}<footer class="footer">El docente conserva la decisión final · ${new Date().toLocaleDateString("es-EC")}</footer><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),250));<\/script></body></html>`);
-  printWindow.document.close();
-}
-
 function AgentMessageContent({ content }: { content: string }) {
   const lines = content.split("\n");
   const blocks = [];
@@ -121,10 +82,26 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPrevious, setShowPrevious] = useState(false);
+  const [printMessage, setPrintMessage] = useState<AgentMessage | null>(null);
 
   const selectedTitle = useMemo(() => conversations.find((item) => item.id === conversationId)?.title ?? "Nueva conversación", [conversations, conversationId]);
   const hiddenMessageCount = Math.max(0, messages.length - 2);
   const visibleMessages = showPrevious ? messages : messages.slice(-2);
+
+  useEffect(() => {
+    if (!printMessage) return;
+    let timer: number | undefined;
+    const finishPrinting = () => setPrintMessage(null);
+    const frame = window.requestAnimationFrame(() => {
+      timer = window.setTimeout(() => window.print(), 150);
+    });
+    window.addEventListener("afterprint", finishPrinting, { once: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      if (timer) window.clearTimeout(timer);
+      window.removeEventListener("afterprint", finishPrinting);
+    };
+  }, [printMessage]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -171,11 +148,12 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
         {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 lg:grid-cols-3">{starterPrompts.map((prompt) => <button key={prompt} onClick={() => setMessage(prompt)} className="rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt}</button>)}</div></div> : <>{hiddenMessageCount > 0 ? <button type="button" onClick={() => setShowPrevious((current) => !current)} className="mx-auto block rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-100">{showPrevious ? "Ocultar mensajes anteriores" : `Ver ${hiddenMessageCount} mensajes anteriores`}</button> : null}{visibleMessages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
           <p className={`text-xs font-black uppercase tracking-[.14em] ${item.role === "user" ? "text-blue-100" : "text-violet-700"}`}>{item.role === "user" ? "Docente" : specialistLabel[item.specialist ?? "coordinator"]}</p>
           <AgentMessageContent content={item.content} />
-          {item.role === "assistant" ? <div className="mt-4 flex flex-wrap gap-2"><button onClick={() => void saveResult(item.id)} disabled={Boolean(item.saved_at)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800 disabled:opacity-70">{item.saved_at ? "✓ Resultado guardado" : "Guardar resultado"}</button><button type="button" onClick={() => printAgentResult(item.content, `Resultado Agentes IA - ${selectedTitle}`)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir o guardar en PDF</button></div> : null}
+          {item.role === "assistant" ? <div className="mt-4 flex flex-wrap gap-2"><button onClick={() => void saveResult(item.id)} disabled={Boolean(item.saved_at)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800 disabled:opacity-70">{item.saved_at ? "✓ Resultado guardado" : "Guardar resultado"}</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir o guardar en PDF</button></div> : null}
         </article>)}</>}
         {working ? <div className="mr-auto max-w-md rounded-2xl border border-violet-200 bg-white p-5 font-bold text-violet-800 shadow-sm" aria-live="polite">Los agentes están analizando y revisando la solicitud…</div> : null}
       </div>
       <form onSubmit={submit} className="border-t border-slate-200 bg-white p-5"><label htmlFor="agent-message" className="text-sm font-black text-slate-900">Solicitud para el Coordinador</label><textarea id="agent-message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={6000} rows={4} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-7 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Ejemplo: necesito una clase de 45 minutos para 40 estudiantes…" />{error ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{error}</p> : null}<div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-500">No incluyas nombres ni información personal de estudiantes.</p><button disabled={working || !message.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-blue-700 px-6 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{working ? "Coordinando…" : "Enviar al Coordinador →"}</button></div></form>
     </section>
+    {printMessage ? <section className="agent-print-sheet hidden" aria-hidden="true"><header className="agent-print-brand"><Image src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width={72} height={72} /><div><h1>Profe en Movimiento 5.0</h1><p>Resultado del Centro de Agentes IA</p></div></header><h2>{selectedTitle}</h2><AgentMessageContent content={printMessage.content} /><footer>El docente conserva la decisión final · {new Date().toLocaleDateString("es-EC")}</footer></section> : null}
   </div>;
 }
