@@ -68,6 +68,8 @@ Cada fila representa una actividad completa. Tiempo debe expresarse en minutos e
 
 Escribe todo el vocabulario en español. No utilices drill, dribbling, feedback, coach, sprint, rondo, máximo abreviado como max, ni formatos 4v4 o 3v1; usa ejercicio, bote, retroalimentación, entrenador, carrera rápida, conservación del balón, máximo, 4 contra 4 y 3 contra 1. No uses filas de espera: organiza estaciones, parejas o grupos con participación simultánea. No escribas el encabezado "Supuestos pedagógicos" ni inventes condiciones que el usuario no haya indicado.
 
+Comprueba matemáticamente toda organización de juegos reducidos. Un partido N contra N requiere 2 × N deportistas. Con 16 deportistas solo pueden realizarse dos partidos 4 contra 4 simultáneos, no cuatro. No confundas número de equipos con número de partidos o espacios de juego. Distribuye exactamente a todos los deportistas y no declares más partidos simultáneos que los permitidos por deportistas, balones y espacio. Explica la distribución con una igualdad breve cuando uses juegos, por ejemplo: "2 partidos × 8 deportistas = 16".
+
 En todos los productos elimina tiempos pasivos: explica la distribución exacta de todos los deportistas, la asignación real de materiales y la tarea motriz simultánea. Utiliza español deportivo natural, "retroalimentación" y expresiones como "4 contra 4". No inventes recursos, competencias ni instalaciones. La intensidad alta siempre será controlada; prioriza técnica, progresión, pausas, hidratación, distancia segura y recuperación. No diagnostiques lesiones. Entrega únicamente el producto final estructurado y una breve sección "Revisión del entrenador"; no expongas el proceso interno.`,
 });
 

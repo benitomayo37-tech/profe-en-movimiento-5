@@ -63,10 +63,12 @@ function printableResult(content: string, fallbackTitle: string) {
   }
 
   const firstHeading = lines.findIndex((line) => /^#\s+/.test(line.trim()));
-  const title = firstHeading >= 0 ? lines[firstHeading].replace(/^#\s+/, "").trim() : fallbackTitle.length > 90 ? "Plan de entrenamiento deportivo" : fallbackTitle;
-  const withoutTitle = firstHeading >= 0 ? lines.filter((_, index) => index !== firstHeading) : lines;
+  const productTitle = lines.findIndex((line) => /^(Microciclo|Mesociclo|Macrociclo|Sesión de entrenamiento)\b/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
+  const titleIndex = firstHeading >= 0 ? firstHeading : productTitle;
+  const title = titleIndex >= 0 ? lines[titleIndex].replace(/^#{1,6}\s+/, "").trim() : fallbackTitle.length > 90 ? "Plan de entrenamiento deportivo" : fallbackTitle;
+  const withoutTitle = titleIndex >= 0 ? lines.filter((_, index) => index !== titleIndex) : lines;
   const processStart = withoutTitle.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente|revisión del entrenador)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
-  const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
+  const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad|[-*]\s*supuesto(?:s| breve| pedagógico)?\b)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
   return { title, content: printableLines.join("\n").trim() };
 }
 
@@ -76,6 +78,11 @@ function AgentMessageContent({ content }: { content: string }) {
 
   for (let index = 0; index < lines.length;) {
     const line = lines[index];
+    if (/^\s*---+\s*$/.test(line)) {
+      blocks.push(<hr key={index} className="agent-section-divider" />);
+      index += 1;
+      continue;
+    }
     if (line.includes("|") && index + 1 < lines.length && isTableSeparator(lines[index + 1])) {
       const headers = tableCells(line);
       const isRubric = headers.some((header) => /Excelente\s*\(10\)/i.test(header));
