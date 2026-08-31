@@ -78,7 +78,7 @@ function printableHtml(content: string) {
 }
 
 function printAgentResult(content: string, title: string) {
-  const printWindow = window.open("", "_blank", "noopener,noreferrer");
+  const printWindow = window.open("", "_blank");
   if (!printWindow) return;
   printWindow.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>
     @page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#172033;font-size:11px;line-height:1.55;margin:0}.brand{display:flex;align-items:center;gap:12px;border-bottom:3px solid #173b78;padding-bottom:10px;margin-bottom:18px}.brand img{width:64px;height:64px;object-fit:contain}.brand h1{font-size:18px;margin:0;color:#0b2050}.brand p{margin:2px 0 0;color:#64748b}.space{height:9px}table{border-collapse:collapse;width:100%;margin:14px 0;font-size:9px;page-break-inside:auto}thead{display:table-header-group}tr{page-break-inside:avoid}th{background:#0b2050;color:#fff;font-weight:700}th,td{border:1px solid #64748b;padding:6px;vertical-align:top;text-align:left}.dua{border:1px solid;border-radius:8px;padding:7px 9px;margin:5px 0;font-weight:700}.agent-dua-compromiso{background:#dcfce7;border-color:#4ade80;color:#14532d}.agent-dua-representacion{background:#dbeafe;border-color:#60a5fa;color:#1e3a8a}.agent-dua-accion-expresion{background:#fae8ff;border-color:#e879f9;color:#701a75}.footer{border-top:1px solid #cbd5e1;margin-top:18px;padding-top:8px;text-align:center;color:#64748b;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
