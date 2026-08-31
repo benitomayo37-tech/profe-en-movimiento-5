@@ -1063,6 +1063,15 @@ html[data-theme] .dashboard-hero-admin-badge {
     font-size: 15px;
   }
 
+  .agent-print-sheet .text-sm {
+    font-size: 10.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .agent-print-sheet .leading-7 {
+    line-height: 1.5 !important;
+  }
+
   .agent-print-sheet .agent-rubric-wrap {
     overflow: visible !important;
     border-color: #64748b !important;
