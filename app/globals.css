@@ -803,6 +803,57 @@ html[data-theme="dark"] .agent-dua-accion-expresion {
   color: #fae8ff !important;
 }
 
+/* Tabla de rúbrica generada por el Centro de Agentes IA. */
+.agent-rubric-wrap {
+  border-color: #94a3b8 !important;
+  background-color: #ffffff !important;
+}
+
+.agent-rubric-table thead {
+  background-color: #0b2050 !important;
+  color: #ffffff !important;
+}
+
+.agent-rubric-table th,
+.agent-rubric-table td {
+  border: 1px solid #94a3b8 !important;
+}
+
+.agent-rubric-table tbody tr:nth-child(odd) td {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+}
+
+.agent-rubric-table tbody tr:nth-child(even) td {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+html[data-theme="dark"] .agent-rubric-wrap {
+  border-color: #475569 !important;
+  background-color: #0f1d2e !important;
+}
+
+html[data-theme="dark"] .agent-rubric-table thead {
+  background-color: #173b78 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .agent-rubric-table th,
+html[data-theme="dark"] .agent-rubric-table td {
+  border-color: #52657d !important;
+}
+
+html[data-theme="dark"] .agent-rubric-table tbody tr:nth-child(odd) td {
+  background-color: #0f1d2e !important;
+  color: #edf4ff !important;
+}
+
+html[data-theme="dark"] .agent-rubric-table tbody tr:nth-child(even) td {
+  background-color: #17263a !important;
+  color: #edf4ff !important;
+}
+
 html[data-theme="sepia"] :is(.bg-white, .bg-white\/95, .bg-white\/90, .bg-slate-50):not(.healthy-app):not(.healthy-app *) {
   background-color: #fffaf0 !important;
 }
