@@ -22,15 +22,15 @@ function duaLineClass(line: string): string {
   const normalized = line.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
   if (normalized.includes("compromiso") || normalized.includes("motivacion") || line.includes("🟢")) {
-    return "border-emerald-200 bg-emerald-50 text-emerald-900";
+    return "agent-dua-compromiso";
   }
 
   if (normalized.includes("representacion") || line.includes("🔵")) {
-    return "border-blue-200 bg-blue-50 text-blue-900";
+    return "agent-dua-representacion";
   }
 
   if (normalized.includes("accion y expresion") || line.includes("🟣")) {
-    return "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900";
+    return "agent-dua-accion-expresion";
   }
 
   return "";

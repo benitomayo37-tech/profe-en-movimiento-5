@@ -766,6 +766,43 @@ html[data-theme="dark"] :is(.text-violet-700, .text-violet-800, .text-violet-900
 html[data-theme="dark"] :is(.text-fuchsia-700, .text-fuchsia-800, .text-fuchsia-900, .text-fuchsia-950) { color: #f0abfc !important; }
 html[data-theme="dark"] :is(.text-rose-700, .text-rose-800, .text-rose-900, .text-rose-950) { color: #fda4af !important; }
 
+/* Colores semánticos DUA del Centro de Agentes IA. */
+.agent-dua-compromiso {
+  background-color: #dcfce7 !important;
+  border-color: #4ade80 !important;
+  color: #14532d !important;
+}
+
+.agent-dua-representacion {
+  background-color: #dbeafe !important;
+  border-color: #60a5fa !important;
+  color: #1e3a8a !important;
+}
+
+.agent-dua-accion-expresion {
+  background-color: #fae8ff !important;
+  border-color: #e879f9 !important;
+  color: #701a75 !important;
+}
+
+html[data-theme="dark"] .agent-dua-compromiso {
+  background-color: #123c2b !important;
+  border-color: #34d399 !important;
+  color: #d1fae5 !important;
+}
+
+html[data-theme="dark"] .agent-dua-representacion {
+  background-color: #102a56 !important;
+  border-color: #60a5fa !important;
+  color: #dbeafe !important;
+}
+
+html[data-theme="dark"] .agent-dua-accion-expresion {
+  background-color: #3b1746 !important;
+  border-color: #e879f9 !important;
+  color: #fae8ff !important;
+}
+
 html[data-theme="sepia"] :is(.bg-white, .bg-white\/95, .bg-white\/90, .bg-slate-50):not(.healthy-app):not(.healthy-app *) {
   background-color: #fffaf0 !important;
 }

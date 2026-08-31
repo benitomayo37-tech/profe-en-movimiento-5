@@ -9,7 +9,7 @@ Responde siempre en español claro y profesional para docentes de Educación Fí
 No inventes códigos curriculares ni afirmes haber guardado, enviado o publicado contenido.
 Respeta literalmente nivel, curso, destreza, duración, número de estudiantes y materiales indicados.
 Prioriza seguridad, inclusión, participación simultánea, pocos recursos y criterios observables.
-Cuando falte un dato indispensable, formula preguntas concretas antes de producir una solución definitiva.
+Trabaja con supuestos pedagógicos razonables cuando ya dispongas de tema, nivel o curso, duración, número de estudiantes y materiales. Declara brevemente esos supuestos sin convertirlos en un interrogatorio. Solo formula un máximo de dos preguntas cuando falte información verdaderamente imprescindible para la seguridad o resulte imposible cumplir la tarea.
 No incluyas nombres ni datos personales de estudiantes. La decisión final siempre pertenece al docente.
 `;
 
@@ -42,7 +42,7 @@ const coordinator = new Agent({
   name: "Coordinador Docente",
   model: process.env.OPENAI_AGENT_MODEL?.trim() || process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
   instructions: `${sharedRules}
-Eres el Coordinador de Agentes IA de Profe en Movimiento. Analiza la meta del docente y decide si necesitas consultar al especialista de Planificación, Evaluación o Inclusión. Puedes consultar más de uno si la tarea lo exige. Si la solicitud es ambigua, pregunta antes de delegar. Resume e integra los aportes, identifica qué especialista trabajó y termina con una breve sección "Revisión del docente" con los puntos que requieren confirmación. Al integrar DUA conserva exactamente las tres etiquetas con sus emojis: 🟢 Compromiso, 🔵 Representación y 🟣 Acción y Expresión. No menciones procesos internos ni llamadas de herramientas.`,
+Eres el Coordinador de Agentes IA de Profe en Movimiento. Analiza la meta del docente y decide si necesitas consultar al especialista de Planificación, Evaluación o Inclusión. Puedes consultar más de uno si la tarea lo exige. Cuando el docente proporcione tema, curso, duración, número de estudiantes y materiales, entrega directamente una propuesta completa; no respondas con listas de datos adicionales ni exijas una destreza curricular literal. Si no aporta una destreza, formula un objetivo operativo observable sin inventar códigos curriculares. Resume e integra los aportes, identifica qué especialista trabajó y termina con una breve sección "Revisión del docente" con los puntos que requieren confirmación. Para toda rúbrica usa 10 Excelente, 9 Bien, 8 Regular, 7 Aceptable y 5 Mejorable, salvo petición distinta, e indica la regla de tres cuando corresponda. Al integrar DUA conserva exactamente las tres etiquetas con sus emojis: 🟢 Compromiso, 🔵 Representación y 🟣 Acción y Expresión. No menciones procesos internos ni llamadas de herramientas.`,
   tools: [
     planningAgent.asTool({ toolName: "consultar_planificacion", toolDescription: "Diseña o revisa planificaciones, sesiones, metodologías, tiempos, logística y seguridad." }),
     assessmentAgent.asTool({ toolName: "consultar_evaluacion", toolDescription: "Diseña o revisa rúbricas, listas de cotejo, evaluaciones y exámenes." }),
@@ -50,17 +50,9 @@ Eres el Coordinador de Agentes IA de Profe en Movimiento. Analiza la meta del do
   ],
 });
 
-function detectSpecialist(text: string): AgentSpecialist {
-  const normalized = text.toLowerCase();
-  if (/dua|nee|inclusi|adaptaci|discapacidad|accesib/.test(normalized)) return "inclusion";
-  if (/rúbrica|rubrica|evaluaci|examen|lista de cotejo|instrumento|calific/.test(normalized)) return "assessment";
-  if (/planific|clase|sesión|sesion|metodolog|actividad|logística|logistica/.test(normalized)) return "planning";
-  return "coordinator";
-}
-
 export async function runTeacherCoordinator(input: string) {
   const result = await run(coordinator, input, { maxTurns: 5 });
   const output = typeof result.finalOutput === "string" ? result.finalOutput.trim() : "";
   if (!output) throw new Error("empty_agent_output");
-  return { output, specialist: detectSpecialist(`${input}\n${output}`) };
+  return { output, specialist: "coordinator" satisfies AgentSpecialist };
 }
