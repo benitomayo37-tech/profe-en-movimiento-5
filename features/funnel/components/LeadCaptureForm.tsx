@@ -9,7 +9,7 @@ import { initialLeadCaptureState } from "@/features/funnel/types";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-  return <button type="submit" disabled={pending} className="flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-black text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 disabled:cursor-wait disabled:opacity-60">{pending ? "Preparando tu kit…" : "Quiero mi kit gratuito →"}</button>;
+  return <button type="submit" disabled={pending} className="flex min-h-12 w-full items-center justify-center rounded-xl !bg-orange-500 px-5 py-3 font-black !text-white shadow-lg shadow-orange-500/30 hover:!bg-orange-600 disabled:cursor-wait disabled:opacity-60">{pending ? "Preparando tu kit…" : "Quiero mi kit gratuito →"}</button>;
 }
 
 export default function LeadCaptureForm({ source, utmSource, utmMedium, utmCampaign }: { source: string; utmSource: string; utmMedium: string; utmCampaign: string }) {
