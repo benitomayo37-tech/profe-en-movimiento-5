@@ -373,9 +373,5 @@ export function getStoreProductBySlug(slug: string) {
 }
 
 export function formatStorePrice(price: number) {
-  return new Intl.NumberFormat("es-EC", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(price);
+  return `$${price.toFixed(2)}`;
 }

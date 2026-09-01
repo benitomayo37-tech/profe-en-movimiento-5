@@ -805,6 +805,11 @@ html[data-theme="dark"] :is(.text-rose-700, .text-rose-800, .text-rose-900, .tex
   color: #92400e !important;
 }
 
+.store-status-available {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
 html[data-theme="dark"] .agent-dua-compromiso {
   background-color: #123c2b !important;
   border-color: #34d399 !important;
