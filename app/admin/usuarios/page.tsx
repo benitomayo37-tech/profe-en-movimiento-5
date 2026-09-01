@@ -10,14 +10,14 @@ import { getAuthAccess } from "@/features/auth/server/access";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Usuarios y suscripciones | Profe en Movimiento" };
 
-function MetricCard({ label, value, detail, tone = "blue" }: { label: string; value: number; detail: string; tone?: "blue" | "orange" | "emerald" | "violet" }) {
+function MetricCard({ label, value, detail, tone = "blue" }: { label: string; value: number | string; detail: string; tone?: "blue" | "orange" | "emerald" | "violet" }) {
   const tones = {
     blue: "border-blue-200 bg-blue-50 text-blue-800",
     orange: "border-orange-200 bg-orange-50 text-orange-800",
     emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
     violet: "border-violet-200 bg-violet-50 text-violet-800",
   };
-  return <article className={`rounded-3xl border p-6 shadow-sm ${tones[tone]}`}><p className="text-xs font-black uppercase tracking-[.16em]">{label}</p><p className="mt-3 text-4xl font-black text-slate-950">{value.toLocaleString("es")}</p><p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{detail}</p></article>;
+  return <article className={`rounded-3xl border p-6 shadow-sm ${tones[tone]}`}><p className="text-xs font-black uppercase tracking-[.16em]">{label}</p><p className="mt-3 text-4xl font-black text-slate-950">{typeof value === "number" ? value.toLocaleString("es") : value}</p><p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{detail}</p></article>;
 }
 
 const agentFeatureLabels: Record<string, string> = {
@@ -98,6 +98,16 @@ export default async function AdminUsersPage() {
             <div className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="border-b border-slate-200 px-6 py-4"><h3 className="font-black text-slate-950">Distribución por función</h3></div>
               {metrics.agentFeatureUsage.length ? <div className="grid gap-px bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">{metrics.agentFeatureUsage.map((item) => <article key={item.feature} className="bg-white p-5"><p className="text-xs font-black uppercase tracking-wide text-slate-500">{agentFeatureLabels[item.feature] ?? item.feature}</p><p className="mt-2 text-3xl font-black text-slate-950">{item.runs.toLocaleString("es")}</p></article>)}</div> : <p className="p-6 text-sm text-slate-500">Todavía no hay ejecuciones clasificadas este mes.</p>}
+            </div>
+          </section>
+
+          <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-orange-600">Embudo de captación</p><h2 className="mt-2 text-3xl font-black text-slate-950">Kit gratuito y registros</h2><p className="mt-2 text-sm text-slate-500">Contactos captados desde la landing de la clase de 45 minutos.</p></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              <MetricCard label="Leads captados" value={metrics.funnelLeads} detail="Contactos únicos que solicitaron el recurso." tone="orange" />
+              <MetricCard label="Leads este mes" value={metrics.funnelLeadsThisMonth} detail="Nuevos contactos registrados durante el mes actual." tone="blue" />
+              <MetricCard label="Cuentas creadas" value={metrics.funnelConvertedLeads} detail="Leads vinculados posteriormente con una cuenta." tone="emerald" />
+              <MetricCard label="Conversión a cuenta" value={`${metrics.funnelConversionRate}%`} detail="Porcentaje de leads que crearon una cuenta Free." tone="violet" />
             </div>
           </section>
 

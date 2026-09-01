@@ -48,6 +48,7 @@ export default function PrivacyPage() {
           content: (
             <ul className={listClassName}>
               <li>Nombre, correo electrónico e identificador de cuenta.</li>
+              <li>Perfil profesional y procedencia de campaña cuando solicitas un recurso gratuito.</li>
               <li>Estado del plan y datos técnicos necesarios para habilitar accesos.</li>
               <li>
                 Identificadores y eventos comerciales comunicados por Hotmart, sin
@@ -80,6 +81,7 @@ export default function PrivacyPage() {
               <p>Utilizamos los datos únicamente para:</p>
               <ul className={listClassName}>
                 <li>crear y proteger tu cuenta;</li>
+                <li>entregar recursos gratuitos solicitados y, con tu consentimiento, enviar contenidos educativos y comunicaciones relacionadas;</li>
                 <li>prestar las herramientas gratuitas y Pro contratadas;</li>
                 <li>procesar la activación, renovación o cancelación del Plan Pro;</li>
                 <li>generar los materiales que solicites mediante inteligencia artificial;</li>

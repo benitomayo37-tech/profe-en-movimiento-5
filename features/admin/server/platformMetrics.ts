@@ -23,6 +23,10 @@ export interface PlatformMetrics {
   activeAgentUsers: number;
   agentUsersAtLimit: number;
   agentFeatureUsage: Array<{ feature: string; runs: number }>;
+  funnelLeads: number;
+  funnelLeadsThisMonth: number;
+  funnelConvertedLeads: number;
+  funnelConversionRate: number;
   generatedAt: string;
 }
 
@@ -60,6 +64,9 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     inactiveSubscriptions,
     agentFeatureResult,
     agentUsageResult,
+    funnelLeads,
+    funnelLeadsThisMonth,
+    funnelConvertedLeads,
   ] = await Promise.all([
     getCount(admin.from("profiles").select("id", { count: "exact", head: true })),
     getCount(admin.from("student_accounts").select("id", { count: "exact", head: true }).eq("active", true)),
@@ -75,6 +82,9 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     getCount(admin.from("hotmart_entitlements").select("entitlement_key", { count: "exact", head: true }).eq("active", false)),
     admin.from("monthly_agent_feature_usage").select("user_id,feature_key,plan_tier,run_count").eq("usage_month", usageMonth),
     admin.from("monthly_agent_usage").select("user_id,run_count").eq("usage_month", usageMonth),
+    getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true })),
+    getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).gte("created_at", since)),
+    getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("converted_at", "is", null)),
   ]);
 
   if (agentFeatureResult.error) throw new Error(agentFeatureResult.error.message);
@@ -116,6 +126,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     activeAgentUsers: usageRows.filter((row) => row.run_count > 0).length,
     agentUsersAtLimit,
     agentFeatureUsage: [...featureTotals.entries()].map(([feature, runs]) => ({ feature, runs })).sort((a, b) => b.runs - a.runs),
+    funnelLeads,
+    funnelLeadsThisMonth,
+    funnelConvertedLeads,
+    funnelConversionRate: funnelLeads ? Math.round((funnelConvertedLeads / funnelLeads) * 100) : 0,
     generatedAt: new Date().toISOString(),
   };
 }
