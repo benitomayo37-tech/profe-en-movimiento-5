@@ -20,6 +20,17 @@ function MetricCard({ label, value, detail, tone = "blue" }: { label: string; va
   return <article className={`rounded-3xl border p-6 shadow-sm ${tones[tone]}`}><p className="text-xs font-black uppercase tracking-[.16em]">{label}</p><p className="mt-3 text-4xl font-black text-slate-950">{value.toLocaleString("es")}</p><p className="mt-2 text-sm font-semibold leading-6 text-slate-600">{detail}</p></article>;
 }
 
+const agentFeatureLabels: Record<string, string> = {
+  general: "Coordinación general",
+  planning: "Planificación",
+  assessment: "Evaluación",
+  inclusion: "Inclusión y DUA",
+  training_session: "Sesión de entrenamiento",
+  microcycle: "Microciclo",
+  mesocycle: "Mesociclo",
+  macrocycle: "Macrociclo",
+};
+
 export default async function AdminUsersPage() {
   const access = await getAuthAccess();
   if (!access.authenticated) redirect("/login?next=/admin/usuarios");
@@ -71,6 +82,22 @@ export default async function AdminUsersPage() {
               <MetricCard label="Sin modalidad histórica" value={metrics.uncategorizedSubscriptions} detail="Accesos anteriores sin código de oferta registrado." tone="violet" />
               <MetricCard label="Pendientes de registro" value={metrics.pendingRegistration} detail="Compradores que aún no crearon una cuenta con el mismo correo." tone="orange" />
               <MetricCard label="Inactivas" value={metrics.inactiveSubscriptions} detail="Suscripciones canceladas, vencidas o reembolsadas." tone="blue" />
+            </div>
+          </section>
+
+          <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-violet-700">Agentes IA</p><h2 className="mt-2 text-3xl font-black text-slate-950">Uso mensual y conversión</h2><p className="mt-2 text-sm text-slate-500">Ejecuciones registradas desde el primer día de esta medición avanzada.</p></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <MetricCard label="Ejecuciones del mes" value={metrics.agentRunsThisMonth} detail="Solicitudes completadas por todos los agentes." tone="violet" />
+              <MetricCard label="Usuarios activos" value={metrics.activeAgentUsers} detail="Cuentas que utilizaron Agentes IA este mes." tone="emerald" />
+              <MetricCard label="Usuarios en el límite" value={metrics.agentUsersAtLimit} detail="Cuentas que alcanzaron su cuota mensual." tone="orange" />
+              <MetricCard label="Uso Free" value={metrics.agentFreeRuns} detail="Ejecuciones realizadas desde cuentas Free." tone="blue" />
+              <MetricCard label="Uso Pro" value={metrics.agentProRuns} detail="Ejecuciones realizadas desde cuentas Pro." tone="orange" />
+              <MetricCard label="Uso administrativo" value={metrics.agentAdminRuns} detail="Ejecuciones de cuentas administradoras." tone="violet" />
+            </div>
+            <div className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="border-b border-slate-200 px-6 py-4"><h3 className="font-black text-slate-950">Distribución por función</h3></div>
+              {metrics.agentFeatureUsage.length ? <div className="grid gap-px bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">{metrics.agentFeatureUsage.map((item) => <article key={item.feature} className="bg-white p-5"><p className="text-xs font-black uppercase tracking-wide text-slate-500">{agentFeatureLabels[item.feature] ?? item.feature}</p><p className="mt-2 text-3xl font-black text-slate-950">{item.runs.toLocaleString("es")}</p></article>)}</div> : <p className="p-6 text-sm text-slate-500">Todavía no hay ejecuciones clasificadas este mes.</p>}
             </div>
           </section>
 

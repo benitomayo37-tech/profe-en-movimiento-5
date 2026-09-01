@@ -6,16 +6,22 @@ import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 const MAX_MESSAGE_LENGTH = 6000;
+type AgentFeature = "general" | "planning" | "assessment" | "inclusion" | "training_session" | "microcycle" | "mesocycle" | "macrocycle";
 
 function normalized(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-function requestsProTrainingPlan(message: string) {
+function classifyAgentFeature(message: string): AgentFeature {
   const value = normalized(message);
-  return /\b(?:mesociclo|macrociclo)\b/.test(value)
-    || /\b(?:plan|planificacion|programa|ciclo)\b.{0,100}\b(?:semanas?|temporada)\b/.test(value)
-    || /\bperiodo\s+(?:preparatorio|competitivo|de\s+transicion)\b/.test(value);
+  if (/\bmacrociclo\b/.test(value) || /\b(?:temporada|periodo\s+(?:preparatorio|competitivo|de\s+transicion))\b/.test(value)) return "macrocycle";
+  if (/\bmesociclo\b/.test(value) || /\b(?:plan|planificacion|programa|ciclo)\b.{0,100}\bsemanas?\b/.test(value)) return "mesocycle";
+  if (/\bmicrociclo\b/.test(value)) return "microcycle";
+  if (/\b(?:dua|nee|inclusion|inclusiv|adaptacion)\b/.test(value)) return "inclusion";
+  if (/\b(?:rubrica|evaluacion|examen|lista\s+de\s+cotejo|instrumento\s+de\s+evaluacion)\b/.test(value)) return "assessment";
+  if (/\b(?:sesion\s+de\s+entrenamiento|entrenamiento\s+deportivo|entrenar)\b/.test(value)) return "training_session";
+  if (/\b(?:clase|planificacion|planificar|metodologia)\b/.test(value)) return "planning";
+  return "general";
 }
 
 function response(message: string, status: number, extra: Record<string, unknown> = {}) {
@@ -41,13 +47,23 @@ export async function POST(request: Request) {
     if (!data) return response("La conversación no existe o no está disponible.", 404);
     ownedConversation = data;
   }
-  if (!access.hasProAccess && requestsProTrainingPlan(`${ownedConversation?.title ?? ""}\n${message}`)) {
+  const feature = classifyAgentFeature(`${ownedConversation?.title ?? ""}\n${message}`);
+  if (!access.hasProAccess && (feature === "mesocycle" || feature === "macrocycle")) {
     return response("Los mesociclos y macrociclos están disponibles con el Plan Pro.", 403, { code: "agents_pro_required", upgradeUrl: "/store/plan-pro-mensual" });
   }
 
-  const { data: usage, error: usageError } = await supabase.rpc("consume_agent_run");
+  if (!access.hasProAccess && requestedConversationId) {
+    const { count } = await supabase.from("ai_agent_messages").select("id", { count: "exact", head: true }).eq("conversation_id", requestedConversationId).eq("user_id", access.userId).eq("role", "user");
+    if ((count ?? 0) >= 2) return response("El Plan Free permite una corrección por resultado. Activa Pro para continuar revisándolo.", 403, { code: "agents_correction_limit", upgradeUrl: "/store/plan-pro-mensual" });
+  }
+
+  const { data: usage, error: usageError } = await supabase.rpc("consume_agent_feature_run", { p_feature_key: feature });
   if (usageError) return response("No se pudo comprobar el límite de uso.", 500);
-  if (usage?.allowed !== true) return response("Alcanzaste el límite mensual del Centro de Agentes IA.", 429, { limit: usage?.limit ?? null, remaining: 0 });
+  if (usage?.allowed !== true) {
+    if (usage?.reason === "microcycle_limit") return response("El Plan Free incluye un microciclo de prueba al mes. Activa Pro para crear más.", 403, { code: "agents_microcycle_limit", upgradeUrl: "/store/plan-pro-mensual", remaining: usage?.remaining ?? null });
+    if (usage?.reason === "pro_required") return response("Esta función está disponible con el Plan Pro.", 403, { code: "agents_pro_required", upgradeUrl: "/store/plan-pro-mensual", remaining: usage?.remaining ?? null });
+    return response("Alcanzaste el límite mensual del Centro de Agentes IA.", 429, { limit: usage?.limit ?? null, remaining: 0 });
+  }
 
   let conversationId = requestedConversationId;
   try {
@@ -70,10 +86,10 @@ export async function POST(request: Request) {
     if (assistantError) throw new Error("assistant_message_failed");
     await supabase.from("ai_agent_conversations").update({ last_specialist: generated.specialist }).eq("id", conversationId).eq("user_id", access.userId);
 
-    return response("Respuesta generada.", 200, { conversationId, userMessage, assistantMessage, remaining: usage?.remaining ?? null, limit: usage?.limit ?? null });
+    return response("Respuesta generada.", 200, { conversationId, userMessage, assistantMessage, remaining: usage?.remaining ?? null, limit: usage?.limit ?? null, feature });
   } catch (error) {
     console.error("[Agentes IA] No se pudo completar la ejecución.", error);
-    await supabase.rpc("release_agent_run");
+    await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
     return response("No se pudo completar la solicitud. Inténtalo nuevamente.", 500);
   }
 }
