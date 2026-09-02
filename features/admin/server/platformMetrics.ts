@@ -34,6 +34,7 @@ export interface PlatformMetrics {
   funnelEmailsSent: number;
   funnelEmailFailures: number;
   funnelUnsubscribed: number;
+  funnelEmailAutomationConfigured: boolean;
   generatedAt: string;
 }
 
@@ -158,6 +159,11 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelEmailsSent,
     funnelEmailFailures,
     funnelUnsubscribed,
+    funnelEmailAutomationConfigured: Boolean(
+      process.env.BREVO_API_KEY?.trim()
+      && process.env.BREVO_SENDER_EMAIL?.trim()
+      && process.env.CRON_SECRET?.trim()
+    ),
     generatedAt: new Date().toISOString(),
   };
 }

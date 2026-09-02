@@ -115,6 +115,7 @@ export default async function AdminUsersPage() {
               <MetricCard label="Correos enviados" value={metrics.funnelEmailsSent} detail="Mensajes de la secuencia aceptados por Brevo." tone="blue" />
               <MetricCard label="Envíos pendientes de reintento" value={metrics.funnelEmailFailures} detail="Mensajes que no pudieron enviarse y volverán a intentarse." tone="orange" />
               <MetricCard label="Suscripciones canceladas" value={metrics.funnelUnsubscribed} detail="Contactos que retiraron su autorización para esta secuencia." tone="violet" />
+              <MetricCard label="Automatización de correo" value={metrics.funnelEmailAutomationConfigured ? "Configurada" : "Incompleta"} detail="Estado de las variables privadas requeridas en este despliegue." tone={metrics.funnelEmailAutomationConfigured ? "emerald" : "orange"} />
             </div>
           </section>
 

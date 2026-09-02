@@ -87,7 +87,14 @@ export async function processDueMarketingEmails(limit = 25) {
   const admin = createAdminClient();
   const apiKey = process.env.BREVO_API_KEY?.trim();
   const senderEmail = process.env.BREVO_SENDER_EMAIL?.trim();
-  if (!admin || !apiKey || !senderEmail) return { processed: 0, sent: 0, skipped: 0, failed: 0 };
+  if (!admin || !apiKey || !senderEmail) {
+    console.error("[Embudo] Configuración de correo incompleta.", {
+      supabaseAdmin: Boolean(admin),
+      brevoApiKey: Boolean(apiKey),
+      brevoSenderEmail: Boolean(senderEmail),
+    });
+    return { processed: 0, sent: 0, skipped: 0, failed: 0 };
+  }
 
   const { data: claims, error: claimError } = await admin.rpc("claim_due_marketing_emails", { p_limit: limit });
   if (claimError) throw new Error(claimError.message);
