@@ -66,7 +66,9 @@ export async function enqueueLeadEmailSequence(leadId: string) {
   if (!admin) return;
   const now = Date.now();
   const rows: Array<{ lead_id: string; sequence_key: SequenceKey; scheduled_for: string }> = [
-    { lead_id: leadId, sequence_key: "welcome", scheduled_for: new Date(now).toISOString() },
+    // Un margen breve evita que una diferencia de reloj entre Vercel y Supabase
+    // haga que el correo inmediato parezca estar programado en el futuro.
+    { lead_id: leadId, sequence_key: "welcome", scheduled_for: new Date(now - 60_000).toISOString() },
     { lead_id: leadId, sequence_key: "agents_1d", scheduled_for: new Date(now + DAY_MS).toISOString() },
     { lead_id: leadId, sequence_key: "academy_3d", scheduled_for: new Date(now + 3 * DAY_MS).toISOString() },
     { lead_id: leadId, sequence_key: "pro_7d", scheduled_for: new Date(now + 7 * DAY_MS).toISOString() },
@@ -150,4 +152,3 @@ export async function processDueMarketingEmails(limit = 25) {
 
   return { processed: ids.length, sent, skipped, failed };
 }
-
