@@ -88,6 +88,14 @@ export async function signUpAction(
   const supabase = await createClient();
   if (!supabase) return configurationError();
 
+  const { data: currentClaims } = await supabase.auth.getClaims();
+  if (typeof currentClaims?.claims?.sub === "string") {
+    return {
+      status: "error",
+      message: "Ya existe una sesión abierta. Ciérrala antes de crear una cuenta diferente.",
+    };
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -200,4 +208,10 @@ export async function signOutAction() {
   const supabase = await createClient();
   if (supabase) await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function signOutToRegisterAction() {
+  const supabase = await createClient();
+  if (supabase) await supabase.auth.signOut();
+  redirect("/registro");
 }

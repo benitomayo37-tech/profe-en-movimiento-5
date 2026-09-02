@@ -6,17 +6,18 @@ import { useFormStatus } from "react-dom";
 
 import { captureFreeResourceLead } from "@/features/funnel/server/actions";
 import { initialLeadCaptureState } from "@/features/funnel/types";
+import { signOutToRegisterAction } from "@/features/auth/server/actions";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return <button type="submit" disabled={pending} className="flex min-h-12 w-full items-center justify-center rounded-xl !bg-orange-500 px-5 py-3 font-black !text-white shadow-lg shadow-orange-500/30 hover:!bg-orange-600 disabled:cursor-wait disabled:opacity-60">{pending ? "Preparando tu kit…" : "Quiero mi kit gratuito →"}</button>;
 }
 
-export default function LeadCaptureForm({ source, utmSource, utmMedium, utmCampaign }: { source: string; utmSource: string; utmMedium: string; utmCampaign: string }) {
+export default function LeadCaptureForm({ source, utmSource, utmMedium, utmCampaign, authenticated, currentEmail }: { source: string; utmSource: string; utmMedium: string; utmCampaign: string; authenticated: boolean; currentEmail: string | null }) {
   const [state, action] = useActionState(captureFreeResourceLead, initialLeadCaptureState);
 
   if (state.status === "success") {
-    return <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-950"><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-700">Entrega inmediata</p><h2 className="mt-2 text-2xl font-black">¡Tu kit está listo!</h2><p className="mt-3 leading-7">Descárgalo ahora y crea después una versión adaptada a tu curso con los Agentes IA.</p><a href={state.downloadUrl ?? "/downloads/kit-clase-45-minutos-4-balones.pdf"} className="mt-5 flex min-h-12 items-center justify-center rounded-xl bg-blue-700 px-5 py-3 font-black !text-white hover:bg-blue-800">Descargar el kit en PDF ↓</a><Link href="/registro" className="mt-3 flex min-h-12 items-center justify-center rounded-xl border border-blue-300 bg-white px-5 py-3 text-center font-black text-blue-800">Crear mi cuenta Free →</Link><p className="mt-3 text-xs leading-5 text-emerald-800">La cuenta Free incluye 3 ejecuciones mensuales en el Centro de Agentes IA.</p></div>;
+    return <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 text-emerald-950"><p className="text-xs font-black uppercase tracking-[.16em] text-emerald-700">Entrega inmediata</p><h2 className="mt-2 text-2xl font-black">¡Tu kit está listo!</h2><p className="mt-3 leading-7">Descárgalo ahora y crea después una versión adaptada a tu curso con los Agentes IA.</p><a href={state.downloadUrl ?? "/downloads/kit-clase-45-minutos-4-balones.pdf"} className="mt-5 flex min-h-12 items-center justify-center rounded-xl bg-blue-700 px-5 py-3 font-black !text-white hover:bg-blue-800">Descargar el kit en PDF ↓</a>{authenticated ? <><div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950"><strong>Ya tienes una sesión abierta{currentEmail ? ` con ${currentEmail}` : ""}.</strong> Para crear otra cuenta, primero debes cerrar esta sesión.</div><form action={signOutToRegisterAction}><button type="submit" className="mt-3 flex min-h-12 w-full items-center justify-center rounded-xl border border-blue-300 bg-white px-5 py-3 text-center font-black text-blue-800">Cerrar sesión y crear otra cuenta →</button></form></> : <Link href="/registro" className="mt-3 flex min-h-12 items-center justify-center rounded-xl border border-blue-300 bg-white px-5 py-3 text-center font-black text-blue-800">Crear mi cuenta Free →</Link>}<p className="mt-3 text-xs leading-5 text-emerald-800">La cuenta Free incluye 3 ejecuciones mensuales en el Centro de Agentes IA.</p></div>;
   }
 
   const inputClass = "mt-2 min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-slate-950 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
