@@ -108,6 +108,10 @@ export default async function AdminUsersPage() {
               <MetricCard label="Leads este mes" value={metrics.funnelLeadsThisMonth} detail="Nuevos contactos registrados durante el mes actual." tone="blue" />
               <MetricCard label="Cuentas creadas" value={metrics.funnelConvertedLeads} detail="Leads vinculados posteriormente con una cuenta." tone="emerald" />
               <MetricCard label="Conversión a cuenta" value={`${metrics.funnelConversionRate}%`} detail="Porcentaje de leads que crearon una cuenta Free." tone="violet" />
+              <MetricCard label="Kits descargados" value={metrics.funnelKitDownloads} detail="Descargas confirmadas mediante el enlace medible." tone="blue" />
+              <MetricCard label="Activados en Agentes IA" value={metrics.funnelAgentActivations} detail="Leads convertidos que realizaron su primera solicitud." tone="orange" />
+              <MetricCard label="Iniciaron Academia" value={metrics.funnelAcademyActivations} detail="Leads convertidos con progreso en un curso." tone="violet" />
+              <MetricCard label="Ruta completada" value={metrics.funnelCompletedActivations} detail="Personas que completaron los tres pasos de activación." tone="emerald" />
             </div>
           </section>
 

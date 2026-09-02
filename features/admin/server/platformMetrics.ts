@@ -27,6 +27,10 @@ export interface PlatformMetrics {
   funnelLeadsThisMonth: number;
   funnelConvertedLeads: number;
   funnelConversionRate: number;
+  funnelKitDownloads: number;
+  funnelAgentActivations: number;
+  funnelAcademyActivations: number;
+  funnelCompletedActivations: number;
   generatedAt: string;
 }
 
@@ -67,6 +71,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelLeads,
     funnelLeadsThisMonth,
     funnelConvertedLeads,
+    funnelKitDownloads,
+    funnelAgentActivations,
+    funnelAcademyActivations,
+    funnelCompletedActivations,
   ] = await Promise.all([
     getCount(admin.from("profiles").select("id", { count: "exact", head: true })),
     getCount(admin.from("student_accounts").select("id", { count: "exact", head: true }).eq("active", true)),
@@ -85,6 +93,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true })),
     getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).gte("created_at", since)),
     getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("converted_at", "is", null)),
+    getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("downloaded_at", "is", null)),
+    getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("agents_first_run_at", "is", null)),
+    getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("academy_started_at", "is", null)),
+    getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("completed_at", "is", null)),
   ]);
 
   if (agentFeatureResult.error) throw new Error(agentFeatureResult.error.message);
@@ -130,6 +142,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelLeadsThisMonth,
     funnelConvertedLeads,
     funnelConversionRate: funnelLeads ? Math.round((funnelConvertedLeads / funnelLeads) * 100) : 0,
+    funnelKitDownloads,
+    funnelAgentActivations,
+    funnelAcademyActivations,
+    funnelCompletedActivations,
     generatedAt: new Date().toISOString(),
   };
 }

@@ -33,7 +33,7 @@ export async function captureFreeResourceLead(_previous: LeadCaptureState, formD
   if (!admin) return { status: "error", message: "El registro no está disponible en este momento." };
 
   const source = cleanTrackingValue(value(formData, "source"), "direct") ?? "direct";
-  const { error } = await admin.from("marketing_leads").upsert({
+  const { data: lead, error } = await admin.from("marketing_leads").upsert({
     full_name: fullName,
     email,
     profile_type: profileType,
@@ -44,7 +44,7 @@ export async function captureFreeResourceLead(_previous: LeadCaptureState, formD
     utm_campaign: cleanTrackingValue(value(formData, "utmCampaign")),
     consent_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "email,resource_key" });
+  }, { onConflict: "email,resource_key" }).select("download_token").single();
 
   if (error) {
     console.error("[Embudo] No se pudo registrar el lead.", error);
@@ -52,5 +52,9 @@ export async function captureFreeResourceLead(_previous: LeadCaptureState, formD
   }
 
   await admin.rpc("link_existing_marketing_lead", { p_email: email });
-  return { status: "success", message: "Tu recurso está listo." };
+  return {
+    status: "success",
+    message: "Tu recurso está listo.",
+    downloadUrl: `/api/funnel/download/${lead.download_token}`,
+  };
 }
