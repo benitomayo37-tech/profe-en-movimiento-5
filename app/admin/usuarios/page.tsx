@@ -112,6 +112,9 @@ export default async function AdminUsersPage() {
               <MetricCard label="Activados en Agentes IA" value={metrics.funnelAgentActivations} detail="Leads convertidos que realizaron su primera solicitud." tone="orange" />
               <MetricCard label="Iniciaron Academia" value={metrics.funnelAcademyActivations} detail="Leads convertidos con progreso en un curso." tone="violet" />
               <MetricCard label="Ruta completada" value={metrics.funnelCompletedActivations} detail="Personas que completaron los tres pasos de activación." tone="emerald" />
+              <MetricCard label="Correos enviados" value={metrics.funnelEmailsSent} detail="Mensajes de la secuencia aceptados por Brevo." tone="blue" />
+              <MetricCard label="Envíos pendientes de reintento" value={metrics.funnelEmailFailures} detail="Mensajes que no pudieron enviarse y volverán a intentarse." tone="orange" />
+              <MetricCard label="Suscripciones canceladas" value={metrics.funnelUnsubscribed} detail="Contactos que retiraron su autorización para esta secuencia." tone="violet" />
             </div>
           </section>
 

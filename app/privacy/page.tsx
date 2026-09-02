@@ -17,7 +17,7 @@ export default function PrivacyPage() {
       eyebrow="Protección de datos"
       title="Política de privacidad"
       description="Explicamos qué información utilizamos, para qué la necesitamos y cómo puedes ejercer tus derechos sobre tus datos personales."
-      updatedAt="26 de agosto de 2026"
+      updatedAt="2 de septiembre de 2026"
       sections={[
         {
           id: "responsable",
@@ -114,6 +114,7 @@ export default function PrivacyPage() {
                 <li><strong>Vercel:</strong> alojamiento, distribución y registros técnicos.</li>
                 <li><strong>OpenAI:</strong> procesamiento de las solicitudes dirigidas a las herramientas de IA.</li>
                 <li><strong>Hotmart:</strong> checkout, cobros, suscripciones, reembolsos y eventos de pago.</li>
+                <li><strong>Brevo:</strong> envío y seguimiento técnico de los correos que autorizas recibir.</li>
               </ul>
               <p>
                 Estos servicios pueden procesar datos fuera de Ecuador. Aplicamos las
@@ -151,6 +152,9 @@ export default function PrivacyPage() {
                 Puedes solicitar acceso, rectificación y actualización, eliminación,
                 oposición, suspensión o portabilidad de tus datos cuando corresponda,
                 además de retirar un consentimiento previamente otorgado.
+              </p>
+              <p>
+                Cada secuencia de correo relacionada con recursos gratuitos incluye un enlace para retirar tu autorización sin eliminar tu cuenta ni limitar el acceso a la plataforma.
               </p>
               <p>
                 Envía tu solicitud desde el correo asociado a tu cuenta, indicando el

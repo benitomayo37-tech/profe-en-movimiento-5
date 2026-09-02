@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { LeadCaptureState } from "@/features/funnel/types";
+import { enqueueLeadEmailSequence, processDueMarketingEmails } from "@/features/funnel/server/emailSequence";
 
 const RESOURCE_KEY = "kit-clase-45-minutos-4-balones";
 
@@ -44,7 +45,7 @@ export async function captureFreeResourceLead(_previous: LeadCaptureState, formD
     utm_campaign: cleanTrackingValue(value(formData, "utmCampaign")),
     consent_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "email,resource_key" }).select("download_token").single();
+  }, { onConflict: "email,resource_key" }).select("id,download_token").single();
 
   if (error) {
     console.error("[Embudo] No se pudo registrar el lead.", error);
@@ -52,6 +53,12 @@ export async function captureFreeResourceLead(_previous: LeadCaptureState, formD
   }
 
   await admin.rpc("link_existing_marketing_lead", { p_email: email });
+  await enqueueLeadEmailSequence(lead.id);
+  try {
+    await processDueMarketingEmails(10);
+  } catch (emailError) {
+    console.error("[Embudo] El kit quedó disponible, pero el correo inmediato no pudo procesarse.", emailError);
+  }
   return {
     status: "success",
     message: "Tu recurso está listo.",

@@ -31,6 +31,9 @@ export interface PlatformMetrics {
   funnelAgentActivations: number;
   funnelAcademyActivations: number;
   funnelCompletedActivations: number;
+  funnelEmailsSent: number;
+  funnelEmailFailures: number;
+  funnelUnsubscribed: number;
   generatedAt: string;
 }
 
@@ -75,6 +78,9 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelAgentActivations,
     funnelAcademyActivations,
     funnelCompletedActivations,
+    funnelEmailsSent,
+    funnelEmailFailures,
+    funnelUnsubscribed,
   ] = await Promise.all([
     getCount(admin.from("profiles").select("id", { count: "exact", head: true })),
     getCount(admin.from("student_accounts").select("id", { count: "exact", head: true }).eq("active", true)),
@@ -97,6 +103,9 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("agents_first_run_at", "is", null)),
     getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("academy_started_at", "is", null)),
     getCount(admin.from("lead_activation_progress").select("user_id", { count: "exact", head: true }).not("completed_at", "is", null)),
+    getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "sent")),
+    getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "failed")),
+    getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("unsubscribed_at", "is", null)),
   ]);
 
   if (agentFeatureResult.error) throw new Error(agentFeatureResult.error.message);
@@ -146,6 +155,9 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelAgentActivations,
     funnelAcademyActivations,
     funnelCompletedActivations,
+    funnelEmailsSent,
+    funnelEmailFailures,
+    funnelUnsubscribed,
     generatedAt: new Date().toISOString(),
   };
 }
