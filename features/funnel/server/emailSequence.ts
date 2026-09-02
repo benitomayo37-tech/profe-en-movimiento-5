@@ -22,7 +22,7 @@ function firstName(fullName: string) {
   return fullName.trim().split(/\s+/)[0] || "profe";
 }
 
-function emailTemplate(sequence: SequenceKey, name: string, downloadToken: string, unsubscribeToken: string) {
+function emailTemplate(sequence: SequenceKey, name: string, downloadToken: string, unsubscribeToken: string, hasAccount: boolean) {
   const safeName = escapeHtml(firstName(name));
   const unsubscribeUrl = `${SITE_URL}/correo/cancelar/${unsubscribeToken}`;
   const common = {
@@ -35,24 +35,26 @@ function emailTemplate(sequence: SequenceKey, name: string, downloadToken: strin
     },
     agents_1d: {
       subject: "Adapta el kit a tu curso con Agentes IA",
-      heading: "Ahora conviértelo en una clase hecha para ti",
-      body: `Hola ${safeName}, indica el curso, el número de estudiantes, los materiales y tu objetivo. El Coordinador Docente te ayudará a crear una versión ajustada a tu realidad.`,
-      action: "Abrir Agentes IA",
-      href: `${SITE_URL}/agentes`,
+      heading: hasAccount ? "Ahora conviértelo en una clase hecha para ti" : "Crea tu cuenta Free y adapta la clase a tu realidad",
+      body: hasAccount
+        ? `Hola ${safeName}, indica el curso, el número de estudiantes, los materiales y tu objetivo. El Coordinador Docente te ayudará a crear una versión ajustada a tu realidad.`
+        : `Hola ${safeName}, crea tu cuenta gratuita y utiliza Agentes IA para adaptar el kit al curso, número de estudiantes, materiales y objetivo que necesitas.`,
+      action: hasAccount ? "Abrir Agentes IA" : "Crear mi cuenta Free",
+      href: hasAccount ? `${SITE_URL}/agentes` : `${SITE_URL}/registro`,
     },
     academy_3d: {
       subject: "Da el siguiente paso en la Academia",
       heading: "Formación práctica para aplicar en clase",
       body: `Hola ${safeName}, el curso piloto de Academia te ayudará a distinguir metodologías activas, modelos pedagógicos y estrategias organizativas con ejemplos aplicables.`,
-      action: "Iniciar el curso piloto",
-      href: `${SITE_URL}/academia`,
+      action: hasAccount ? "Iniciar el curso piloto" : "Crear mi cuenta Free",
+      href: hasAccount ? `${SITE_URL}/academia` : `${SITE_URL}/registro`,
     },
     pro_7d: {
       subject: "Sigue creando con Profe en Movimiento",
       heading: "Todo tu trabajo docente en un solo lugar",
       body: `Hola ${safeName}, ya conoces una parte de la plataforma. El Plan Pro amplía tus ejecuciones y reúne herramientas para planificar, evaluar, incluir y organizar tus clases.`,
-      action: "Conocer el Plan Pro",
-      href: `${SITE_URL}/cuenta`,
+      action: hasAccount ? "Conocer el Plan Pro" : "Crear mi cuenta Free",
+      href: hasAccount ? `${SITE_URL}/cuenta` : `${SITE_URL}/registro`,
     },
   }[sequence];
 
@@ -140,7 +142,7 @@ export async function processDueMarketingEmails(limit = 25) {
       }
     }
 
-    const content = emailTemplate(delivery.sequence_key as SequenceKey, lead.full_name, lead.download_token, lead.unsubscribe_token);
+    const content = emailTemplate(delivery.sequence_key as SequenceKey, lead.full_name, lead.download_token, lead.unsubscribe_token, Boolean(lead.converted_user_id));
     try {
       const response = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
