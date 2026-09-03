@@ -14,6 +14,7 @@ export interface AgentMessage {
   role: "user" | "assistant";
   content: string;
   specialist: AgentSpecialist | null;
+  response_kind: "result" | "clarification";
   saved_at: string | null;
   created_at: string;
 }

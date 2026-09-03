@@ -66,6 +66,7 @@ export async function POST(request: Request) {
   }
 
   let conversationId = requestedConversationId;
+  let usageReleased = false;
   try {
     if (!conversationId) {
       const title = message.length > 76 ? `${message.slice(0, 73)}…` : message;
@@ -82,14 +83,22 @@ export async function POST(request: Request) {
     if (userError) throw new Error("user_message_failed");
 
     const generated = await runTeacherCoordinator(context);
-    const { data: assistantMessage, error: assistantError } = await supabase.from("ai_agent_messages").insert({ conversation_id: conversationId, user_id: access.userId, role: "assistant", content: generated.output, specialist: generated.specialist }).select("*").single();
+    const { data: assistantMessage, error: assistantError } = await supabase.from("ai_agent_messages").insert({ conversation_id: conversationId, user_id: access.userId, role: "assistant", content: generated.output, specialist: generated.specialist, response_kind: generated.responseKind }).select("*").single();
     if (assistantError) throw new Error("assistant_message_failed");
     await supabase.from("ai_agent_conversations").update({ last_specialist: generated.specialist }).eq("id", conversationId).eq("user_id", access.userId);
 
-    return response("Respuesta generada.", 200, { conversationId, userMessage, assistantMessage, remaining: usage?.remaining ?? null, limit: usage?.limit ?? null, feature });
+    let remaining = usage?.remaining ?? null;
+    if (generated.responseKind === "clarification") {
+      const { error: releaseError } = await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
+      if (releaseError) throw new Error("clarification_release_failed");
+      usageReleased = true;
+      if (typeof remaining === "number") remaining = Math.min(usage?.limit ?? remaining + 1, remaining + 1);
+    }
+
+    return response(generated.responseKind === "clarification" ? "Se necesitan datos adicionales." : "Respuesta generada.", 200, { conversationId, userMessage, assistantMessage, remaining, limit: usage?.limit ?? null, feature, responseKind: generated.responseKind });
   } catch (error) {
     console.error("[Agentes IA] No se pudo completar la ejecución.", error);
-    await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
+    if (!usageReleased) await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
     return response("No se pudo completar la solicitud. Inténtalo nuevamente.", 500);
   }
 }

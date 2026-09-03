@@ -31,7 +31,7 @@ export async function getLeadActivationJourney(userId: string | null): Promise<L
   if (!lead) return null;
 
   const [agentResult, academyResult, existingResult] = await Promise.all([
-    admin.from("ai_agent_messages").select("created_at").eq("user_id", userId).eq("role", "user").order("created_at", { ascending: true }).limit(1).maybeSingle(),
+    admin.from("ai_agent_messages").select("created_at").eq("user_id", userId).eq("role", "assistant").eq("response_kind", "result").order("created_at", { ascending: true }).limit(1).maybeSingle(),
     admin.from("academy_progress").select("created_at").eq("user_id", userId).order("created_at", { ascending: true }).limit(1).maybeSingle(),
     admin.from("lead_activation_progress").select("kit_downloaded_at,agents_first_run_at,academy_started_at,completed_at").eq("user_id", userId).maybeSingle(),
   ]);
