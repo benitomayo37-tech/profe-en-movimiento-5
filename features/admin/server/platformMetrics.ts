@@ -104,10 +104,7 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelEmailsSent,
     funnelEmailFailures,
     funnelUnsubscribed,
-    commercialProInterest,
-    commercialCheckoutReached,
-    commercialHotmartReached,
-    commercialProActivated,
+    commercialMetricsResult,
   ] = await Promise.all([
     getCount(admin.from("profiles").select("id", { count: "exact", head: true })),
     getCount(admin.from("student_accounts").select("id", { count: "exact", head: true }).eq("active", true)),
@@ -133,14 +130,17 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "sent")),
     getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "failed")),
     getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("unsubscribed_at", "is", null)),
-    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "pro_interest")),
-    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "checkout_reached")),
-    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "hotmart_reached")),
-    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "pro_activated")),
+    admin.rpc("get_commercial_conversion_metrics"),
   ]);
 
   if (agentFeatureResult.error) throw new Error(agentFeatureResult.error.message);
   if (agentUsageResult.error) throw new Error(agentUsageResult.error.message);
+  if (commercialMetricsResult.error) throw new Error(commercialMetricsResult.error.message);
+  const commercialMetrics = (commercialMetricsResult.data ?? {}) as Record<string, unknown>;
+  const commercialProInterest = Number(commercialMetrics.pro_interest ?? 0);
+  const commercialCheckoutReached = Number(commercialMetrics.checkout_reached ?? 0);
+  const commercialHotmartReached = Number(commercialMetrics.hotmart_reached ?? 0);
+  const commercialProActivated = Number(commercialMetrics.pro_activated ?? 0);
   const featureRows = agentFeatureResult.data ?? [];
   const usageRows = agentUsageResult.data ?? [];
   const usageUserIds = usageRows.map((row) => row.user_id);
