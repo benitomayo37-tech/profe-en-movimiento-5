@@ -99,7 +99,7 @@ export default function ProUpgradeDialog({
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/store/plan-pro-anual"
+              href="/store/plan-pro-anual?source=pro_tool_lock"
               className="inline-flex min-h-12 flex-1 items-center justify-center rounded-xl bg-orange-500 px-6 py-3 text-center font-black text-slate-950 hover:bg-orange-400"
             >
               Comparar planes Pro

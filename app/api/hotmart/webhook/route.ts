@@ -7,6 +7,7 @@ import {
   parseHotmartWebhook,
 } from "@/features/hotmart/server/parseHotmartWebhook";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { recordHotmartProActivation } from "@/features/commercial/server/tracking";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -88,6 +89,19 @@ export async function POST(request: Request) {
   if (error) {
     console.error("[Hotmart] No se pudo procesar la notificación.", error.code);
     return json("No se pudo procesar la notificación.", 500);
+  }
+
+  if (event.action === "grant") {
+    const { data: entitlement, error: entitlementError } = await admin
+      .from("hotmart_entitlements")
+      .select("user_id")
+      .eq("entitlement_key", event.entitlementKey)
+      .maybeSingle();
+    if (entitlementError) {
+      console.error("[Hotmart] No se pudo medir la conversión.", entitlementError.code);
+    } else if (entitlement?.user_id) {
+      await recordHotmartProActivation(entitlement.user_id, event.productId);
+    }
   }
 
   return json("Notificación procesada.", 200, {

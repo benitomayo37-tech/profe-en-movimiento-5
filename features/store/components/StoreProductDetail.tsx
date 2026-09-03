@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import HotmartPurchaseButton from "@/features/store/components/HotmartPurchaseButton";
+import { recordCommercialEvent } from "@/features/commercial/server/tracking";
 import type { StoreProduct } from "@/features/store/data/products";
 import {
   formatStorePrice,
@@ -11,11 +12,18 @@ import {
 
 interface StoreProductDetailProps {
   product: StoreProduct;
+  source?: string;
+  userId: string | null;
 }
 
-export default function StoreProductDetail({
+export default async function StoreProductDetail({
   product,
+  source,
+  userId,
 }: StoreProductDetailProps) {
+  if ((product.id === "plan-pro-mensual" || product.id === "plan-pro-anual") && userId) {
+    await recordCommercialEvent({ userId, eventType: "pro_interest", productId: product.id, source });
+  }
   const relatedProducts = storeProducts
     .filter(
       (candidate) =>
@@ -233,7 +241,7 @@ export default function StoreProductDetail({
 
             {product.purchaseStatus === "available" ? (
               <div className="mt-6">
-                <HotmartPurchaseButton productId={product.id} />
+                <HotmartPurchaseButton productId={product.id} source={source} />
               </div>
             ) : product.purchaseStatus === "included" ? (
               <Link

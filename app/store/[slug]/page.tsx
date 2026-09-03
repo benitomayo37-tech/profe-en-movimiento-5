@@ -15,6 +15,7 @@ interface StoreProductPageProps {
   params: Promise<{
     slug: string;
   }>;
+  searchParams: Promise<{ source?: string | string[] }>;
 }
 
 export function generateStaticParams() {
@@ -57,10 +58,13 @@ function ProductFooter() {
 
 export default async function StoreProductPage({
   params,
+  searchParams,
 }: StoreProductPageProps) {
   const { slug } = await params;
   const product = getStoreProductBySlug(slug);
   const access = await getAuthAccess();
+  const requestedSource = (await searchParams).source;
+  const source = Array.isArray(requestedSource) ? requestedSource[0] : requestedSource;
 
   if (!product) {
     notFound();
@@ -79,7 +83,7 @@ export default async function StoreProductPage({
       footer={<ProductFooter />}
     >
       <Container className="py-8">
-        <StoreProductDetail product={product} />
+        <StoreProductDetail product={product} source={source} userId={access.userId} />
       </Container>
     </AppLayout>
   );

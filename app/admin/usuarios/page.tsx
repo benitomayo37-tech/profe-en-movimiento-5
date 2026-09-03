@@ -69,6 +69,16 @@ export default async function AdminUsersPage() {
           </section>
 
           <section>
+            <div><p className="text-xs font-black uppercase tracking-[.18em] text-emerald-700">Conversión comercial</p><h2 className="mt-2 text-3xl font-black text-slate-950">De Free a Pro</h2><p className="mt-2 text-sm text-slate-500">Usuarios únicos registrados en cada etapa. Las recargas de página no duplican las cifras.</p></div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+              <MetricCard label="Interés en Pro" value={metrics.commercialProInterest} detail="Usuarios Free que consultaron un plan Pro." tone="violet" />
+              <MetricCard label="Llegaron al checkout" value={metrics.commercialCheckoutReached} detail="Usuarios que revisaron la oferta antes del pago." tone="blue" />
+              <MetricCard label="Continuaron a Hotmart" value={metrics.commercialHotmartReached} detail="Usuarios enviados al checkout seguro de Hotmart." tone="orange" />
+              <MetricCard label="Pro activado" value={metrics.commercialProActivated} detail="Conversiones confirmadas mediante el webhook." tone="emerald" />
+            </div>
+          </section>
+
+          <section>
             <div><p className="text-xs font-black uppercase tracking-[.18em] text-orange-600">Planes docentes</p><h2 className="mt-2 text-3xl font-black text-slate-950">Distribución Free y Pro</h2></div>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               <MetricCard label="Plan Free" value={metrics.freeAccounts} detail="Cuentas docentes sin acceso Pro activo." tone="blue" />

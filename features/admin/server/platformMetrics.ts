@@ -37,6 +37,10 @@ export interface PlatformMetrics {
   funnelEmailFailures: number;
   funnelUnsubscribed: number;
   funnelEmailAutomationConfigured: boolean;
+  commercialProInterest: number;
+  commercialCheckoutReached: number;
+  commercialHotmartReached: number;
+  commercialProActivated: number;
   funnelLeadJourneys: FunnelLeadJourney[];
   generatedAt: string;
 }
@@ -100,6 +104,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelEmailsSent,
     funnelEmailFailures,
     funnelUnsubscribed,
+    commercialProInterest,
+    commercialCheckoutReached,
+    commercialHotmartReached,
+    commercialProActivated,
   ] = await Promise.all([
     getCount(admin.from("profiles").select("id", { count: "exact", head: true })),
     getCount(admin.from("student_accounts").select("id", { count: "exact", head: true }).eq("active", true)),
@@ -125,6 +133,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "sent")),
     getCount(admin.from("marketing_email_deliveries").select("id", { count: "exact", head: true }).eq("status", "failed")),
     getCount(admin.from("marketing_leads").select("id", { count: "exact", head: true }).not("unsubscribed_at", "is", null)),
+    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "pro_interest")),
+    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "checkout_reached")),
+    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "hotmart_reached")),
+    getCount(admin.from("commercial_conversion_events").select("user_id", { count: "exact", head: true }).eq("event_type", "pro_activated")),
   ]);
 
   if (agentFeatureResult.error) throw new Error(agentFeatureResult.error.message);
@@ -248,6 +260,10 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
       && process.env.BREVO_SENDER_EMAIL?.trim()
       && process.env.CRON_SECRET?.trim()
     ),
+    commercialProInterest,
+    commercialCheckoutReached,
+    commercialHotmartReached,
+    commercialProActivated,
     funnelLeadJourneys,
     generatedAt: new Date().toISOString(),
   };
