@@ -16,7 +16,7 @@ const specialistLabel: Record<AgentSpecialist, string> = {
 const starterPrompts = [
   { text: "Diseña una clase de 45 minutos con 40 estudiantes y 4 balones.", pro: false },
   { text: "Crea una rúbrica con criterios observables para evaluar pases de baloncesto.", pro: false },
-  { text: "Adapta mediante DUA y apoyos NEE una actividad de pases de pecho para 8.º de EGB, con 40 estudiantes, 4 balones y 45 minutos. Mantén este objetivo: ejecutar pases de pecho con precisión hacia un compañero situado a 5 metros.", pro: false },
+  { text: "Adapta mediante DUA y apoyos NEE una actividad de pases de pecho para 8.º de EGB, con 40 estudiantes y 45 minutos. Los únicos materiales disponibles son 4 balones: no añadas conos, aros, marcas, fichas ni otros recursos. Mantén este objetivo: ejecutar pases de pecho con precisión hacia un compañero situado a 5 metros.", pro: false },
   { text: "Diseña un microciclo de entrenamiento deportivo con carga y recuperación progresivas.", pro: false },
   { text: "Diseña un mesociclo deportivo de cuatro semanas con progresión de cargas.", pro: true },
   { text: "Diseña un macrociclo con periodos preparatorio, competitivo y de transición.", pro: true },
