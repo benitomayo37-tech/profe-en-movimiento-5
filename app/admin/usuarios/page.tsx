@@ -21,7 +21,7 @@ function MetricCard({ label, value, detail, tone = "blue" }: { label: string; va
 }
 
 function JourneyStatus({ complete, label }: { complete: boolean; label: string }) {
-  return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${complete ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>{complete ? "✓" : "—"} {label}</span>;
+  return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black shadow-sm ${complete ? "journey-status-complete" : "journey-status-pending"}`}>{complete ? "✓" : "—"} {label}</span>;
 }
 
 const agentFeatureLabels: Record<string, string> = {
