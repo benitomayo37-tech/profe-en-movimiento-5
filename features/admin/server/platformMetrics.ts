@@ -31,11 +31,29 @@ export interface PlatformMetrics {
   funnelAgentActivations: number;
   funnelAcademyActivations: number;
   funnelCompletedActivations: number;
+  funnelProConversions: number;
+  funnelProConversionRate: number;
   funnelEmailsSent: number;
   funnelEmailFailures: number;
   funnelUnsubscribed: number;
   funnelEmailAutomationConfigured: boolean;
+  funnelLeadJourneys: FunnelLeadJourney[];
   generatedAt: string;
+}
+
+export interface FunnelLeadJourney {
+  id: string;
+  fullName: string;
+  email: string;
+  createdAt: string;
+  downloadedAt: string | null;
+  convertedAt: string | null;
+  accountPlan: "free" | "pro" | "admin" | null;
+  agentsFirstRunAt: string | null;
+  academyStartedAt: string | null;
+  completedAt: string | null;
+  emailsSent: number;
+  unsubscribedAt: string | null;
 }
 
 const MONTHLY_OFFER_CODE = "argy2ka2";
@@ -127,6 +145,70 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
   const featureTotals = new Map<string, number>();
   for (const row of featureRows) featureTotals.set(row.feature_key, (featureTotals.get(row.feature_key) ?? 0) + row.run_count);
 
+  const [recentLeadsResult, allConvertedLeadsResult] = await Promise.all([
+    admin
+      .from("marketing_leads")
+      .select("id,full_name,email,created_at,downloaded_at,converted_user_id,converted_at,unsubscribed_at")
+      .order("created_at", { ascending: false })
+      .limit(50),
+    admin.from("marketing_leads").select("converted_user_id").not("converted_user_id", "is", null),
+  ]);
+  if (recentLeadsResult.error) throw new Error(recentLeadsResult.error.message);
+  if (allConvertedLeadsResult.error) throw new Error(allConvertedLeadsResult.error.message);
+  const recentLeads = recentLeadsResult.data ?? [];
+
+  const leadIds = (recentLeads ?? []).map((lead) => lead.id);
+  const convertedUserIds = recentLeads
+    .map((lead) => lead.converted_user_id)
+    .filter((userId): userId is string => Boolean(userId));
+  const allConvertedUserIds = (allConvertedLeadsResult.data ?? [])
+    .map((lead) => lead.converted_user_id)
+    .filter((userId): userId is string => Boolean(userId));
+  const [activationResult, emailDeliveryResult, convertedProfilesResult, proConvertedProfilesResult] = await Promise.all([
+    leadIds.length
+      ? admin.from("lead_activation_progress").select("lead_id,agents_first_run_at,academy_started_at,completed_at").in("lead_id", leadIds)
+      : Promise.resolve({ data: [], error: null }),
+    leadIds.length
+      ? admin.from("marketing_email_deliveries").select("lead_id,status").in("lead_id", leadIds).eq("status", "sent")
+      : Promise.resolve({ data: [], error: null }),
+    convertedUserIds.length
+      ? admin.from("profiles").select("id,plan,role").in("id", convertedUserIds)
+      : Promise.resolve({ data: [], error: null }),
+    allConvertedUserIds.length
+      ? admin.from("profiles").select("id").in("id", allConvertedUserIds).eq("plan", "pro")
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+  for (const result of [activationResult, emailDeliveryResult, convertedProfilesResult, proConvertedProfilesResult]) {
+    if (result.error) throw new Error(result.error.message);
+  }
+
+  const activationByLeadId = new Map((activationResult.data ?? []).map((row) => [row.lead_id, row]));
+  const sentEmailsByLeadId = new Map<string, number>();
+  for (const delivery of emailDeliveryResult.data ?? []) {
+    sentEmailsByLeadId.set(delivery.lead_id, (sentEmailsByLeadId.get(delivery.lead_id) ?? 0) + 1);
+  }
+  const profileByUserId = new Map((convertedProfilesResult.data ?? []).map((profile) => [profile.id, profile]));
+  const funnelProConversions = proConvertedProfilesResult.data?.length ?? 0;
+  const funnelLeadJourneys: FunnelLeadJourney[] = recentLeads.map((lead) => {
+    const activation = activationByLeadId.get(lead.id);
+    const profile = lead.converted_user_id ? profileByUserId.get(lead.converted_user_id) : null;
+    const accountPlan = profile?.role === "admin" ? "admin" : profile?.plan === "pro" ? "pro" : lead.converted_user_id ? "free" : null;
+    return {
+      id: lead.id,
+      fullName: lead.full_name,
+      email: lead.email,
+      createdAt: lead.created_at,
+      downloadedAt: lead.downloaded_at,
+      convertedAt: lead.converted_at,
+      accountPlan,
+      agentsFirstRunAt: activation?.agents_first_run_at ?? null,
+      academyStartedAt: activation?.academy_started_at ?? null,
+      completedAt: activation?.completed_at ?? null,
+      emailsSent: sentEmailsByLeadId.get(lead.id) ?? 0,
+      unsubscribedAt: lead.unsubscribed_at,
+    };
+  });
+
   return {
     totalPeople: teacherAccounts + activeStudentAccounts,
     teacherAccounts,
@@ -156,6 +238,8 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
     funnelAgentActivations,
     funnelAcademyActivations,
     funnelCompletedActivations,
+    funnelProConversions,
+    funnelProConversionRate: funnelLeads ? Math.round((funnelProConversions / funnelLeads) * 100) : 0,
     funnelEmailsSent,
     funnelEmailFailures,
     funnelUnsubscribed,
@@ -164,6 +248,7 @@ export async function getPlatformMetrics(): Promise<PlatformMetrics | null> {
       && process.env.BREVO_SENDER_EMAIL?.trim()
       && process.env.CRON_SECRET?.trim()
     ),
+    funnelLeadJourneys,
     generatedAt: new Date().toISOString(),
   };
 }
