@@ -45,6 +45,7 @@ const platformStatBorders = [
 
 const publicNavigation = [
   ["Inicio", "#inicio"],
+  ["Kit gratis", "/kit-profes"],
   ["Producto", "#producto"],
   ["Herramientas", "#herramientas"],
   ["Biblioteca", "#biblioteca"],
@@ -381,6 +382,76 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
 
+      <section className="relative isolate overflow-hidden bg-[#071532] px-4 py-20 text-white sm:px-6 lg:py-24">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_88%_15%,rgba(37,99,235,.5),transparent_32%),radial-gradient(circle_at_12%_90%,rgba(249,115,22,.22),transparent_30%)]" />
+
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <span className="inline-flex rounded-full border border-emerald-300/30 bg-emerald-400/10 px-4 py-2 text-xs font-black uppercase tracking-[.18em] text-emerald-300">
+              Nuevo · Kit 100% gratuito
+            </span>
+
+            <h2 className="mt-5 text-4xl font-black leading-tight tracking-tight sm:text-5xl">
+              Tres apps que te ayudan desde tu próxima clase
+            </h2>
+
+            <p className="mt-5 max-w-xl text-lg leading-8 text-blue-100">
+              Forma equipos, controla circuitos y lleva el marcador desde tu
+              celular. Sin instalar nada y sin tarjeta de crédito.
+            </p>
+
+            <Link
+              href="/kit-profes"
+              className="mt-8 inline-flex min-h-14 items-center gap-2 rounded-xl !bg-[#FC7000] px-7 py-3 font-black !text-white shadow-xl shadow-orange-950/30 transition hover:-translate-y-0.5 hover:!bg-[#d95f00]"
+            >
+              Obtener mi kit gratis
+              <ArrowIcon />
+            </Link>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                icon: "🔀",
+                title: "Sorteador de equipos",
+                text: "Organiza grupos en segundos.",
+                color: "from-blue-600 to-cyan-500",
+              },
+              {
+                icon: "⏱️",
+                title: "Cronómetro HIIT",
+                text: "Programa trabajo y descanso.",
+                color: "from-orange-600 to-red-500",
+              },
+              {
+                icon: "🏆",
+                title: "Marcador deportivo",
+                text: "Controla puntos y tiempo.",
+                color: "from-slate-800 to-blue-700",
+              },
+            ].map((app) => (
+              <article
+                key={app.title}
+                className="rounded-[1.5rem] border border-white/15 bg-white/10 p-5 shadow-xl backdrop-blur transition hover:-translate-y-1 hover:bg-white/15"
+              >
+                <span
+                  className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-2xl shadow-lg ${app.color}`}
+                  aria-hidden="true"
+                >
+                  {app.icon}
+                </span>
+                <h3 className="mt-5 text-lg font-black">{app.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-blue-100">
+                  {app.text}
+                </p>
+                <span className="mt-5 inline-flex rounded-full !bg-[#10B981] px-3 py-1 text-xs font-black !text-white shadow-sm">
+                  FREE
+                </span>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
       <section id="herramientas" className="scroll-mt-20 bg-slate-50 px-4 py-24 sm:px-6">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.65fr_1.35fr]">
           <div>
