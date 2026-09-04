@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { runTeacherCoordinator } from "@/features/agents/server/agents";
 import { getAuthenticatedApiAccess } from "@/features/auth/server/apiAccess";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -28,6 +30,36 @@ function response(message: string, status: number, extra: Record<string, unknown
   return NextResponse.json({ success: status < 400, message, ...extra }, { status });
 }
 
+async function releaseConsumedRun(
+  userClient: SupabaseClient,
+  userId: string,
+  feature: AgentFeature,
+) {
+  const admin = createAdminClient();
+
+  if (admin) {
+    const { error } = await admin.rpc("release_agent_feature_run_for_user", {
+      p_feature_key: feature,
+      p_user_id: userId,
+    });
+
+    if (!error) return;
+
+    if (!["42883", "PGRST202"].includes(error.code)) {
+      throw new Error(`secure_usage_release_failed:${error.code}`);
+    }
+  }
+
+  // Compatibilidad durante el despliegue anterior a la migración de seguridad.
+  const { error } = await userClient.rpc("release_agent_feature_run", {
+    p_feature_key: feature,
+  });
+
+  if (error) {
+    throw new Error(`legacy_usage_release_failed:${error.code}`);
+  }
+}
+
 export async function POST(request: Request) {
   const accessResult = await getAuthenticatedApiAccess("Agentes IA");
   if (accessResult.error) return accessResult.error;
@@ -40,7 +72,7 @@ export async function POST(request: Request) {
   try { body = await request.json(); } catch { return response("Solicitud no válida.", 400); }
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const requestedConversationId = typeof body.conversationId === "string" ? body.conversationId : null;
-  if (!message || message.length > MAX_MESSAGE_LENGTH) return response("Escribe una solicitud de hasta 6000 caracteres.", 400);
+  if (message.length < 2 || message.length > MAX_MESSAGE_LENGTH) return response("Escribe una solicitud de entre 2 y 6000 caracteres.", 400);
   let ownedConversation: { id: string; title: string } | null = null;
   if (requestedConversationId) {
     const { data } = await supabase.from("ai_agent_conversations").select("id,title").eq("id", requestedConversationId).eq("user_id", access.userId).maybeSingle();
@@ -53,7 +85,7 @@ export async function POST(request: Request) {
   }
 
   if (!access.hasProAccess && requestedConversationId) {
-    const { count } = await supabase.from("ai_agent_messages").select("id", { count: "exact", head: true }).eq("conversation_id", requestedConversationId).eq("user_id", access.userId).eq("role", "user");
+    const { count } = await supabase.from("ai_agent_messages").select("id", { count: "exact", head: true }).eq("conversation_id", requestedConversationId).eq("user_id", access.userId).eq("role", "assistant").eq("response_kind", "result");
     if ((count ?? 0) >= 2) return response("El Plan Free permite una corrección por resultado. Activa Pro para continuar revisándolo.", 403, { code: "agents_correction_limit", upgradeUrl: "/store/plan-pro-mensual" });
   }
 
@@ -89,8 +121,7 @@ export async function POST(request: Request) {
 
     let remaining = usage?.remaining ?? null;
     if (generated.responseKind === "clarification") {
-      const { error: releaseError } = await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
-      if (releaseError) throw new Error("clarification_release_failed");
+      await releaseConsumedRun(supabase, access.userId, feature);
       usageReleased = true;
       if (typeof remaining === "number") remaining = Math.min(usage?.limit ?? remaining + 1, remaining + 1);
     }
@@ -98,7 +129,11 @@ export async function POST(request: Request) {
     return response(generated.responseKind === "clarification" ? "Se necesitan datos adicionales." : "Respuesta generada.", 200, { conversationId, userMessage, assistantMessage, remaining, limit: usage?.limit ?? null, feature, responseKind: generated.responseKind });
   } catch (error) {
     console.error("[Agentes IA] No se pudo completar la ejecución.", error);
-    if (!usageReleased) await supabase.rpc("release_agent_feature_run", { p_feature_key: feature });
+    if (!usageReleased) {
+      await releaseConsumedRun(supabase, access.userId, feature).catch((releaseError) => {
+        console.error("[Agentes IA] No se pudo devolver la ejecución.", releaseError);
+      });
+    }
     return response("No se pudo completar la solicitud. Inténtalo nuevamente.", 500);
   }
 }

@@ -1,13 +1,16 @@
-# Centro de Agentes IA — Fase 1
+# Centro de Agentes IA
 
 ## Incluye
 
 - Ruta privada `/agentes`.
 - Coordinador Docente.
-- Agentes de Planificación, Evaluación e Inclusión.
+- Agentes de Planificación, Evaluación, Inclusión y Entrenamiento Deportivo.
 - Memoria persistente por conversación en Supabase.
 - Resultados guardados únicamente por confirmación del usuario.
 - Límites mensuales: 3 Free, 100 Pro y 1000 para administración.
+- Un microciclo mensual de prueba para cuentas Free.
+- Mesociclos y macrociclos disponibles para cuentas Pro.
+- Las aclaraciones no consumen ejecuciones y el Plan Free permite una corrección por resultado terminado.
 - Acceso desde el Sidebar y el Dashboard.
 
 ## 1. Instalar archivos
@@ -30,7 +33,13 @@ El paquete incorpora `@openai/agents` y `zod` en `package.json` y `package-lock.
 
 En **Supabase → SQL Editor**, copia íntegramente y ejecuta:
 
-`supabase/migrations/20260902_ai_agents_phase_1.sql`
+Ejecuta, en orden, las migraciones que todavía no estén aplicadas:
+
+1. `supabase/migrations/20260902_ai_agents_phase_1.sql`
+2. `supabase/migrations/20260903_ai_agents_training_phase_2.sql`
+3. `supabase/migrations/20260904_ai_agent_feature_usage.sql`
+4. `supabase/migrations/20260908_agent_response_kind.sql`
+5. `supabase/migrations/20260912_ai_agent_security_and_consistency.sql`
 
 Resultado esperado: `Success. No rows returned`.
 
@@ -50,8 +59,8 @@ El build debe mostrar:
 ## 5. Publicar
 
 ```powershell
-git add app/agentes app/api/agents components/dashboard/QuickActions.tsx components/layout/Sidebar.tsx features/agents package.json package-lock.json supabase/migrations/20260902_ai_agents_phase_1.sql
-git commit -m "feat: incorpora Centro de Agentes IA fase 1"
+git add app/agentes app/api/agents features/agents INSTALACION-CENTRO-AGENTES-IA-FASE-1.md supabase/migrations/20260912_ai_agent_security_and_consistency.sql
+git commit -m "fix: refuerza límites y consistencia de Agentes IA"
 git push origin main
 ```
 
