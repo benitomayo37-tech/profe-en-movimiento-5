@@ -774,15 +774,15 @@ html[data-theme="dark"] :is(.text-rose-700, .text-rose-800, .text-rose-900, .tex
 }
 
 .agent-dua-representacion {
-  background-color: #dbeafe !important;
-  border-color: #60a5fa !important;
-  color: #1e3a8a !important;
-}
-
-.agent-dua-accion-expresion {
   background-color: #fae8ff !important;
   border-color: #e879f9 !important;
   color: #701a75 !important;
+}
+
+.agent-dua-accion-expresion {
+  background-color: #dbeafe !important;
+  border-color: #60a5fa !important;
+  color: #1e3a8a !important;
 }
 
 .agent-plan-pro-badge,
@@ -828,15 +828,15 @@ html[data-theme="dark"] .agent-dua-compromiso {
 }
 
 html[data-theme="dark"] .agent-dua-representacion {
-  background-color: #102a56 !important;
-  border-color: #60a5fa !important;
-  color: #dbeafe !important;
-}
-
-html[data-theme="dark"] .agent-dua-accion-expresion {
   background-color: #3b1746 !important;
   border-color: #e879f9 !important;
   color: #fae8ff !important;
+}
+
+html[data-theme="dark"] .agent-dua-accion-expresion {
+  background-color: #102a56 !important;
+  border-color: #60a5fa !important;
+  color: #dbeafe !important;
 }
 
 /* Tabla de rúbrica generada por el Centro de Agentes IA. */

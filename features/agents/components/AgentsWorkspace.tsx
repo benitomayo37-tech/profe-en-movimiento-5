@@ -23,20 +23,28 @@ const starterPrompts = [
 ];
 
 function duaLineClass(line: string): string {
-  const normalized = line.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/^[-*#\s]+/, "");
+  const normalized = line
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/^[^a-z]+/, "");
   const trimmed = line.trimStart();
 
-  if (trimmed.startsWith("🟢") || normalized.startsWith("compromiso") || normalized.startsWith("proporcionar multiples formas de compromiso")) {
+  if (normalized.startsWith("compromiso") || normalized.startsWith("proporcionar multiples formas de compromiso")) {
     return "agent-dua-compromiso";
   }
 
-  if (trimmed.startsWith("🔵") || normalized.startsWith("representacion") || normalized.startsWith("proporcionar multiples formas de representacion")) {
+  if (normalized.startsWith("representacion") || normalized.startsWith("proporcionar multiples formas de representacion")) {
     return "agent-dua-representacion";
   }
 
-  if (trimmed.startsWith("🟣") || normalized.startsWith("accion y expresion") || normalized.startsWith("proporcionar multiples formas de accion y expresion")) {
+  if (normalized.startsWith("accion y expresion") || normalized.startsWith("proporcionar multiples formas de accion y expresion")) {
     return "agent-dua-accion-expresion";
   }
+
+  if (trimmed.startsWith("🟢")) return "agent-dua-compromiso";
+  if (trimmed.startsWith("🟣")) return "agent-dua-representacion";
+  if (trimmed.startsWith("🔵")) return "agent-dua-accion-expresion";
 
   return "";
 }
@@ -79,7 +87,10 @@ function AgentMessageContent({ content }: { content: string }) {
   const blocks = [];
 
   for (let index = 0; index < lines.length;) {
-    const line = lines[index];
+    const rawLine = lines[index];
+    const line = rawLine
+      .replace(/^(\s*[-*]?\s*)🔵(\s+Representación\b)/i, "$1🟣$2")
+      .replace(/^(\s*[-*]?\s*)🟣(\s+Acción y Expresión\b)/i, "$1🔵$2");
     if (/^\s*---+\s*$/.test(line)) {
       blocks.push(<hr key={index} className="agent-section-divider" />);
       index += 1;
