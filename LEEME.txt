@@ -1,0 +1,13 @@
+CORRECCION DE DESTINO EN CORREOS DEL EMBUDO
+
+- Los contactos sin cuenta son enviados a Crear cuenta Free.
+- Los contactos ya registrados son enviados directamente a Agentes IA, Academia o Mi cuenta.
+
+INSTALACION
+1. Descomprime en la raiz y acepta reemplazar.
+2. No requiere migracion.
+3. Ejecuta: npm run build
+4. Prepara: git add ".\features\funnel\server\emailSequence.ts"
+5. Comprueba: git status --short
+
+No agregues LEEME.txt al repositorio.
