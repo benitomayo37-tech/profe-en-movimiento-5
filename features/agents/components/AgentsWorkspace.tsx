@@ -5,6 +5,14 @@ import { createPortal } from "react-dom";
 
 import type { AgentConversation, AgentMessage, AgentSpecialist } from "@/features/agents/types";
 
+interface AgentResultVersion {
+  id: string;
+  message_id: string;
+  version_number: number;
+  content: string;
+  created_at: string;
+}
+
 const specialistLabel: Record<AgentSpecialist, string> = {
   coordinator: "Coordinador Docente",
   planning: "Agente de Planificación",
@@ -75,7 +83,18 @@ function printableResult(content: string, fallbackTitle: string) {
   const firstHeading = lines.findIndex((line) => /^#\s+/.test(line.trim()));
   const productTitle = lines.findIndex((line) => /^(Microciclo|Mesociclo|Macrociclo|Sesión de entrenamiento)\b/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
   const titleIndex = firstHeading >= 0 ? firstHeading : productTitle;
-  const title = titleIndex >= 0 ? lines[titleIndex].replace(/^#{1,6}\s+/, "").trim() : fallbackTitle.length > 90 ? "Plan de entrenamiento deportivo" : fallbackTitle;
+  const fallbackContent = `${fallbackTitle}
+${content}`;
+  const defaultTitle = /\b(microciclo|mesociclo|macrociclo|sesión de entrenamiento)\b/i.test(fallbackContent)
+    ? "Plan de entrenamiento deportivo"
+    : /\b(clase|educación física|dua|estudiantes)\b/i.test(fallbackContent)
+      ? "Planificación de clase de Educación Física"
+      : fallbackTitle.length <= 90
+        ? fallbackTitle
+        : "Recurso docente";
+  const title = titleIndex >= 0
+    ? lines[titleIndex].replace(/^#{1,6}\s+/, "").trim()
+    : defaultTitle;
   const withoutTitle = titleIndex >= 0 ? lines.filter((_, index) => index !== titleIndex) : lines;
   const processStart = withoutTitle.findIndex((line) => /^(especialista consultado|resumen del aporte|revisión del docente|revisión del entrenador)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
   const printableLines = (processStart >= 0 ? withoutTitle.slice(0, processStart) : withoutTitle).filter((line) => !/^(especialistas consultados|decisión final y responsabilidad|(?:[-*]\s*)?supuestos?(?:\s+(?:breves?|pedagógicos?))?\b)/i.test(line.replace(/^#{1,6}\s+/, "").trim()));
@@ -131,6 +150,12 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
   const [upgradeRequired, setUpgradeRequired] = useState(false);
   const [showPrevious, setShowPrevious] = useState(false);
   const [printMessage, setPrintMessage] = useState<AgentMessage | null>(null);
+  const [editingMessage, setEditingMessage] = useState<AgentMessage | null>(null);
+  const [editorContent, setEditorContent] = useState("");
+  const [versions, setVersions] = useState<AgentResultVersion[]>([]);
+  const [versionsLoading, setVersionsLoading] = useState(false);
+  const [versionSaving, setVersionSaving] = useState(false);
+  const [versionError, setVersionError] = useState<string | null>(null);
 
   const selectedTitle = useMemo(() => conversations.find((item) => item.id === conversationId)?.title ?? "Nueva conversación", [conversations, conversationId]);
   const hiddenMessageCount = Math.max(0, messages.length - 2);
@@ -202,10 +227,107 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     } finally { setWorking(false); }
   }
 
-  async function saveResult(id: string) {
-    const request = await fetch("/api/agents/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
-    const payload = await request.json();
-    if (request.ok && payload.success) setMessages((current) => current.map((item) => item.id === id ? { ...item, saved_at: payload.savedAt } : item));
+  async function openResultEditor(item: AgentMessage) {
+    setEditingMessage(item);
+    setEditorContent(item.content);
+    setVersions([]);
+    setVersionError(null);
+    setVersionsLoading(true);
+
+    try {
+      const request = await fetch(
+        `/api/agents/save?id=${encodeURIComponent(item.id)}`,
+        { cache: "no-store" },
+      );
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        throw new Error(
+          payload.message || "No se pudieron consultar las versiones.",
+        );
+      }
+
+      const loadedVersions = Array.isArray(payload.versions)
+        ? payload.versions as AgentResultVersion[]
+        : [];
+
+      setVersions(loadedVersions);
+
+      if (loadedVersions[0]?.content) {
+        setEditorContent(loadedVersions[0].content);
+      }
+    } catch (caught) {
+      setVersionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudieron consultar las versiones.",
+      );
+    } finally {
+      setVersionsLoading(false);
+    }
+  }
+
+  async function saveEditedVersion() {
+    if (!editingMessage || versionSaving) return;
+
+    const cleanContent = editorContent.trim();
+    if (!cleanContent) {
+      setVersionError("El resultado no puede quedar vacío.");
+      return;
+    }
+
+    setVersionSaving(true);
+    setVersionError(null);
+
+    try {
+      const request = await fetch("/api/agents/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingMessage.id,
+          content: cleanContent,
+        }),
+      });
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        throw new Error(
+          payload.message || "No se pudo guardar la versión.",
+        );
+      }
+
+      const savedVersion = payload.version as AgentResultVersion;
+      setVersions((current) => [
+        savedVersion,
+        ...current.filter((item) => item.id !== savedVersion.id),
+      ]);
+      setEditorContent(savedVersion.content);
+      setMessages((current) =>
+        current.map((item) =>
+          item.id === editingMessage.id
+            ? { ...item, saved_at: payload.savedAt }
+            : item,
+        ),
+      );
+    } catch (caught) {
+      setVersionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo guardar la versión.",
+      );
+    } finally {
+      setVersionSaving(false);
+    }
+  }
+
+  function printEditorContent() {
+    if (!editingMessage || !editorContent.trim()) return;
+
+    setPrintMessage({
+      ...editingMessage,
+      content: editorContent.trim(),
+    });
+    setEditingMessage(null);
   }
 
   return <div className="grid gap-6 xl:grid-cols-[290px_minmax(0,1fr)]">
@@ -223,12 +345,60 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
         {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{starterPrompts.map((prompt) => prompt.pro && !hasProAccess ? <a key={prompt.text} href="/store/plan-pro-mensual" className="relative rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-amber-400"><span className="agent-pro-lock-badge absolute right-3 top-3 rounded-full px-2 py-1 text-[10px] font-black uppercase">Pro</span><span className="block pr-10">{prompt.text}</span><span className="agent-upgrade-link mt-2 block text-xs font-black">Activar Plan Pro →</span></a> : <button key={prompt.text} onClick={() => setMessage(prompt.text)} className="relative rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt.pro ? <span className="agent-pro-active-badge absolute right-3 top-3 rounded-full px-2 py-1 text-[10px] font-black uppercase">Pro</span> : null}{!hasProAccess && prompt.text.includes("microciclo") ? <span className="absolute right-3 top-3 rounded-full bg-violet-700 px-2.5 py-1 text-[11px] font-black uppercase !text-white shadow-sm">1 al mes</span> : null}<span className={prompt.pro || (!hasProAccess && prompt.text.includes("microciclo")) ? "block pr-20" : "block"}>{prompt.text}</span></button>)}</div></div> : <>{hiddenMessageCount > 0 ? <button type="button" onClick={() => setShowPrevious((current) => !current)} className="mx-auto block rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-100">{showPrevious ? "Ocultar mensajes anteriores" : `Ver ${hiddenMessageCount} mensajes anteriores`}</button> : null}{visibleMessages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
           <p className={`text-xs font-black uppercase tracking-[.14em] ${item.role === "user" ? "text-blue-100" : "text-violet-700"}`}>{item.role === "user" ? "Docente" : specialistLabel[item.specialist ?? "coordinator"]}</p>
           <AgentMessageContent content={item.content} />
-          {item.role === "assistant" && item.response_kind !== "clarification" ? <div className="mt-4 flex flex-wrap gap-2"><button onClick={() => void saveResult(item.id)} disabled={Boolean(item.saved_at)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800 disabled:opacity-70">{item.saved_at ? "✓ Resultado guardado" : "Guardar resultado"}</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir o guardar en PDF</button></div> : null}
+          {item.role === "assistant" && item.response_kind !== "clarification" ? <div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => void openResultEditor(item)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800">{item.saved_at ? "Editar y ver versiones" : "Editar y guardar"}</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir resultado original</button></div> : null}
         </article>)}</>}
         {working ? <div className="mr-auto max-w-md rounded-2xl border border-violet-200 bg-white p-5 font-bold text-violet-800 shadow-sm" aria-live="polite">Los agentes están analizando y revisando la solicitud…</div> : null}
       </div>
       <form onSubmit={submit} className="border-t border-slate-200 bg-white p-5"><label htmlFor="agent-message" className="text-sm font-black text-slate-900">Solicitud para el Coordinador</label><textarea id="agent-message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={6000} rows={4} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-7 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Ejemplo: necesito una clase de 45 minutos para 40 estudiantes…" />{error || remaining <= 0 ? <div className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700"><p>{error ?? (hasProAccess ? `Has utilizado las ${monthlyLimit} ejecuciones mensuales disponibles.` : "Has utilizado las 3 ejecuciones mensuales del Plan Free. Activa Pro para continuar creando y corrigiendo resultados.")}</p>{upgradeRequired || (!hasProAccess && remaining <= 0) ? <a href="/store/plan-pro-mensual" className="mt-2 inline-flex rounded-lg bg-amber-300 px-3.5 py-2 text-xs font-black !text-slate-950 shadow-sm hover:bg-amber-400">Ver Plan Pro →</a> : null}</div> : null}<div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-500">No incluyas nombres ni información personal de estudiantes.</p><button disabled={working || !message.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-blue-700 px-6 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{working ? "Coordinando…" : "Enviar al Coordinador →"}</button></div></form>
     </section>
+    {editingMessage && typeof document !== "undefined" ? createPortal(
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-4" role="dialog" aria-modal="true" aria-labelledby="agent-editor-title">
+        <section className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <header className="flex items-center justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-blue-950 to-violet-900 px-6 py-5 text-white">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[.16em] text-orange-300">Documento editable</p>
+              <h2 id="agent-editor-title" className="mt-1 text-2xl font-black">Editar y guardar versiones</h2>
+            </div>
+            <button type="button" onClick={() => setEditingMessage(null)} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-xl font-black text-white hover:bg-white/20" aria-label="Cerrar editor">×</button>
+          </header>
+
+          <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="min-h-0 overflow-y-auto p-5 sm:p-6">
+              <label htmlFor="agent-result-editor" className="text-sm font-black text-slate-900">Contenido del resultado</label>
+              <p className="mt-1 text-xs leading-5 text-slate-500">Puedes corregir el texto manualmente. El resultado original de la conversación no será modificado.</p>
+              <textarea id="agent-result-editor" value={editorContent} onChange={(event) => setEditorContent(event.target.value)} maxLength={20000} className="mt-4 min-h-[480px] w-full resize-y rounded-2xl border border-slate-300 bg-white p-4 font-mono text-sm leading-6 text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
+              <div className="mt-2 flex items-center justify-between gap-3 text-xs font-semibold text-slate-500">
+                <span>Los títulos y tablas Markdown se conservarán.</span>
+                <span>{editorContent.length}/20000</span>
+              </div>
+              {versionError ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700" role="alert">{versionError}</p> : null}
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button type="button" onClick={() => void saveEditedVersion()} disabled={versionSaving || !editorContent.trim() || versions.length >= 10} className="min-h-11 rounded-xl bg-emerald-600 px-5 text-sm font-black text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{versionSaving ? "Guardando…" : versions.length >= 10 ? "Límite de versiones alcanzado" : `Guardar versión ${versions.length + 1}`}</button>
+                <button type="button" onClick={printEditorContent} disabled={!editorContent.trim()} className="min-h-11 rounded-xl bg-blue-700 px-5 text-sm font-black text-white hover:bg-blue-800 disabled:opacity-50">Imprimir esta versión</button>
+                <button type="button" onClick={() => setEditorContent(editingMessage.content)} className="min-h-11 rounded-xl border border-slate-300 bg-white px-5 text-sm font-black text-slate-700 hover:bg-slate-50">Recuperar original</button>
+              </div>
+            </div>
+
+            <aside className="min-h-0 overflow-y-auto border-t border-slate-200 bg-slate-50 p-5 lg:border-l lg:border-t-0">
+              <h3 className="font-black text-slate-950">Versiones guardadas</h3>
+              <p className="mt-1 text-xs leading-5 text-slate-500">Puedes recuperar cualquier versión y volver a editarla.</p>
+              {versionsLoading ? <p className="mt-4 rounded-xl bg-white p-4 text-sm font-bold text-violet-700">Cargando versiones…</p> : null}
+              {!versionsLoading && !versions.length ? <p className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-500">Este resultado todavía no tiene versiones guardadas.</p> : null}
+              <div className="mt-4 space-y-3">
+                {versions.map((version) => (
+                  <button key={version.id} type="button" onClick={() => { setEditorContent(version.content); setVersionError(null); }} className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-blue-400 hover:bg-blue-50">
+                    <span className="block text-sm font-black text-blue-800">Versión {version.version_number}</span>
+                    <span className="mt-1 block text-xs text-slate-500">{new Date(version.created_at).toLocaleString("es-EC")}</span>
+                    <span className="mt-2 block line-clamp-3 text-xs leading-5 text-slate-600">{version.content}</span>
+                  </button>
+                ))}
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>,
+      document.body,
+    ) : null}
     {printMessage && printData && typeof document !== "undefined" ? createPortal(<section className={`agent-print-sheet ${hasProAccess ? "agent-print-pro" : "agent-print-free"}`} aria-hidden="true"><header className="agent-print-brand"><img src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" width="72" height="72" /><div><h1>Profe en Movimiento 5.0</h1><p>{hasProAccess ? "Recurso profesional generado con Agentes IA" : "Versión Free · Recurso generado con Agentes IA"}</p></div></header><h2>{printData.title}</h2><AgentMessageContent content={printData.content} /><footer>Profe en Movimiento 5.0 · {new Date().toLocaleDateString("es-EC")}{!hasProAccess ? " · Plan Free" : ""}</footer></section>, document.body) : null}
   </div>;
 }
