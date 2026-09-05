@@ -7,7 +7,7 @@ interface PublicLandingPageProps { authenticated: boolean }
 
 const featureCards = [
   { icon: "✨", title: "Crea tu planificación con Profe IA", text: "Genera sesiones completas, adaptadas al nivel, tiempo, materiales y metodología de tu clase.", href: "/ai", image: "/images/profe-ia-robot.webp" },
-  { icon: "🏅", title: "Diseña entrenamientos con Entrenador IA", text: "Crea sesiones, microciclos, mesociclos y macrociclos de forma guiada y profesional.", href: "/entrenador-ia", image: "/images/landing-entrenador-armando.webp" },
+  { icon: "🏅", title: "Diseña entrenamientos con Entrenador IA", text: "Crea sesiones, microciclos, mesociclos y macrociclos de forma guiada y profesional.", href: "/entrenador-ia", image: "/images/landing-entrenador-armando.webp" },  { icon: "🏃", title: "Planifica la preparación física", text: "Diseña sesiones físicas con carga, intervalos, recuperación, adaptaciones y progresión controlada.", href: "/planificador-fisico", image: "/images/landing-hero-clase-v2.webp" },
   { icon: "📝", title: "Evalúa sin repetir la misma prueba", text: "Prepara exámenes, rúbricas y evaluaciones con criterios claros y versiones equivalentes.", href: "/examenes", image: "/images/landing-evaluacion-v2.webp" },
 ];
 
@@ -142,11 +142,11 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
             <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-orange-700">
+                  <span className="inline-flex items-center rounded-full bg-orange-600 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-white shadow-sm">
                     🛡️ MueveSeguro
                   </span>
 
-                  <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-emerald-700">
+                  <span className="inline-flex items-center rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-white shadow-sm">
                     Acceso gratuito
                   </span>
                 </div>
@@ -246,7 +246,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
               <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-100 blur-2xl" />
 
               <div className="relative">
-                <span className="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-blue-700">
+                <span className="inline-flex rounded-full bg-blue-700 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-white shadow-sm">
                   🌎 Movimiento para Todos
                 </span>
 
@@ -289,7 +289,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
               <div className="absolute -bottom-20 -right-16 h-48 w-48 rounded-full bg-orange-200/50 blur-3xl" />
 
               <div className="relative">
-                <span className="inline-flex rounded-full bg-orange-100 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-orange-700">
+                <span className="inline-flex rounded-full bg-orange-600 px-3 py-1.5 text-xs font-black uppercase tracking-[.16em] text-white shadow-sm">
                   🧑‍🦽 Acompañamiento
                 </span>
 
@@ -327,7 +327,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
         </div>
       </section>
       </div>
-      <section id="producto" className="order-1 scroll-mt-20 px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 lg:grid-cols-3">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl focus-within:ring-4 focus-within:ring-blue-100"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:1024px) 100vw, 33vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 rounded-md font-black text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
+      <section id="producto" className="order-1 scroll-mt-20 px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl focus-within:ring-4 focus-within:ring-blue-100"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:767px) 100vw, (max-width:1279px) 50vw, 25vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 rounded-md font-black text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
       </div>
 
       <section className="bg-[#071532] px-4 py-20 text-white sm:px-6">
