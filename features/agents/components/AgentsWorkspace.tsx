@@ -163,8 +163,25 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
   const [revisionInstruction, setRevisionInstruction] = useState("");
   const [revisionWorking, setRevisionWorking] = useState(false);
   const [revisionError, setRevisionError] = useState<string | null>(null);
+  const [conversationSearch, setConversationSearch] = useState("");
+  const [conversationAction, setConversationAction] = useState<{
+    type: "rename" | "delete";
+    conversation: AgentConversation;
+  } | null>(null);
+  const [conversationTitle, setConversationTitle] = useState("");
+  const [conversationBusyId, setConversationBusyId] = useState<string | null>(null);
+  const [conversationActionError, setConversationActionError] = useState<string | null>(null);
 
   const selectedTitle = useMemo(() => conversations.find((item) => item.id === conversationId)?.title ?? "Nueva conversación", [conversations, conversationId]);
+  const filteredConversations = useMemo(() => {
+    const search = conversationSearch.trim().toLocaleLowerCase("es");
+
+    if (!search) return conversations;
+
+    return conversations.filter((item) =>
+      item.title.toLocaleLowerCase("es").includes(search)
+    );
+  }, [conversationSearch, conversations]);
   const hiddenMessageCount = Math.max(0, messages.length - 2);
   const visibleMessages = showPrevious ? messages : messages.slice(-2);
   const printTitle = useMemo(() => {
@@ -232,6 +249,139 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo generar la respuesta.");
     } finally { setWorking(false); }
+  }
+
+  function openConversationAction(
+    type: "rename" | "delete",
+    conversation: AgentConversation,
+  ) {
+    setConversationAction({ type, conversation });
+    setConversationTitle(conversation.title);
+    setConversationActionError(null);
+  }
+
+  async function renameConversation() {
+    if (!conversationAction || conversationAction.type !== "rename") return;
+
+    const title = conversationTitle.replace(/\s+/g, " ").trim();
+
+    if (title.length < 2 || title.length > 120) {
+      setConversationActionError(
+        "El título debe contener entre 2 y 120 caracteres.",
+      );
+      return;
+    }
+
+    setConversationBusyId(conversationAction.conversation.id);
+    setConversationActionError(null);
+
+    try {
+      const request = await fetch("/api/agents/conversations", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: conversationAction.conversation.id,
+          title,
+        }),
+      });
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        throw new Error(
+          payload.message || "No se pudo renombrar la conversación.",
+        );
+      }
+
+      setConversations((current) =>
+        current.map((item) =>
+          item.id === payload.conversation.id
+            ? { ...item, ...payload.conversation }
+            : item,
+        ),
+      );
+      setConversationAction(null);
+    } catch (caught) {
+      setConversationActionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo renombrar la conversación.",
+      );
+    } finally {
+      setConversationBusyId(null);
+    }
+  }
+
+  async function duplicateConversation(conversation: AgentConversation) {
+    if (conversationBusyId) return;
+
+    setConversationBusyId(conversation.id);
+    setConversationActionError(null);
+
+    try {
+      const request = await fetch("/api/agents/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: conversation.id }),
+      });
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        throw new Error(
+          payload.message || "No se pudo duplicar la conversación.",
+        );
+      }
+
+      window.location.assign(
+        `/agentes?conversation=${payload.conversationId}`,
+      );
+    } catch (caught) {
+      setConversationActionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo duplicar la conversación.",
+      );
+      setConversationBusyId(null);
+    }
+  }
+
+  async function deleteConversation() {
+    if (!conversationAction || conversationAction.type !== "delete") return;
+
+    const id = conversationAction.conversation.id;
+    setConversationBusyId(id);
+    setConversationActionError(null);
+
+    try {
+      const request = await fetch("/api/agents/conversations", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        throw new Error(
+          payload.message || "No se pudo eliminar la conversación.",
+        );
+      }
+
+      setConversations((current) =>
+        current.filter((item) => item.id !== id),
+      );
+      setConversationAction(null);
+
+      if (conversationId === id) {
+        window.location.assign("/agentes");
+      }
+    } catch (caught) {
+      setConversationActionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo eliminar la conversación.",
+      );
+    } finally {
+      setConversationBusyId(null);
+    }
   }
 
   function openAiRevision(
@@ -426,7 +576,25 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <a href="/agentes" className="flex min-h-11 items-center justify-center rounded-xl bg-slate-950 px-4 font-black text-white">+ Nueva conversación</a>
       <p className="mt-6 text-xs font-black uppercase tracking-[.16em] text-blue-700">Conversaciones</p>
-      <div className="mt-3 space-y-2">{conversations.map((item) => <a key={item.id} href={`/agentes?conversation=${item.id}`} className={`block rounded-xl border p-3 text-sm font-bold leading-5 ${item.id === conversationId ? "border-blue-500 bg-blue-50 text-blue-900" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{item.title}</a>)}{!conversations.length ? <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500">Todavía no hay conversaciones.</p> : null}</div>
+      <label htmlFor="agent-conversation-search" className="sr-only">Buscar conversaciones</label>
+      <input id="agent-conversation-search" type="search" value={conversationSearch} onChange={(event) => setConversationSearch(event.target.value)} className="mt-3 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Buscar conversación…" />
+
+      <div className="mt-3 space-y-3">
+        {filteredConversations.map((item) => (
+          <article key={item.id} className={`rounded-xl border p-3 ${item.id === conversationId ? "border-blue-500 bg-blue-50" : "border-slate-200 bg-white"}`}>
+            <a href={`/agentes?conversation=${item.id}`} className={`block text-sm font-bold leading-5 ${item.id === conversationId ? "text-blue-900" : "text-slate-700 hover:text-blue-800"}`}>{item.title}</a>
+            <div className="mt-3 flex flex-wrap gap-1.5 border-t border-slate-200 pt-2">
+              <button type="button" onClick={() => openConversationAction("rename", item)} disabled={Boolean(conversationBusyId)} className="rounded-lg bg-slate-100 px-2.5 py-1.5 text-[11px] font-black text-slate-700 hover:bg-slate-200 disabled:opacity-40">Renombrar</button>
+              <button type="button" onClick={() => void duplicateConversation(item)} disabled={Boolean(conversationBusyId)} className="rounded-lg bg-violet-100 px-2.5 py-1.5 text-[11px] font-black text-violet-800 hover:bg-violet-200 disabled:opacity-40">{conversationBusyId === item.id ? "Procesando…" : "Duplicar"}</button>
+              <button type="button" onClick={() => openConversationAction("delete", item)} disabled={Boolean(conversationBusyId)} className="rounded-lg bg-red-50 px-2.5 py-1.5 text-[11px] font-black text-red-700 hover:bg-red-100 disabled:opacity-40">Eliminar</button>
+            </div>
+          </article>
+        ))}
+        {!conversations.length ? <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500">Todavía no hay conversaciones.</p> : null}
+        {conversations.length > 0 && !filteredConversations.length ? <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500">No encontramos conversaciones con ese título.</p> : null}
+      </div>
+
+      {conversationActionError && !conversationAction ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-xs font-bold leading-5 text-red-700">{conversationActionError}</p> : null}
       {!hasProAccess && conversations.length >= 3 ? <p className="mt-3 text-xs leading-5 text-slate-500">Plan Free muestra las 3 conversaciones más recientes. Tu historial completo se conserva al activar Pro.</p> : null}
       <div className="mt-6 rounded-2xl bg-violet-50 p-4"><div className="flex items-center justify-between gap-2"><p className="text-xs font-black uppercase tracking-wide text-violet-700">Uso mensual</p><span className="rounded-full bg-white px-2 py-1 text-[10px] font-black uppercase text-violet-800">{hasProAccess ? "Pro" : "Free"}</span></div><p className="mt-2 text-2xl font-black text-slate-950">{remaining} disponibles</p><p className="mt-1 text-xs text-slate-500">Límite actual: {monthlyLimit} ejecuciones.</p>{!hasProAccess ? <><p className="mt-2 rounded-lg bg-white px-2.5 py-2 text-xs font-bold text-violet-800">Microciclo: {microcycleRemaining} de 1 disponible este mes.</p><a href="/store/plan-pro-mensual?source=agents_usage" className="mt-3 inline-flex text-xs font-black text-blue-700 hover:text-blue-900">Conocer el Plan Pro →</a></> : null}</div>
     </aside>
@@ -443,6 +611,40 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
       </div>
       <form onSubmit={submit} className="border-t border-slate-200 bg-white p-5"><label htmlFor="agent-message" className="text-sm font-black text-slate-900">Solicitud para el Coordinador</label><textarea id="agent-message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={6000} rows={4} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-7 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Ejemplo: necesito una clase de 45 minutos para 40 estudiantes…" />{error || remaining <= 0 ? <div className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700"><p>{error ?? (hasProAccess ? `Has utilizado las ${monthlyLimit} ejecuciones mensuales disponibles.` : "Has utilizado las 3 ejecuciones mensuales del Plan Free. Activa Pro para continuar creando y corrigiendo resultados.")}</p>{upgradeRequired || (!hasProAccess && remaining <= 0) ? <a href="/store/plan-pro-mensual" className="mt-2 inline-flex rounded-lg bg-amber-300 px-3.5 py-2 text-xs font-black !text-slate-950 shadow-sm hover:bg-amber-400">Ver Plan Pro →</a> : null}</div> : null}<div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-500">No incluyas nombres ni información personal de estudiantes.</p><button disabled={working || !message.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-blue-700 px-6 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{working ? "Coordinando…" : "Enviar al Coordinador →"}</button></div></form>
     </section>
+    {conversationAction && typeof document !== "undefined" ? createPortal(
+      <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/75 p-4" role="dialog" aria-modal="true" aria-labelledby="agent-conversation-action-title">
+        <section className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <header className={`px-6 py-5 text-white ${conversationAction.type === "delete" ? "bg-red-800" : "bg-gradient-to-r from-blue-950 to-violet-900"}`}>
+            <p className="text-xs font-black uppercase tracking-[.16em] text-orange-200">Gestión de conversación</p>
+            <h2 id="agent-conversation-action-title" className="mt-1 text-2xl font-black">{conversationAction.type === "rename" ? "Renombrar conversación" : "Eliminar conversación"}</h2>
+          </header>
+
+          <div className="p-6">
+            {conversationAction.type === "rename" ? (
+              <>
+                <label htmlFor="agent-conversation-title" className="text-sm font-black text-slate-900">Nuevo título</label>
+                <input id="agent-conversation-title" value={conversationTitle} onChange={(event) => setConversationTitle(event.target.value)} maxLength={120} autoFocus className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-4 text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" />
+                <p className="mt-2 text-right text-xs font-semibold text-slate-500">{conversationTitle.length}/120</p>
+              </>
+            ) : (
+              <>
+                <p className="text-base font-bold text-slate-900">¿Deseas eliminar esta conversación?</p>
+                <p className="mt-3 rounded-xl bg-slate-100 p-4 text-sm font-bold leading-6 text-slate-700">{conversationAction.conversation.title}</p>
+                <p className="mt-3 text-sm leading-6 text-red-700">Se eliminarán también todos sus mensajes y versiones guardadas. Esta acción no se puede deshacer.</p>
+              </>
+            )}
+
+            {conversationActionError ? <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700" role="alert">{conversationActionError}</p> : null}
+
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+              <button type="button" onClick={() => setConversationAction(null)} disabled={Boolean(conversationBusyId)} className="min-h-11 rounded-xl border border-slate-300 bg-white px-5 text-sm font-black text-slate-700 hover:bg-slate-50 disabled:opacity-40">Cancelar</button>
+              {conversationAction.type === "rename" ? <button type="button" onClick={() => void renameConversation()} disabled={Boolean(conversationBusyId) || conversationTitle.trim().length < 2} className="min-h-11 rounded-xl bg-blue-700 px-5 text-sm font-black text-white hover:bg-blue-800 disabled:opacity-40">{conversationBusyId ? "Guardando…" : "Guardar título"}</button> : <button type="button" onClick={() => void deleteConversation()} disabled={Boolean(conversationBusyId)} className="min-h-11 rounded-xl bg-red-700 px-5 text-sm font-black text-white hover:bg-red-800 disabled:opacity-40">{conversationBusyId ? "Eliminando…" : "Sí, eliminar"}</button>}
+            </div>
+          </div>
+        </section>
+      </div>,
+      document.body,
+    ) : null}
     {revisionMessage && typeof document !== "undefined" ? createPortal(
       <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/75 p-4" role="dialog" aria-modal="true" aria-labelledby="agent-revision-title">
         <section className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl">
