@@ -93,6 +93,85 @@ La primera línea de toda respuesta debe ser exactamente [[RESULTADO]] cuando en
   ],
 });
 
+const revisionCoordinator = new Agent({
+  name: "Coordinador de Revisiones",
+  model: process.env.OPENAI_AGENT_MODEL?.trim() || process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
+  instructions: `${sharedRules}
+Revisas un documento ya generado por el Centro de Agentes IA. Recibirás el documento vigente, una instrucción del docente y uno de estos modos:
+
+1. DOCUMENTO COMPLETO: aplica la corrección solicitada y entrega el documento completo.
+2. SECCIÓN ESPECÍFICA: entrega únicamente la sección corregida, comenzando con el mismo título de esa sección. No copies ninguna parte anterior ni posterior.
+
+Mantén el formato Markdown, duración total, cantidad de participantes, inventario de materiales, metodología, criterios de evaluación y medidas de seguridad, excepto cuando la instrucción solicite expresamente modificar alguno de esos elementos.
+
+No añadas materiales que no aparezcan en el documento vigente. Si existen tablas, conserva su estructura Markdown válida. En rúbricas mantén exactamente la escala 10 Excelente, 9 Bien, 8 Regular, 7 Aceptable y 5 Mejorable, salvo instrucción explícita distinta. Mantén las etiquetas DUA exactas: 🟢 Compromiso, 🟣 Representación y 🔵 Acción y Expresión.
+
+No expliques qué cambiaste, no presentes comparaciones, no incluyas notas editoriales, delimitadores ni menciones procesos internos. La primera línea debe ser exactamente [[RESULTADO]]. Después entrega el documento completo si el modo es DOCUMENTO COMPLETO, o únicamente la sección corregida si el modo es SECCIÓN ESPECÍFICA.`,
+  tools: [
+    planningAgent.asTool({
+      toolName: "revisar_planificacion",
+      toolDescription: "Revisa planificación, metodología, tiempos, organización, materiales y seguridad.",
+    }),
+    assessmentAgent.asTool({
+      toolName: "revisar_evaluacion",
+      toolDescription: "Revisa rúbricas, listas de cotejo, evaluaciones y exámenes.",
+    }),
+    inclusionAgent.asTool({
+      toolName: "revisar_inclusion",
+      toolDescription: "Revisa DUA, NEE y estrategias inclusivas.",
+    }),
+    trainingAgent.asTool({
+      toolName: "revisar_entrenamiento",
+      toolDescription: "Revisa sesiones y ciclos de entrenamiento deportivo.",
+    }),
+  ],
+});
+
+export async function runTeacherRevision(input: {
+  content: string;
+  instruction: string;
+  mode: "full" | "section";
+  section: string | null;
+}) {
+  const scope = input.mode === "section"
+    ? `SECCIÓN ESPECÍFICA: ${input.section}`
+    : "DOCUMENTO COMPLETO";
+
+  const prompt = `MODO DE REVISIÓN:
+${scope}
+
+INSTRUCCIÓN DEL DOCENTE:
+${input.instruction}
+
+DOCUMENTO VIGENTE:
+--- INICIO DEL DOCUMENTO ---
+${input.content}
+--- FIN DEL DOCUMENTO ---
+
+${input.mode === "section"
+  ? "Entrega únicamente la sección corregida, comenzando con su mismo título."
+  : "Entrega el documento completo revisado."}`;
+
+  const result = await run(revisionCoordinator, prompt, { maxTurns: 5 });
+  const rawOutput = typeof result.finalOutput === "string"
+    ? result.finalOutput.trim()
+    : "";
+  const output = rawOutput
+    .replace(/^\[\[RESULTADO\]\]\s*/i, "")
+    .replace(/^\s*---\s*(?:INICIO|FIN)\s+DEL\s+DOCUMENTO\s*---\s*$/gim, "")
+    .trim();
+
+  if (!output) {
+    throw new Error("empty_revision_output");
+  }
+
+  return {
+    output,
+    specialist: "coordinator" satisfies AgentSpecialist,
+    responseKind: "result" as const,
+  };
+}
+
 export async function runTeacherCoordinator(input: string) {
   const result = await run(coordinator, input, { maxTurns: 5 });
   const rawOutput = typeof result.finalOutput === "string" ? result.finalOutput.trim() : "";

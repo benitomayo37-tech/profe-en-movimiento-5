@@ -156,6 +156,13 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
   const [versionsLoading, setVersionsLoading] = useState(false);
   const [versionSaving, setVersionSaving] = useState(false);
   const [versionError, setVersionError] = useState<string | null>(null);
+  const [revisionMessage, setRevisionMessage] = useState<AgentMessage | null>(null);
+  const [revisionSourceContent, setRevisionSourceContent] = useState("");
+  const [revisionMode, setRevisionMode] = useState<"full" | "section">("section");
+  const [revisionSection, setRevisionSection] = useState("");
+  const [revisionInstruction, setRevisionInstruction] = useState("");
+  const [revisionWorking, setRevisionWorking] = useState(false);
+  const [revisionError, setRevisionError] = useState<string | null>(null);
 
   const selectedTitle = useMemo(() => conversations.find((item) => item.id === conversationId)?.title ?? "Nueva conversación", [conversations, conversationId]);
   const hiddenMessageCount = Math.max(0, messages.length - 2);
@@ -225,6 +232,91 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo generar la respuesta.");
     } finally { setWorking(false); }
+  }
+
+  function openAiRevision(
+    item: AgentMessage,
+    content: string = item.content,
+  ) {
+    setRevisionMessage(item);
+    setRevisionSourceContent(content.trim());
+    setRevisionMode("section");
+    setRevisionSection("");
+    setRevisionInstruction("");
+    setRevisionError(null);
+  }
+
+  async function submitAiRevision() {
+    if (!revisionMessage || revisionWorking) return;
+
+    const cleanInstruction = revisionInstruction.trim();
+    const cleanSection = revisionSection.trim();
+
+    if (cleanInstruction.length < 2) {
+      setRevisionError("Describe la corrección que necesitas.");
+      return;
+    }
+
+    if (revisionMode === "section" && cleanSection.length < 2) {
+      setRevisionError("Indica qué sección deseas corregir.");
+      return;
+    }
+
+    setRevisionWorking(true);
+    setRevisionError(null);
+
+    try {
+      const request = await fetch("/api/agents/revise", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messageId: revisionMessage.id,
+          content: revisionSourceContent,
+          instruction: cleanInstruction,
+          mode: revisionMode,
+          section: revisionMode === "section" ? cleanSection : null,
+        }),
+      });
+      const payload = await request.json();
+
+      if (!request.ok || !payload.success) {
+        if (
+          [
+            "agents_pro_required",
+            "agents_microcycle_limit",
+            "agents_correction_limit",
+          ].includes(payload.code)
+        ) {
+          setUpgradeRequired(true);
+        }
+
+        throw new Error(
+          payload.message || "No se pudo completar la corrección.",
+        );
+      }
+
+      setMessages((current) => [
+        ...current,
+        payload.userMessage,
+        payload.assistantMessage,
+      ]);
+      setRemaining((current) =>
+        typeof payload.remaining === "number"
+          ? payload.remaining
+          : current,
+      );
+      setShowPrevious(false);
+      setRevisionMessage(null);
+      setMessage("");
+    } catch (caught) {
+      setRevisionError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo completar la corrección.",
+      );
+    } finally {
+      setRevisionWorking(false);
+    }
   }
 
   async function openResultEditor(item: AgentMessage) {
@@ -345,12 +437,65 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
         {!messages.length ? <div><div className="rounded-2xl border border-blue-100 bg-white p-6"><h3 className="text-xl font-black text-slate-950">¿Qué necesitas preparar?</h3><p className="mt-2 leading-7 text-slate-600">Describe tu meta. Si faltan datos, el agente te preguntará antes de elaborar el resultado.</p></div><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{starterPrompts.map((prompt) => prompt.pro && !hasProAccess ? <a key={prompt.text} href="/store/plan-pro-mensual" className="relative rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-amber-400"><span className="agent-pro-lock-badge absolute right-3 top-3 rounded-full px-2 py-1 text-[10px] font-black uppercase">Pro</span><span className="block pr-10">{prompt.text}</span><span className="agent-upgrade-link mt-2 block text-xs font-black">Activar Plan Pro →</span></a> : <button key={prompt.text} onClick={() => setMessage(prompt.text)} className="relative rounded-2xl border border-slate-200 bg-white p-4 text-left text-sm font-bold leading-6 text-slate-700 hover:border-blue-400">{prompt.pro ? <span className="agent-pro-active-badge absolute right-3 top-3 rounded-full px-2 py-1 text-[10px] font-black uppercase">Pro</span> : null}{!hasProAccess && prompt.text.includes("microciclo") ? <span className="absolute right-3 top-3 rounded-full bg-violet-700 px-2.5 py-1 text-[11px] font-black uppercase !text-white shadow-sm">1 al mes</span> : null}<span className={prompt.pro || (!hasProAccess && prompt.text.includes("microciclo")) ? "block pr-20" : "block"}>{prompt.text}</span></button>)}</div></div> : <>{hiddenMessageCount > 0 ? <button type="button" onClick={() => setShowPrevious((current) => !current)} className="mx-auto block rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-100">{showPrevious ? "Ocultar mensajes anteriores" : `Ver ${hiddenMessageCount} mensajes anteriores`}</button> : null}{visibleMessages.map((item) => <article key={item.id} className={`rounded-2xl p-5 shadow-sm ${item.role === "user" ? "ml-auto max-w-3xl bg-blue-700 text-white" : "mr-auto max-w-4xl border border-slate-200 bg-white text-slate-700"}`}>
           <p className={`text-xs font-black uppercase tracking-[.14em] ${item.role === "user" ? "text-blue-100" : "text-violet-700"}`}>{item.role === "user" ? "Docente" : specialistLabel[item.specialist ?? "coordinator"]}</p>
           <AgentMessageContent content={item.content} />
-          {item.role === "assistant" && item.response_kind !== "clarification" ? <div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => void openResultEditor(item)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800">{item.saved_at ? "Editar y ver versiones" : "Editar y guardar"}</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir resultado original</button></div> : null}
+          {item.role === "assistant" && item.response_kind !== "clarification" ? <div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => void openResultEditor(item)} className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800">{item.saved_at ? "Editar y ver versiones" : "Editar y guardar"}</button><button type="button" onClick={() => openAiRevision(item)} disabled={remaining <= 0} className="rounded-xl border border-violet-300 bg-violet-50 px-4 py-2 text-xs font-black text-violet-800 disabled:cursor-not-allowed disabled:opacity-40">Corregir con IA</button><button type="button" onClick={() => setPrintMessage(item)} className="rounded-xl border border-blue-300 bg-blue-50 px-4 py-2 text-xs font-black text-blue-800">Imprimir resultado original</button></div> : null}
         </article>)}</>}
         {working ? <div className="mr-auto max-w-md rounded-2xl border border-violet-200 bg-white p-5 font-bold text-violet-800 shadow-sm" aria-live="polite">Los agentes están analizando y revisando la solicitud…</div> : null}
       </div>
       <form onSubmit={submit} className="border-t border-slate-200 bg-white p-5"><label htmlFor="agent-message" className="text-sm font-black text-slate-900">Solicitud para el Coordinador</label><textarea id="agent-message" value={message} onChange={(event) => setMessage(event.target.value)} maxLength={6000} rows={4} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-7 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100" placeholder="Ejemplo: necesito una clase de 45 minutos para 40 estudiantes…" />{error || remaining <= 0 ? <div className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700"><p>{error ?? (hasProAccess ? `Has utilizado las ${monthlyLimit} ejecuciones mensuales disponibles.` : "Has utilizado las 3 ejecuciones mensuales del Plan Free. Activa Pro para continuar creando y corrigiendo resultados.")}</p>{upgradeRequired || (!hasProAccess && remaining <= 0) ? <a href="/store/plan-pro-mensual" className="mt-2 inline-flex rounded-lg bg-amber-300 px-3.5 py-2 text-xs font-black !text-slate-950 shadow-sm hover:bg-amber-400">Ver Plan Pro →</a> : null}</div> : null}<div className="mt-3 flex flex-wrap items-center justify-between gap-3"><p className="text-xs font-semibold text-slate-500">No incluyas nombres ni información personal de estudiantes.</p><button disabled={working || !message.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-blue-700 px-6 font-black text-white disabled:cursor-not-allowed disabled:opacity-40">{working ? "Coordinando…" : "Enviar al Coordinador →"}</button></div></form>
     </section>
+    {revisionMessage && typeof document !== "undefined" ? createPortal(
+      <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/75 p-4" role="dialog" aria-modal="true" aria-labelledby="agent-revision-title">
+        <section className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <header className="flex items-center justify-between gap-4 bg-gradient-to-r from-blue-950 to-violet-900 px-6 py-5 text-white">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[.16em] text-orange-300">Revisión dirigida</p>
+              <h2 id="agent-revision-title" className="mt-1 text-2xl font-black">Corregir con IA</h2>
+            </div>
+            <button type="button" onClick={() => setRevisionMessage(null)} disabled={revisionWorking} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-xl font-black text-white hover:bg-white/20 disabled:opacity-40" aria-label="Cerrar corrección">×</button>
+          </header>
+
+          <div className="max-h-[78vh] overflow-y-auto p-6">
+            <p className="text-sm leading-6 text-slate-600">El Coordinador generará un nuevo resultado. El documento actual y sus versiones permanecerán intactos.</p>
+
+            <fieldset className="mt-5">
+              <legend className="text-sm font-black text-slate-900">¿Qué deseas revisar?</legend>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <label className={`cursor-pointer rounded-2xl border p-4 ${revisionMode === "section" ? "border-violet-500 bg-violet-50" : "border-slate-200 bg-white"}`}>
+                  <input type="radio" name="revision-mode" value="section" checked={revisionMode === "section"} onChange={() => setRevisionMode("section")} className="mr-2" />
+                  <span className="font-black text-slate-900">Una sección</span>
+                  <span className="mt-1 block text-xs leading-5 text-slate-500">Conserva el resto del documento.</span>
+                </label>
+                <label className={`cursor-pointer rounded-2xl border p-4 ${revisionMode === "full" ? "border-violet-500 bg-violet-50" : "border-slate-200 bg-white"}`}>
+                  <input type="radio" name="revision-mode" value="full" checked={revisionMode === "full"} onChange={() => setRevisionMode("full")} className="mr-2" />
+                  <span className="font-black text-slate-900">Documento completo</span>
+                  <span className="mt-1 block text-xs leading-5 text-slate-500">Permite ajustes en todo el recurso.</span>
+                </label>
+              </div>
+            </fieldset>
+
+            {revisionMode === "section" ? <div className="mt-5"><label htmlFor="agent-revision-section" className="text-sm font-black text-slate-900">Sección que deseas corregir</label><input id="agent-revision-section" value={revisionSection} onChange={(event) => setRevisionSection(event.target.value)} maxLength={120} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-4 text-slate-800 outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" placeholder="Ejemplo: Desarrollo, DUA o Rúbrica de evaluación" /></div> : null}
+
+            <div className="mt-5">
+              <label htmlFor="agent-revision-instruction" className="text-sm font-black text-slate-900">¿Qué debe cambiar?</label>
+              <textarea id="agent-revision-instruction" value={revisionInstruction} onChange={(event) => setRevisionInstruction(event.target.value)} maxLength={2000} rows={5} className="mt-2 w-full rounded-2xl border border-slate-300 p-4 leading-6 text-slate-800 outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" placeholder="Ejemplo: simplifica las instrucciones y mantén exactamente los mismos materiales y tiempos." />
+              <div className="mt-1 text-right text-xs font-semibold text-slate-500">{revisionInstruction.length}/2000</div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+              Esta corrección utilizará 1 ejecución. Te quedan <strong>{remaining}</strong> este mes.
+            </div>
+
+            {revisionError ? <div className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700" role="alert"><p>{revisionError}</p>{upgradeRequired ? <a href="/store/plan-pro-mensual?source=agents_revision" className="mt-2 inline-flex rounded-lg bg-amber-300 px-3.5 py-2 text-xs font-black !text-slate-950">Ver Plan Pro →</a> : null}</div> : null}
+
+            <div className="mt-6 flex flex-wrap justify-end gap-3">
+              <button type="button" onClick={() => setRevisionMessage(null)} disabled={revisionWorking} className="min-h-11 rounded-xl border border-slate-300 bg-white px-5 text-sm font-black text-slate-700 hover:bg-slate-50 disabled:opacity-40">Cancelar</button>
+              <button type="button" onClick={() => void submitAiRevision()} disabled={revisionWorking || remaining <= 0 || revisionInstruction.trim().length < 2 || (revisionMode === "section" && revisionSection.trim().length < 2)} className="min-h-11 rounded-xl bg-violet-700 px-5 text-sm font-black text-white hover:bg-violet-800 disabled:cursor-not-allowed disabled:opacity-40">{revisionWorking ? "Corrigiendo…" : "Generar corrección →"}</button>
+            </div>
+          </div>
+        </section>
+      </div>,
+      document.body,
+    ) : null}
     {editingMessage && typeof document !== "undefined" ? createPortal(
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-4" role="dialog" aria-modal="true" aria-labelledby="agent-editor-title">
         <section className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
@@ -374,6 +519,7 @@ export default function AgentsWorkspace({ initialConversations, initialMessages,
               {versionError ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700" role="alert">{versionError}</p> : null}
               <div className="mt-5 flex flex-wrap gap-3">
                 <button type="button" onClick={() => void saveEditedVersion()} disabled={versionSaving || !editorContent.trim() || versions.length >= 10} className="min-h-11 rounded-xl bg-emerald-600 px-5 text-sm font-black text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50">{versionSaving ? "Guardando…" : versions.length >= 10 ? "Límite de versiones alcanzado" : `Guardar versión ${versions.length + 1}`}</button>
+                <button type="button" onClick={() => { openAiRevision(editingMessage, editorContent); setEditingMessage(null); }} disabled={!editorContent.trim() || remaining <= 0} className="min-h-11 rounded-xl bg-violet-700 px-5 text-sm font-black text-white hover:bg-violet-800 disabled:cursor-not-allowed disabled:opacity-50">Corregir esta versión con IA</button>
                 <button type="button" onClick={printEditorContent} disabled={!editorContent.trim()} className="min-h-11 rounded-xl bg-blue-700 px-5 text-sm font-black text-white hover:bg-blue-800 disabled:opacity-50">Imprimir esta versión</button>
                 <button type="button" onClick={() => setEditorContent(editingMessage.content)} className="min-h-11 rounded-xl border border-slate-300 bg-white px-5 text-sm font-black text-slate-700 hover:bg-slate-50">Recuperar original</button>
               </div>
