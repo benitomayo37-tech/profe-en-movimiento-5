@@ -20,10 +20,11 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
     { label: "Documentos IA", href: "/agentes/documentos" },
     { label: "Profe IA", href: "/ai" },
     { label: "Entrenador IA", href: "/entrenador-ia" },
-    { label: "Exámenes estudiantiles", href: "/examenes" },
+    { label: "Planificador Físico", href: "/planificador-fisico" },
+    { label: "ExÃ¡menes estudiantiles", href: "/examenes" },
     { label: "App para profes", href: "/apps" },
   ] },
-  { title: "Seguridad e inclusión", items: [
+  { title: "Seguridad e inclusiÃ³n", items: [
     { label: "MueveSeguro", href: "/mueve-seguro" },
     { label: "Movimiento para Todos", href: "/movimiento-para-todos" },
   ] },
@@ -64,13 +65,13 @@ export function Sidebar() {
         </p>
 
         <p className="mt-1 text-sm text-slate-500">
-          Aprender · Moverse · Innovar
+          Aprender Â· Moverse Â· Innovar
         </p>
       </Link>
 
       <nav
         className="mt-6 flex flex-col gap-5"
-        aria-label="Navegación principal"
+        aria-label="NavegaciÃ³n principal"
       >
         {navigationGroups.map((group) => (
           <div key={group.title}>
@@ -85,7 +86,7 @@ export function Sidebar() {
           </div>
         ))}
         {upcoming.length ? <div>
-          <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">Próximamente</p>
+          <p className="px-4 text-[10px] font-black uppercase tracking-[0.18em] text-blue-600">PrÃ³ximamente</p>
           <div className="mt-2 flex flex-wrap gap-2 px-4">{upcoming.map((label) => <span key={label} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-400">{label}</span>)}</div>
         </div> : null}
       </nav>
@@ -105,7 +106,7 @@ export function Sidebar() {
           </p>
 
           <p className="mt-1 text-sm text-emerald-600">
-            ● Sistema operativo
+            â— Sistema operativo
           </p>
         </div>
       </div>

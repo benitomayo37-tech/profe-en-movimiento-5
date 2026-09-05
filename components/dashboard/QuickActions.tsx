@@ -24,7 +24,15 @@ const actions = [
     icon: "🏅",
     access: "Free + Pro",
   },
-  {
+    {
+    title: "Planificador Físico",
+    description:
+      "Organiza sesiones físicas con carga, intervalos, recuperación y progresión controlada.",
+    href: "/planificador-fisico",
+    icon: "🏃",
+    access: "Free + Pro",
+  },
+{
     title: "Recursos",
     description:
       "Explora materiales, guías y contenidos listos para utilizar.",

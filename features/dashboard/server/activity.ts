@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 export type ActivityType =
   | "profe-ai"
   | "training-session"
+  | "physical-planner"
   | "microcycle"
   | "mesocycle"
   | "macrocycle"

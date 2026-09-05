@@ -5,6 +5,7 @@ import type { ActivityType, RecentActivityEntry } from "@/features/dashboard/ser
 const activityPresentation: Record<ActivityType, { icon: string; label: string }> = {
   "profe-ai": { icon: "✨", label: "Profe IA" },
   "training-session": { icon: "🏅", label: "Sesión" },
+  "physical-planner": { icon: "🏃", label: "Planificación física" },
   microcycle: { icon: "📅", label: "Microciclo" },
   mesocycle: { icon: "📈", label: "Mesociclo" },
   macrocycle: { icon: "🏆", label: "Macrociclo" },
