@@ -5,7 +5,7 @@ import type { AuthAccess } from "@/features/auth/types";
 import DashboardHeader from "@/features/dashboard/components/DashboardHeader";
 import QuickActions from "./QuickActions";
 import RecentActivity from "./RecentActivity";
-import WelcomeSection from "./WelcomeSection";
+
 import LeadActivationJourney from "./LeadActivationJourney";
 import { getLeadActivationJourney } from "@/features/funnel/server/activation";
 
@@ -25,9 +25,12 @@ export default async function DashboardPage({ access }: { access: AuthAccess }) 
       footer={<div className="px-6 py-4 text-center text-xs text-slate-500">Profe en Movimiento · Centro de operaciones docente</div>}
     >
        <Container className="space-y-10 py-8">
-        <WelcomeSection userName={userName} access={access} />
-        {activationJourney ? <LeadActivationJourney journey={activationJourney} /> : null}
-        <QuickActions />
+        <QuickActions userName={userName} />
+        {activationJourney ? (
+          <LeadActivationJourney
+            journey={activationJourney}
+          />
+        ) : null}
   <RecentActivity activities={recentActivity} />
 </Container>
     </AppLayout>

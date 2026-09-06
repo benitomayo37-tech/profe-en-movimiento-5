@@ -61,16 +61,16 @@ export default function RecentActivity({ activities }: { activities: RecentActiv
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2">
           {activities.map((activity) => {
             const presentation = activityPresentation[activity.type];
             return (
               <Link
                 key={activity.id}
                 href={activity.href}
-                className="group flex items-start gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+                className="group flex min-w-0 max-w-full items-start gap-3 overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 sm:gap-4 sm:p-5"
               >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-2xl" aria-hidden="true">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl sm:h-12 sm:w-12 sm:rounded-2xl sm:text-2xl" aria-hidden="true">
                   {presentation.icon}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -80,12 +80,12 @@ export default function RecentActivity({ activities }: { activities: RecentActiv
                     </span>
                     <span className="text-xs text-slate-400">{formatActivityTime(activity.createdAt)}</span>
                   </span>
-                  <span className="mt-2 block truncate font-black text-slate-900">{activity.title}</span>
+                  <span className="mt-2 block max-w-full truncate font-black text-slate-900">{activity.title}</span>
                   <span className="mt-1 block line-clamp-2 text-sm leading-6 text-slate-600">
                     {activity.description}
                   </span>
                 </span>
-                <span className="mt-4 text-blue-700 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+                <span className="mt-3 shrink-0 text-blue-700 transition group-hover:translate-x-1 sm:mt-4" aria-hidden="true">→</span>
               </Link>
             );
           })}
