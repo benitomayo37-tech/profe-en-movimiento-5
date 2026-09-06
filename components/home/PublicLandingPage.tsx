@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+import SportsNewsSection from "@/features/sports-news/components/SportsNewsSection";
 
 interface PublicLandingPageProps { authenticated: boolean }
 
@@ -132,7 +133,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
           MUEVESEGURO — ACCESO FREE
       ========================== */}
       <div className="flex flex-col">
-      <div id="soluciones-inclusivas" className="order-2 scroll-mt-20">
+      <div id="soluciones-inclusivas" className="order-3 scroll-mt-20">
       <section className="px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="landing-adaptive-card relative overflow-hidden rounded-[2rem] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-blue-50 p-7 shadow-xl sm:p-10 lg:p-12">
@@ -328,6 +329,7 @@ export default function PublicLandingPage({ authenticated }: PublicLandingPagePr
       </section>
       </div>
       <section id="producto" className="order-1 scroll-mt-20 px-4 py-24 sm:px-6"><div className="mx-auto max-w-7xl"><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-black uppercase tracking-[.22em] text-orange-600">Una plataforma, múltiples soluciones</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tu próxima clase comienza aquí</h2><p className="mt-5 text-lg leading-8 text-slate-600">Elige la herramienta, agrega el contexto de tu grupo y mantén siempre el control pedagógico.</p></div><div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">{featureCards.map(feature => <article key={feature.title} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-2 hover:shadow-xl focus-within:ring-4 focus-within:ring-blue-100"><div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-slate-100"><Image src={feature.image} alt="" fill sizes="(max-width:767px) 100vw, (max-width:1279px) 50vw, 25vw" className={`transition duration-500 group-hover:scale-105 ${feature.image.includes("profe-ia") ? "object-contain object-top" : "object-cover object-center"}`} /></div><div className="p-7"><span className="text-2xl" aria-hidden="true">{feature.icon}</span><h3 className="mt-3 text-xl font-black">{feature.title}</h3><p className="mt-3 leading-7 text-slate-600">{feature.text}</p><Link href={memberHref(feature.href)} className="mt-6 inline-flex items-center gap-2 rounded-md font-black text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">Descubrir más <ArrowIcon /></Link></div></article>)}</div></div></section>
+      <SportsNewsSection />
       </div>
 
       <section className="bg-[#071532] px-4 py-20 text-white sm:px-6">
