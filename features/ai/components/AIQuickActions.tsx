@@ -98,7 +98,7 @@ export default function AIQuickActions({
               {action.title}
             </h3>
 
-            <span className={`mt-2 w-fit rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide ${isFreeTool ? "bg-emerald-100 text-emerald-800" : "bg-orange-100 text-orange-800"}`}>
+            <span className={`mt-2 w-fit rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide ${isFreeTool ? "border border-emerald-400 bg-emerald-700 text-white shadow-sm" : "border border-orange-300 bg-orange-600 text-white shadow-sm"}`}>
               {isFreeTool ? "Free · 3/mes" : hasProAccess ? "Pro" : "Pro 🔒"}
             </span>
 

@@ -181,7 +181,7 @@ export default function StoreCatalog() {
       <section id="app-para-profes" className="scroll-mt-24" aria-labelledby="app-title">
         <div className="grid gap-8 rounded-[2rem] border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-lg sm:p-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:p-10">
           <div>
-            <span className="inline-flex rounded-full bg-orange-100 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-orange-700">
+            <span className="inline-flex rounded-full border border-orange-300 bg-orange-600 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-white shadow-sm">
               Producto destacado
             </span>
             <h2 id="app-title" className="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -194,7 +194,7 @@ export default function StoreCatalog() {
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {appBenefits.map((benefit) => (
                 <div key={benefit} className="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-black text-emerald-700" aria-hidden="true">✓</span>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-400 bg-emerald-700 text-xs font-black text-white" aria-hidden="true">✓</span>
                   <p className="text-sm font-semibold leading-6 text-slate-700">{benefit}</p>
                 </div>
               ))}
@@ -216,7 +216,7 @@ export default function StoreCatalog() {
                 }`}
               >
                 {plan.featured ? (
-                  <span className="absolute right-5 top-5 rounded-full bg-orange-400 px-3 py-1 text-[0.65rem] font-black uppercase tracking-wide text-slate-950">
+                  <span className="absolute right-5 top-5 rounded-full border border-orange-300 bg-orange-600 px-3 py-1 text-[0.65rem] font-black uppercase tracking-wide text-white shadow-sm">
                     Recomendado
                   </span>
                 ) : null}

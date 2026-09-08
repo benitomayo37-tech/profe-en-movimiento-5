@@ -24,8 +24,8 @@ export default function StorePageHeader({
       {access.authenticated ? (
         <span className={`hidden rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-wide sm:inline-flex ${
           access.hasProAccess
-            ? "bg-violet-100 text-violet-700"
-            : "bg-slate-100 text-slate-600"
+            ? "border border-violet-300 bg-violet-700 text-white shadow-sm"
+            : "border border-slate-400 bg-slate-700 text-white shadow-sm"
         }`}>
           Plan {access.hasProAccess ? "Pro" : "Free"}
         </span>

@@ -85,19 +85,19 @@ export default async function ResourcesPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white">
+              <span className="rounded-full border border-blue-300 bg-blue-700 px-4 py-2 text-sm font-bold text-white shadow-sm">
                 ✓ Revisados pedagógicamente
               </span>
 
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white">
+              <span className="rounded-full border border-blue-300 bg-blue-700 px-4 py-2 text-sm font-bold text-white shadow-sm">
                 ✓ Materiales editables
               </span>
 
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white">
+              <span className="rounded-full border border-blue-300 bg-blue-700 px-4 py-2 text-sm font-bold text-white shadow-sm">
                 ✓ DUA y NEE
               </span>
 
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white">
+              <span className="rounded-full border border-blue-300 bg-blue-700 px-4 py-2 text-sm font-bold text-white shadow-sm">
                 ✓ Preparados para Profe IA
               </span>
             </div>
@@ -150,7 +150,7 @@ export default async function ResourcesPage() {
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-3 lg:px-8">
           <article className="flex gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-xl">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400 bg-emerald-700 text-xl font-black text-white shadow-sm">
               ✓
             </div>
 
@@ -167,7 +167,7 @@ export default async function ResourcesPage() {
           </article>
 
           <article className="flex gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-xl">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-blue-400 bg-blue-700 text-xl font-black text-white shadow-sm">
               ◯
             </div>
 

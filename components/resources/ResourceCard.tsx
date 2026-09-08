@@ -193,13 +193,13 @@ export default function ResourceCard({
 
           <div className="flex items-center gap-2">
             {resource.dua && (
-              <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700">
+              <span className="rounded-full border border-emerald-400 bg-emerald-700 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
                 DUA
               </span>
             )}
 
             {resource.nee && (
-              <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">
+              <span className="rounded-full border border-blue-400 bg-blue-700 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
                 NEE
               </span>
             )}

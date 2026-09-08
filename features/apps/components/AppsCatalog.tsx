@@ -127,7 +127,7 @@ export default function AppsCatalog({ access }: AppsCatalogProps) {
               return (
                 <article key={app.id} className="flex min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
                   <div className={`relative bg-gradient-to-br ${app.accent} p-6 text-white`}>
-                    <div className="absolute right-4 top-4 rounded-full border border-white/25 bg-white/15 px-3 py-1 text-xs font-black">{app.plan}</div>
+                    <div className="absolute right-4 top-4 rounded-full border border-white/50 bg-slate-950/80 px-3 py-1 text-xs font-black text-white shadow-sm backdrop-blur">{app.plan}</div>
                     <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-3xl shadow-inner" aria-hidden="true">{app.icon}</span>
                     <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-white/80">{String(index + 1).padStart(2, "0")} · {app.categoryLabel}</p>
                   </div>
