@@ -21,6 +21,7 @@ const navigationGroups: Array<{ title: string; items: NavigationItem[] }> = [
     { label: "Profe IA", href: "/ai" },
     { label: "Entrenador IA", href: "/entrenador-ia" },
     { label: "Planificador Físico", href: "/planificador-fisico" },
+    { label: "Cuaderno Digital", href: "/cuaderno-digital" },
     { label: "Exámenes estudiantiles", href: "/examenes" },
     { label: "App para profes", href: "/apps" },
   ] },
