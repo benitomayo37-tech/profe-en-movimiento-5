@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+﻿import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { updateSession } from "@/lib/supabase/proxy";
@@ -22,6 +22,7 @@ export const config = {
     "/ai",
     "/",
     "/dashboard",
+    "/cuaderno-digital/:path*",
     "/apps/:path*",
     "/compra-confirmada",
     "/entrenador-ia/:path*",
