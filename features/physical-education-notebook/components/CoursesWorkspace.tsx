@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -270,7 +270,7 @@ export default function CoursesWorkspace({
                   </h3>
                 </div>
 
-                <div className="flex h-12 min-w-12 items-center justify-center rounded-2xl bg-blue-100 text-xl font-black text-blue-800">
+                <div className="flex h-12 min-w-12 items-center justify-center rounded-2xl border border-blue-400 bg-blue-700 text-xl font-black text-white shadow-sm shadow-blue-950/25">
                   {course.parallel}
                 </div>
               </div>
