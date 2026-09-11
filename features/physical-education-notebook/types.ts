@@ -1,4 +1,4 @@
-﻿export type CourseShift =
+export type CourseShift =
   | "Matutina"
   | "Vespertina"
   | "Nocturna"
@@ -88,4 +88,60 @@ export interface NotebookActionResult<T = undefined> {
   message: string;
   data?: T;
   fieldErrors?: Record<string, string>;
+}
+export type AttendanceStatus =
+  | "present"
+  | "absent"
+  | "late"
+  | "excused";
+
+export interface AttendanceRecord {
+  id: string;
+  teacherId: string;
+  attendanceSessionId: string;
+  courseId: string;
+  studentId: string;
+  status: AttendanceStatus;
+  observation: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AttendanceSession {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  attendanceDate: string;
+  classNote: string | null;
+  records: AttendanceRecord[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AttendanceEntryInput {
+  studentId: string;
+  status: AttendanceStatus;
+  observation: string | null;
+}
+
+export interface SaveAttendanceInput {
+  courseId: string;
+  attendanceDate: string;
+  classNote: string | null;
+  entries: AttendanceEntryInput[];
+}
+
+export interface AttendanceTotals {
+  total: number;
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+}
+
+export interface AttendanceDaySummary
+  extends AttendanceTotals {
+  sessionId: string;
+  attendanceDate: string;
+  classNote: string | null;
 }

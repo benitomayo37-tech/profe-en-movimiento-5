@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -204,7 +204,13 @@ export default function StudentsWorkspace({
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Link
+              href={`/cuaderno-digital/cursos/${course.id}/asistencia`}
+              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:bg-emerald-700"
+            >
+              Tomar asistencia
+            </Link>
             <button
               type="button"
               onClick={openCreateStudent}
