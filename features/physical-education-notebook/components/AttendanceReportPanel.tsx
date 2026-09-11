@@ -558,6 +558,8 @@ export default function AttendanceReportPanel({
               writing-mode: vertical-rl;
               transform: rotate(180deg);
               white-space: nowrap;
+              font-weight: 600;
+              letter-spacing: 0.15px;
             }
 
             .status {
