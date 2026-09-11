@@ -145,3 +145,134 @@ export interface AttendanceDaySummary
   attendanceDate: string;
   classNote: string | null;
 }
+export type GradingComponent =
+  | "formative"
+  | "interdisciplinary_project"
+  | "exam";
+
+export type FormativeDimension =
+  | "cognitive"
+  | "affective_social"
+  | "motor";
+
+export type GradingActivityModality =
+  | "individual"
+  | "group"
+  | "mixed";
+
+export type GradingPeriodStatus =
+  | "draft"
+  | "open"
+  | "closed";
+
+export type GradeStatus =
+  | "graded"
+  | "pending"
+  | "not_evaluated"
+  | "excused";
+
+export interface GradingSettings {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  formativeWeight: number;
+  projectWeight: number;
+  examWeight: number;
+  cognitiveWeight: number;
+  affectiveSocialWeight: number;
+  motorWeight: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GradingPeriod {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  periodNumber: number;
+  name: string;
+  startDate: string | null;
+  endDate: string | null;
+  status: GradingPeriodStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GradingActivity {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  gradingPeriodId: string;
+  name: string;
+  activityDate: string | null;
+  component: GradingComponent;
+  dimension: FormativeDimension | null;
+  modality: GradingActivityModality | null;
+  instrument: string | null;
+  maxScore: number;
+  displayOrder: number;
+  notes: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StudentGrade {
+  id: string;
+  teacherId: string;
+  courseId: string;
+  gradingActivityId: string;
+  studentId: string;
+  score: number | null;
+  status: GradeStatus;
+  observation: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateGradingActivityInput {
+  courseId: string;
+  gradingPeriodId: string;
+  name: string;
+  activityDate: string | null;
+  component: GradingComponent;
+  dimension: FormativeDimension | null;
+  modality: GradingActivityModality | null;
+  instrument: string | null;
+  maxScore: number;
+  displayOrder: number;
+  notes: string | null;
+}
+
+export interface UpdateGradingActivityInput
+  extends CreateGradingActivityInput {
+  id: string;
+  active: boolean;
+}
+
+export interface GradeEntryInput {
+  studentId: string;
+  score: number | null;
+  status: GradeStatus;
+  observation: string | null;
+}
+
+export interface SaveGradesInput {
+  courseId: string;
+  gradingActivityId: string;
+  entries: GradeEntryInput[];
+}
+
+export interface StudentPeriodGradeSummary {
+  studentId: string;
+  cognitiveAverage: number | null;
+  affectiveSocialAverage: number | null;
+  motorAverage: number | null;
+  formativeAverage: number | null;
+  formativeContribution: number | null;
+  interdisciplinaryProjectScore: number | null;
+  projectContribution: number | null;
+  examScore: number | null;
+  examContribution: number | null;
+  finalScore: number | null;
+}
