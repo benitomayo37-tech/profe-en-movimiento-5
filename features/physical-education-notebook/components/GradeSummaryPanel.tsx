@@ -25,7 +25,7 @@ export default function GradeSummaryPanel({
   );
 
   return (
-    <section className="print-summary rounded-3xl border-2 border-slate-300 bg-slate-950/30 p-5 shadow-sm">
+    <section id="grade-summary-print" className="print-summary rounded-3xl border-2 border-slate-300 bg-slate-950/30 p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">
@@ -34,6 +34,7 @@ export default function GradeSummaryPanel({
           <h2 className="mt-1 text-2xl font-black text-white">
             {periodName}
           </h2>
+          <div className="mt-3"><PrintGradesButton /></div>
         </div>
         <p className="text-sm font-bold text-slate-300">
           Valores sobre 10 puntos
@@ -88,6 +89,16 @@ export default function GradeSummaryPanel({
       <p className="mt-3 text-xs font-bold text-slate-400">
         Pendiente indica que todav&iacute;a falta registrar una calificaci&oacute;n evaluada.
       </p>
+      <style dangerouslySetInnerHTML={{ __html: `
+@media print {
+  body { background: #fff !important; color: #0f172a !important; }
+  .no-print { display: none !important; }
+  .print-summary { margin: 0 !important; width: 100% !important; background: #fff !important; color: #0f172a !important; border: 0 !important; box-shadow: none !important; }
+  .print-summary h2, .print-summary p, .print-summary th, .print-summary td, .print-summary span { color: #0f172a !important; }
+  .print-summary table, .print-summary th, .print-summary td { border-color: #cbd5e1 !important; background: #fff !important; }
+  .print-summary .sticky { position: static !important; }
+}
+` }} />
     </section>
   );
 }

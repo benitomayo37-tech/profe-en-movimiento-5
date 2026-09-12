@@ -282,9 +282,9 @@ function ActivityGroup({
               <p className="font-black text-slate-950">{activity.name}</p>
               <p className="mt-1 text-xs font-bold text-slate-600">
                 {activity.dimension ? dimensionLabels[activity.dimension] : "Componente sumativo"}
-                {activity.activityDate ? ` Â· ${activity.activityDate}` : ""}
+              {activity.activityDate ? ` \u00b7 ${activity.activityDate}` : ""}
               </p>
-              <p className="mt-3 text-xs font-black text-blue-700">Registrar notas â†’</p>
+              <p className="mt-3 text-xs font-black text-blue-700">Registrar notas &rarr;</p>
             </Link>
           ))
         ) : (
