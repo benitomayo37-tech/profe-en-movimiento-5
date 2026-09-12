@@ -204,12 +204,19 @@ export default function StudentsWorkspace({
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <Link
               href={`/cuaderno-digital/cursos/${course.id}/asistencia`}
               className="inline-flex min-h-12 items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:bg-emerald-700"
             >
               Tomar asistencia
+            </Link>
+
+            <Link
+              href={`/cuaderno-digital/cursos/${course.id}/calificaciones`}
+              className="inline-flex min-h-12 items-center justify-center rounded-xl border-2 border-blue-300 bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:bg-blue-800"
+            >
+              Calificaciones
             </Link>
             <button
               type="button"
