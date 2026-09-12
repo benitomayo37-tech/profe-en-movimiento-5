@@ -162,7 +162,7 @@ export default function GradesWorkspace({
           </div>
 
           {selectedPeriod ? (
-            <span className={`rounded-full px-3 py-1 text-xs font-black ${selectedPeriod.status === "closed" ? "bg-slate-200 text-slate-700" : "bg-emerald-100 text-emerald-800"}`}>
+            <span className={`rounded-full px-3 py-1 text-xs font-black ${selectedPeriod.status === "closed" ? "bg-slate-200 text-slate-700" : "border-2 border-emerald-200 bg-emerald-500 text-white shadow-md"}`}>
               {selectedPeriod.status === "closed" ? "Cerrado" : "Abierto"}
             </span>
           ) : null}
