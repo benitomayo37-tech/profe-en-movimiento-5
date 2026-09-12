@@ -1,16 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useEffect, useState, useTransition } from "react";
 
-import { createGradingActivityAction } from "../server/gradingActivityActions";
-import type { CreateGradingActivityInput, GradingComponent, FormativeDimension, GradingActivityModality } from "../types";
+import {
+  createGradingActivityAction,
+  updateGradingActivityAction,
+} from "../server/gradingActivityActions";
+import type { CreateGradingActivityInput, GradingActivity, GradingComponent, FormativeDimension, GradingActivityModality, UpdateGradingActivityInput } from "../types";
 
 interface GradingActivityFormProps {
   courseId: string;
   gradingPeriodId: string;
   displayOrder: number;
   onCancel: () => void;
+  activity?: GradingActivity | null;
 }
 
 export default function GradingActivityForm({
@@ -18,6 +22,7 @@ export default function GradingActivityForm({
   gradingPeriodId,
   displayOrder,
   onCancel,
+  activity,
 }: GradingActivityFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -29,6 +34,16 @@ export default function GradingActivityForm({
   const [instrument, setInstrument] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (!activity) return;
+    setName(activity.name);
+    setComponent(activity.component);
+    setDimension(activity.dimension ?? "cognitive");
+    setModality(activity.modality ?? "individual");
+    setActivityDate(activity.activityDate ?? "");
+    setInstrument(activity.instrument ?? "");
+    setNotes(activity.notes ?? "");
+  }, [activity]);
 
   function changeComponent(value: GradingComponent) {
     setComponent(value);
@@ -46,7 +61,7 @@ export default function GradingActivityForm({
     event.preventDefault();
     setError("");
 
-    const input: CreateGradingActivityInput = {
+    const input: CreateGradingActivityInput | UpdateGradingActivityInput = {
       courseId,
       gradingPeriodId,
       name,
@@ -61,7 +76,9 @@ export default function GradingActivityForm({
     };
 
     startTransition(async () => {
-      const result = await createGradingActivityAction(input);
+      const result = activity
+        ? await updateGradingActivityAction({ ...input, id: activity.id, active: activity.active } as UpdateGradingActivityInput)
+        : await createGradingActivityAction(input);
       if (!result.success) {
         setError(result.message);
         return;
@@ -135,7 +152,7 @@ export default function GradingActivityForm({
       {error ? <p role="alert" className="mt-4 rounded-xl border-2 border-red-300 bg-red-50 p-3 text-sm font-bold text-red-900">{error}</p> : null}
 
       <button type="submit" disabled={isPending} className="mt-5 min-h-12 rounded-xl border-2 border-blue-700 bg-blue-700 px-6 py-3 text-sm font-black text-white shadow-lg hover:bg-blue-800 disabled:opacity-60">
-        {isPending ? "Guardando..." : "Guardar actividad"}
+        {isPending ? "Guardando..." : activity ? "Actualizar actividad" : "Guardar actividad"}
       </button>
     </form>
   );
