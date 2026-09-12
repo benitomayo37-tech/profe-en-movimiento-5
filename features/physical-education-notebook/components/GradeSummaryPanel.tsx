@@ -1,3 +1,5 @@
+import PrintGradesButton from "./PrintGradesButton";
+
 import type {
   PhysicalEducationStudent,
   StudentPeriodGradeSummary,
@@ -23,7 +25,7 @@ export default function GradeSummaryPanel({
   );
 
   return (
-    <section className="rounded-3xl border-2 border-slate-300 bg-slate-950/30 p-5 shadow-sm">
+    <section className="print-summary rounded-3xl border-2 border-slate-300 bg-slate-950/30 p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">
