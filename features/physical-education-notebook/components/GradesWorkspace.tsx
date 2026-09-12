@@ -230,6 +230,7 @@ export default function GradesWorkspace({
       </div>
 
       <GradeSummaryPanel
+        courseId={course.id}
         periodName={selectedPeriod?.name ?? "Periodo"}
         students={activeStudents}
         summaries={summariesByPeriod[selectedPeriodId] ?? []}
@@ -284,7 +285,7 @@ function ActivityGroup({
                 {activity.dimension ? dimensionLabels[activity.dimension] : "Componente sumativo"}
               {activity.activityDate ? ` \u00b7 ${activity.activityDate}` : ""}
               </p>
-              <p className="mt-3 text-xs font-black text-blue-700">Registrar notas &rarr;</p>
+            <p className="mt-3 text-xs font-black text-blue-700">Registrar notas &rarr;</p>
             </Link>
           ))
         ) : (

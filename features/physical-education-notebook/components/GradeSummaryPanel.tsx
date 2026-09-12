@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PrintGradesButton from "./PrintGradesButton";
 
 import type {
@@ -6,6 +7,7 @@ import type {
 } from "../types";
 
 interface GradeSummaryPanelProps {
+  courseId: string;
   periodName: string;
   students: PhysicalEducationStudent[];
   summaries: StudentPeriodGradeSummary[];
@@ -16,6 +18,7 @@ function formatValue(value: number | null): string {
 }
 
 export default function GradeSummaryPanel({
+  courseId,
   periodName,
   students,
   summaries,
@@ -65,7 +68,7 @@ export default function GradeSummaryPanel({
               return (
                 <tr key={student.id} className="bg-slate-950/20 text-slate-100">
                   <th className="sticky left-0 bg-slate-950/95 px-4 py-3 font-black">
-                    <span className="block whitespace-nowrap">{name}</span>
+                    <Link href={`/cuaderno-digital/cursos/${courseId}/calificaciones/estudiantes/${student.id}`} className="block whitespace-nowrap hover:text-blue-300">{name}</Link>
                     {student.studentCode ? (
                       <span className="mt-1 block text-xs font-bold text-slate-400">
                         {student.studentCode}
