@@ -11,6 +11,8 @@ export async function updateGradingWeightsAction(input: UpdateWeightsInput): Pro
   const { data: auth } = await supabase.auth.getClaims();
   const userId = typeof auth?.claims?.sub === "string" ? auth.claims.sub : null;
   if (!userId) return { success: false, message: "Debes iniciar sesion." };
+  const { data: closedPeriods } = await supabase.from("physical_education_grading_periods").select("id").eq("course_id", input.courseId).eq("teacher_id", userId).eq("status", "closed").limit(1);
+  if (closedPeriods && closedPeriods.length > 0) return { success: false, message: "No se pueden cambiar los pesos porque existe un periodo cerrado." };
   const total = input.formativeWeight + input.projectWeight + input.examWeight;
   if ([input.formativeWeight, input.projectWeight, input.examWeight].some((value) => value < 0 || value > 1) || Math.abs(total - 1) > 0.0001) {
     return { success: false, message: "Los pesos deben sumar exactamente 100 %." };
