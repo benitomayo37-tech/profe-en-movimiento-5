@@ -15,19 +15,33 @@ function value(score: number | null): string {
 export default function AnnualGradeSummaryPanel({ students, periods, summariesByPeriod }: Props) {
   const orderedPeriods = [1, 2, 3].map((number) => periods.find((period) => period.periodNumber === number));
   function printAnnual() {
-    const printStyle = document.createElement("style");
-    printStyle.textContent = `
-      @media print {
-        body, body * { visibility: visible !important; }
-        body * { display: revert !important; }
-        #annual-grade-summary-print { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
-        #annual-grade-summary-print button { display: none !important; }
-      }
-    `;
-    document.head.appendChild(printStyle);
-    const cleanup = () => printStyle.remove();
-    window.addEventListener("afterprint", cleanup, { once: true });
-    window.setTimeout(() => window.print(), 100);
+    const section = document.getElementById("annual-grade-summary-print");
+    if (!section) return;
+    const printWindow = window.open("", "annual-summary-print", "width=1100,height=800");
+    if (!printWindow) return;
+    let printed = false;
+    const startPrint = () => {
+      if (printed) return;
+      printed = true;
+      printWindow.focus();
+      printWindow.print();
+    };
+    printWindow.onload = () => window.setTimeout(startPrint, 250);
+    printWindow.document.open();
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Resumen anual</title><style>
+      @page{size:A4 landscape;margin:12mm}
+      *{box-sizing:border-box}
+      body{font-family:Arial,sans-serif;color:#0f172a;margin:0;background:#fff}
+      button{display:none!important}
+      .overflow-x-auto{overflow:visible!important}
+      table{width:100%!important;min-width:0!important;border-collapse:collapse;margin-top:16px}
+      th,td{border:1px solid #cbd5e1;padding:8px;text-align:left}
+      th{background:#e0e7ff;color:#1e1b4b}
+      td{font-weight:700}
+      @media print{body{padding:0}}
+    </style></head><body>${section.innerHTML}</body></html>`);
+    printWindow.document.close();
+    window.setTimeout(startPrint, 900);
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
