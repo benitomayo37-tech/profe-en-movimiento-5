@@ -17,18 +17,25 @@ export default function AnnualGradeSummaryPanel({ students, periods, summariesBy
   function printAnnual() {
     const section = document.getElementById("annual-grade-summary-print");
     if (!section) return;
-    const printWindow = window.open("", "annual-summary-print", "width=1100,height=800");
-    if (!printWindow) return;
-    let printed = false;
-    const startPrint = () => {
-      if (printed) return;
-      printed = true;
-      printWindow.focus();
-      printWindow.print();
+    const frame = document.createElement("iframe");
+    frame.style.position = "fixed";
+    frame.style.right = "0";
+    frame.style.bottom = "0";
+    frame.style.width = "0";
+    frame.style.height = "0";
+    frame.style.border = "0";
+    document.body.appendChild(frame);
+    const frameDocument = frame.contentDocument;
+    if (!frameDocument) { frame.remove(); return; }
+    frame.onload = () => {
+      window.setTimeout(() => {
+        frame.contentWindow?.focus();
+        frame.contentWindow?.print();
+        window.setTimeout(() => frame.remove(), 1500);
+      }, 200);
     };
-    printWindow.onload = () => window.setTimeout(startPrint, 250);
-    printWindow.document.open();
-    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Resumen anual</title><style>
+    frameDocument.open();
+    frameDocument.write(`<!doctype html><html><head><meta charset="utf-8"><title>Resumen anual</title><style>
       @page{size:A4 landscape;margin:12mm}
       *{box-sizing:border-box}
       body{font-family:Arial,sans-serif;color:#0f172a;margin:0;background:#fff}
@@ -38,10 +45,8 @@ export default function AnnualGradeSummaryPanel({ students, periods, summariesBy
       th,td{border:1px solid #cbd5e1;padding:8px;text-align:left}
       th{background:#e0e7ff;color:#1e1b4b}
       td{font-weight:700}
-      @media print{body{padding:0}}
     </style></head><body>${section.innerHTML}</body></html>`);
-    printWindow.document.close();
-    window.setTimeout(startPrint, 900);
+    frameDocument.close();
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
