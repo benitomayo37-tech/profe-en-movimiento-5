@@ -55,7 +55,7 @@ export default function AnnualGradeSummaryPanel({ students, periods, summariesBy
       .print-date{margin-top:18px;text-align:right;font-size:12px;color:#475569}
       .print-signature{width:260px;margin:42px 0 0 auto;text-align:center;font-size:12px;color:#0f172a}
       .print-signature-line{border-top:1px solid #0f172a;margin-bottom:6px}
-    </style></head><body><header class="print-header"><img src="${logoUrl}" alt="Profe en Movimiento"><div><h1>Profe en Movimiento</h1><p>Plataforma educativa inteligente</p><h2>Resumen anual de calificaciones</h2></div></header>${section.innerHTML}<p class="print-date">Fecha de emisiÃ³n: ${printDate}</p><div class="print-signature"><div class="print-signature-line"></div><strong>Docente responsable</strong><br>Firma</div></body></html>`);
+    </style></head><body><header class="print-header"><img src="${logoUrl}" alt="Profe en Movimiento"><div><h1>Profe en Movimiento</h1><p>Plataforma educativa inteligente</p><h2>Resumen anual de calificaciones</h2></div></header>${section.innerHTML}<p class="print-date">Fecha de emisi&oacute;n: ${printDate}</p><div class="print-signature"><div class="print-signature-line"></div><strong>Docente responsable</strong><br>Firma</div></body></html>`);
     frameDocument.close();
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
