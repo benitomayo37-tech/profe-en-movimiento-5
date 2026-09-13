@@ -15,25 +15,24 @@ function value(score: number | null): string {
 export default function AnnualGradeSummaryPanel({ students, periods, summariesByPeriod }: Props) {
   const orderedPeriods = [1, 2, 3].map((number) => periods.find((period) => period.periodNumber === number));
   function printAnnual() {
-    const printStyle = document.createElement("style");
-    printStyle.id = "annual-summary-print-style";
-    printStyle.textContent = `
-      @media print {
-        body * { visibility: hidden !important; }
-        #annual-grade-summary-print,
-        #annual-grade-summary-print * { visibility: visible !important; }
-        #annual-grade-summary-print { position: absolute; left: 0; top: 0; width: 100%; }
-        #annual-grade-summary-print button { display: none !important; }
-      }
-    `;
-    document.head.appendChild(printStyle);
-    const cleanup = () => {
-      printStyle.remove();
-      window.removeEventListener("afterprint", cleanup);
+    const section = document.getElementById("annual-grade-summary-print");
+    if (!section) return;
+    const printWindow = window.open("", "annual-summary-print", "width=1100,height=800");
+    if (!printWindow) return;
+    let printed = false;
+    const startPrint = () => {
+      if (printed) return;
+      printed = true;
+      printWindow.focus();
+      printWindow.print();
     };
-    window.addEventListener("afterprint", cleanup, { once: true });
-    window.print();
-    window.setTimeout(cleanup, 2000);
+    printWindow.onload = () => {
+      window.setTimeout(startPrint, 300);
+    };
+    printWindow.document.open();
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Resumen anual</title><style>body{font-family:Arial,sans-serif;color:#0f172a;padding:24px}button{display:none!important}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #cbd5e1;padding:10px;text-align:left}th{background:#e0e7ff;color:#1e1b4b}td{font-weight:700}@media print{body{padding:0}}</style></head><body>${section.innerHTML}</body></html>`);
+    printWindow.document.close();
+    window.setTimeout(startPrint, 1000);
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
