@@ -1064,7 +1064,7 @@ html[data-theme] .dashboard-hero-admin-badge {
     print-color-adjust: exact;
   }
 
-  body > *:not(.agent-print-sheet) {
+  body:has(.agent-print-sheet) > *:not(.agent-print-sheet) {
     display: none !important;
   }
 
