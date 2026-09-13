@@ -250,7 +250,7 @@ export default function GradesWorkspace({
 
       <ArchivedActivitiesPanel courseId={course.id} activities={activities.filter((activity) => !activity.active)} />
 
-      <AnnualGradeSummaryPanel students={activeStudents} periods={periods} summariesByPeriod={summariesByPeriod} />
+      
 
       <GradeSummaryPanel
         courseId={course.id}
@@ -258,6 +258,8 @@ export default function GradesWorkspace({
         students={activeStudents}
         summaries={summariesByPeriod[selectedPeriodId] ?? []}
       />
+
+<AnnualGradeSummaryPanel students={activeStudents} periods={periods} summariesByPeriod={summariesByPeriod} />
 
       {showActivityForm && selectedPeriod ? (
         <GradingActivityForm
