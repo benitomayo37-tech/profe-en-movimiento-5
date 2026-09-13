@@ -17,6 +17,7 @@ export default function AnnualGradeSummaryPanel({ students, periods, summariesBy
   function printAnnual() {
     const section = document.getElementById("annual-grade-summary-print");
     if (!section) return;
+    const logoUrl = `${window.location.origin}/logos/logo-profe-en-movimiento.png`;
     const frame = document.createElement("iframe");
     frame.style.position = "fixed";
     frame.style.right = "0";
@@ -39,13 +40,18 @@ export default function AnnualGradeSummaryPanel({ students, periods, summariesBy
       @page{size:A4 landscape;margin:12mm}
       *{box-sizing:border-box}
       body{font-family:Arial,sans-serif;color:#0f172a;margin:0;background:#fff}
+      .print-header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #173b78;padding-bottom:12px;margin-bottom:16px}
+      .print-header img{width:72px;height:72px;object-fit:contain}
+      .print-header h1{margin:0;color:#173b78;font-size:22px}
+      .print-header h2{margin:8px 0 0;font-size:18px}
+      .print-header p{margin:3px 0 0;color:#64748b;font-size:12px}
       button{display:none!important}
       .overflow-x-auto{overflow:visible!important}
       table{width:100%!important;min-width:0!important;border-collapse:collapse;margin-top:16px}
       th,td{border:1px solid #cbd5e1;padding:8px;text-align:left}
       th{background:#e0e7ff;color:#1e1b4b}
       td{font-weight:700}
-    </style></head><body>${section.innerHTML}</body></html>`);
+    </style></head><body><header class="print-header"><img src="${logoUrl}" alt="Profe en Movimiento"><div><h1>Profe en Movimiento</h1><p>Plataforma educativa inteligente</p><h2>Resumen anual de calificaciones</h2></div></header>${section.innerHTML}</body></html>`);
     frameDocument.close();
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
