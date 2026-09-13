@@ -15,7 +15,19 @@ function value(score: number | null): string {
 export default function AnnualGradeSummaryPanel({ students, periods, summariesByPeriod }: Props) {
   const orderedPeriods = [1, 2, 3].map((number) => periods.find((period) => period.periodNumber === number));
   function printAnnual() {
-    window.print();
+    const printStyle = document.createElement("style");
+    printStyle.textContent = `
+      @media print {
+        body, body * { visibility: visible !important; }
+        body * { display: revert !important; }
+        #annual-grade-summary-print { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
+        #annual-grade-summary-print button { display: none !important; }
+      }
+    `;
+    document.head.appendChild(printStyle);
+    const cleanup = () => printStyle.remove();
+    window.addEventListener("afterprint", cleanup, { once: true });
+    window.setTimeout(() => window.print(), 100);
   }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
