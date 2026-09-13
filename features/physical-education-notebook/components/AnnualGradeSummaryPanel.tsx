@@ -15,16 +15,26 @@ function value(score: number | null): string {
 export default function AnnualGradeSummaryPanel({ students, periods, summariesByPeriod }: Props) {
   const orderedPeriods = [1, 2, 3].map((number) => periods.find((period) => period.periodNumber === number));
   function printAnnual() {
-    const printWindow = window.open("", "_blank", "width=1100,height=800");
-    if (!printWindow) return;
-    const section = document.getElementById("annual-grade-summary-print");
-    if (!section) return;
-    printWindow.document.write(`<!doctype html><html><head><title>Resumen anual</title><style>body{font-family:Arial,sans-serif;color:#0f172a;padding:24px}h2{margin:0 0 8px}p{color:#475569}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #cbd5e1;padding:10px;text-align:left}th{background:#e0e7ff;color:#1e1b4b}td{font-weight:700}@media print{body{padding:0}}</style></head><body>${section.innerHTML}</body></html>`);
-    printWindow.document.close();
-    printWindow.focus();
-    window.setTimeout(() => printWindow.print(), 400);
-  }
-  return (
+    const printStyle = document.createElement("style");
+    printStyle.id = "annual-summary-print-style";
+    printStyle.textContent = `
+      @media print {
+        body * { visibility: hidden !important; }
+        #annual-grade-summary-print,
+        #annual-grade-summary-print * { visibility: visible !important; }
+        #annual-grade-summary-print { position: absolute; left: 0; top: 0; width: 100%; }
+        #annual-grade-summary-print button { display: none !important; }
+      }
+    `;
+    document.head.appendChild(printStyle);
+    const cleanup = () => {
+      printStyle.remove();
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup, { once: true });
+    window.print();
+    window.setTimeout(cleanup, 2000);
+  }  return (
     <section id="annual-grade-summary-print" className="print-summary rounded-3xl border-2 border-indigo-300 bg-indigo-50 p-5 text-slate-950 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div><p className="text-xs font-black uppercase tracking-[0.16em] text-indigo-700">Cierre acad&eacute;mico</p><h2 className="mt-1 text-2xl font-black">Resumen anual</h2><p className="mt-1 text-sm font-bold text-slate-600">Promedio de las notas finales de los tres trimestres.</p></div>
