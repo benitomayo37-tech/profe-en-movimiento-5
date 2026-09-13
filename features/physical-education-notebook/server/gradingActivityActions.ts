@@ -336,6 +336,29 @@ export async function updateGradingActivityAction(
   };
 }
 
+export async function restoreGradingActivityAction(
+  courseId: string,
+  gradingActivityId: string,
+): Promise<NotebookActionResult> {
+  const parsedCourseId = courseIdSchema.safeParse(courseId);
+  const parsedActivityId = courseIdSchema.safeParse(gradingActivityId);
+  if (!parsedCourseId.success || !parsedActivityId.success) {
+    return { success: false, message: "La actividad no es vÃ¡lida." };
+  }
+  const { supabase, userId } = await getAuthenticatedContext();
+  if (!supabase || !userId) return { success: false, message: "Debes iniciar sesiÃ³n." };
+  const { data, error } = await supabase
+    .from("physical_education_grading_activities")
+    .update({ active: true })
+    .eq("id", gradingActivityId)
+    .eq("course_id", courseId)
+    .eq("teacher_id", userId)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) return { success: false, message: "No pudimos restaurar la actividad." };
+  revalidateGradingPaths(courseId);
+  return { success: true, message: "Actividad restaurada correctamente." };
+}
 export async function archiveGradingActivityAction(
   courseId: string,
   gradingActivityId: string,

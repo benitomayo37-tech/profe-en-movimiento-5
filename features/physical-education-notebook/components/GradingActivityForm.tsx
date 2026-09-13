@@ -89,7 +89,7 @@ export default function GradingActivityForm({
   }
 
   return (
-    <form onSubmit={submit} className="rounded-3xl border-2 border-blue-300 bg-white p-5 text-left shadow-lg sm:p-6">
+    <form id="grading-activity-form" onSubmit={submit} className="rounded-3xl border-2 border-blue-300 bg-white p-5 text-left shadow-lg sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.16em] text-blue-700">Nueva actividad</p>

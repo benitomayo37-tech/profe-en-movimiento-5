@@ -5,6 +5,8 @@ import GradeSummaryPanel from "./GradeSummaryPanel";
 import { useMemo, useState } from "react";
 
 import GradingActivityForm from "./GradingActivityForm";
+import ActivityActions from "./ActivityActions";
+import ArchivedActivitiesPanel from "./ArchivedActivitiesPanel";
 
 import type {
   GradingActivity,
@@ -60,6 +62,7 @@ export default function GradesWorkspace({
     useState(periods[0]?.id ?? "");
 
   const [showActivityForm, setShowActivityForm] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<GradingActivity | null>(null);
 
   const selectedPeriod = periods.find(
     (period) => period.id === selectedPeriodId,
@@ -198,26 +201,35 @@ export default function GradesWorkspace({
           subtitle="Dimensiones cognitiva, afectivo-social y motriz"
           accent="blue"
           activities={formativeActivities}
-        />
+                courseId={course.id}
+        canEdit={selectedPeriod?.status !== "closed"}
+        onEdit={(activity) => { setEditingActivity(activity); setShowActivityForm(true); setTimeout(() => document.getElementById("grading-activity-form")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0); }}
+       />
         <ActivityGroup
           title={componentLabels.interdisciplinary_project}
           subtitle="Aporte único del trimestre"
           accent="orange"
           activities={projectActivity ? [projectActivity] : []}
-        />
+                courseId={course.id}
+        canEdit={selectedPeriod?.status !== "closed"}
+        onEdit={(activity) => { setEditingActivity(activity); setShowActivityForm(true); setTimeout(() => document.getElementById("grading-activity-form")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0); }}
+       />
         <ActivityGroup
           title={componentLabels.exam}
           subtitle="Evaluación sumativa del trimestre"
           accent="emerald"
           activities={examActivity ? [examActivity] : []}
-        />
+                courseId={course.id}
+        canEdit={selectedPeriod?.status !== "closed"}
+        onEdit={(activity) => { setEditingActivity(activity); setShowActivityForm(true); setTimeout(() => document.getElementById("grading-activity-form")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0); }}
+       />
       </div>
 
       <div className="rounded-3xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 text-center">
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
-            onClick={() => setShowActivityForm((value) => !value)}
+            onClick={() => { setEditingActivity(null); setShowActivityForm((value) => !value); }}
             disabled={!selectedPeriod || selectedPeriod.status === "closed"}
             className="inline-flex min-h-12 items-center justify-center rounded-xl border-2 border-blue-700 bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
@@ -228,6 +240,8 @@ export default function GradesWorkspace({
           Registra las actividades de evaluaci&oacute;n del trimestre seleccionado.
         </p>
       </div>
+
+      <ArchivedActivitiesPanel courseId={course.id} activities={activities.filter((activity) => !activity.active)} />
 
       <GradeSummaryPanel
         courseId={course.id}
@@ -241,7 +255,8 @@ export default function GradesWorkspace({
           courseId={course.id}
           gradingPeriodId={selectedPeriod.id}
           displayOrder={activities.length}
-          onCancel={() => setShowActivityForm(false)}
+          activity={editingActivity}
+          onCancel={() => { setShowActivityForm(false); setEditingActivity(null); }}
         />
       ) : null}
     </section>
@@ -253,6 +268,9 @@ interface ActivityGroupProps {
   subtitle: string;
   accent: "blue" | "orange" | "emerald";
   activities: GradingActivity[];
+  courseId: string;
+  canEdit: boolean;
+  onEdit: (activity: GradingActivity) => void;
 }
 
 function ActivityGroup({
@@ -260,6 +278,9 @@ function ActivityGroup({
   subtitle,
   accent,
   activities,
+  courseId,
+  canEdit,
+  onEdit,
 }: ActivityGroupProps) {
   const accentClasses = {
     blue: "border-blue-300 bg-blue-50 text-blue-950",
@@ -275,8 +296,8 @@ function ActivityGroup({
       <div className="mt-4 space-y-3">
         {activities.length ? (
           activities.map((activity) => (
-                        <Link
-              key={activity.id}
+                        <div key={activity.id}><Link
+              
               href={`/cuaderno-digital/cursos/${activity.courseId}/calificaciones/${activity.id}`}
               className="block rounded-2xl border-2 border-current/30 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
@@ -287,6 +308,8 @@ function ActivityGroup({
               </p>
             <p className="mt-3 text-xs font-black text-blue-700">Registrar notas &rarr;</p>
             </Link>
+                          <ActivityActions courseId={courseId} activityId={activity.id} canEdit={canEdit} onEdit={() => onEdit(activity)} />
+                        </div>
           ))
         ) : (
           <p className="rounded-2xl border-2 border-current/30 bg-white p-4 text-sm font-black text-slate-950 shadow-sm">
