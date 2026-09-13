@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import GradingActivityForm from "./GradingActivityForm";
 import ActivityActions from "./ActivityActions";
 import GradingPeriodManager from "./GradingPeriodManager";
+import GradingWeightsPanel from "./GradingWeightsPanel";
 import ArchivedActivitiesPanel from "./ArchivedActivitiesPanel";
 
 import type {
@@ -155,6 +156,8 @@ export default function GradesWorkspace({
       ) : null}
 
       <GradingPeriodManager courseId={course.id} periods={periods} />
+
+      <GradingWeightsPanel courseId={course.id} settings={settings} />
 
       <div className="rounded-3xl border border-slate-300 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
