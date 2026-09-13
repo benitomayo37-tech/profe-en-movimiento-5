@@ -8,6 +8,7 @@ import GradingActivityForm from "./GradingActivityForm";
 import ActivityActions from "./ActivityActions";
 import GradingPeriodManager from "./GradingPeriodManager";
 import GradingWeightsPanel from "./GradingWeightsPanel";
+import AnnualGradeSummaryPanel from "./AnnualGradeSummaryPanel";
 import ArchivedActivitiesPanel from "./ArchivedActivitiesPanel";
 
 import type {
@@ -248,6 +249,8 @@ export default function GradesWorkspace({
       </div>
 
       <ArchivedActivitiesPanel courseId={course.id} activities={activities.filter((activity) => !activity.active)} />
+
+      <AnnualGradeSummaryPanel students={activeStudents} periods={periods} summariesByPeriod={summariesByPeriod} />
 
       <GradeSummaryPanel
         courseId={course.id}
