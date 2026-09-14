@@ -34,7 +34,7 @@ export async function updateGradingPeriodAction(input: UpdatePeriodInput): Promi
   revalidatePath(`/cuaderno-digital/cursos/${input.courseId}/calificaciones`);
   return {
     success: true,
-    message: "PerÃ­odo actualizado correctamente.",
+    message: "Periodo actualizado correctamente.",
     data: {
       id: data.id, teacherId: data.teacher_id, courseId: data.course_id, periodNumber: data.period_number,
       name: data.name, startDate: data.start_date, endDate: data.end_date, status: data.status,
