@@ -5,7 +5,7 @@ import { AccountBadge, AppLayout, Sidebar } from "@/components/layout";
 import Container from "@/components/ui/Container";
 import { getAuthAccess } from "@/features/auth/server/access";
 import GradeEntryWorkspace from "@/features/physical-education-notebook/components/GradeEntryWorkspace";
-import { getGradesByActivity, getGradingActivities, getGradingPeriods } from "@/features/physical-education-notebook/server/gradingQueries";
+import { getGradesByActivity, getGradingActivityById, getGradingPeriods } from "@/features/physical-education-notebook/server/gradingQueries";
 import { getCourses, getStudentsByCourse } from "@/features/physical-education-notebook/server/queries";
 
 export const dynamic = "force-dynamic";
@@ -22,8 +22,8 @@ export default async function GradeEntryPage({ params }: Props) {
   if (!course) notFound();
   const [periodsResult, studentsResult] = await Promise.all([getGradingPeriods(course.id), getStudentsByCourse(course.id)]);
   const periods = periodsResult.data ?? [];
-  const activityResults = await Promise.all(periods.map((period) => getGradingActivities(course.id, period.id)));
-  const activity = activityResults.flatMap((result) => result.data ?? []).find((item) => item.id === activityId);
+  const activityResult = await getGradingActivityById(course.id, activityId);
+  const activity = activityResult.data;
   if (!activity) notFound();
   const [gradesResult] = await Promise.all([getGradesByActivity(course.id, activity.id)]);
 

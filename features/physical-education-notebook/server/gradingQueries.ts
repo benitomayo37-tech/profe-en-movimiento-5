@@ -368,6 +368,32 @@ export async function getGradingActivities(
   };
 }
 
+export async function getGradingActivityById(
+  courseId: string,
+  activityId: string,
+): Promise<NotebookActionResult<GradingActivity | null>> {
+  const parsedCourseId = courseIdSchema.safeParse(courseId);
+  const parsedActivityId = uuidSchema.safeParse(activityId);
+  if (!parsedCourseId.success || !parsedActivityId.success) {
+    return { success: false, message: "El curso o la actividad no es valida.", data: null };
+  }
+  const { supabase, userId } = await getAuthenticatedContext();
+  if (!supabase || !userId) {
+    return { success: false, message: "Debes iniciar sesion.", data: null };
+  }
+  const { data, error } = await supabase
+    .from("physical_education_grading_activities")
+    .select("id, teacher_id, course_id, grading_period_id, name, activity_date, component, dimension, modality, instrument, max_score, display_order, notes, active, created_at, updated_at")
+    .eq("teacher_id", userId)
+    .eq("course_id", parsedCourseId.data)
+    .eq("id", parsedActivityId.data)
+    .maybeSingle();
+  if (error) {
+    console.error("No se pudo consultar la actividad:", error);
+    return { success: false, message: "No pudimos cargar la actividad.", data: null };
+  }
+  return { success: true, message: "Actividad cargada correctamente.", data: data ? mapActivity(data as GradingActivityRow) : null };
+}
 export async function getGradesByActivity(
   courseId: string,
   gradingActivityId: string,
