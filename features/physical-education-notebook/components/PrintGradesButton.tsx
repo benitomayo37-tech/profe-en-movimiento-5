@@ -10,6 +10,7 @@ export default function PrintGradesButton() {
     if (!summary) return;
 
     const title = summary.querySelector("h2")?.textContent?.trim() ?? "Resumen trimestral";
+    const studentName = document.querySelector("main h1")?.textContent?.trim() ?? "";
     const tableRows = Array.from(summary.querySelectorAll("tbody tr"));
     const courseReport = tableRows.some((row) => Boolean(row.querySelector("th a")));
     const rows = courseReport
@@ -48,7 +49,7 @@ th, td { border: 1px solid #94a3b8; padding: 8px 6px; text-align: center; }
 thead th { background: #dbeafe; color: #0f172a; font-weight: 700; }
 tbody th { background: #eff6ff; text-align: left; white-space: nowrap; }
 tbody td:last-child { font-weight: 700; color: #1d4ed8; }
-</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(title)}</p></div></header><h2>Resumen trimestral de calificaciones - ${escapeHtml(title)}</h2><table><thead><tr>${tableHeader}</tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
+</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(studentName || title)}</p></div></header><h2>Resumen trimestral de calificaciones - ${escapeHtml(title)}</h2><table><thead><tr>${tableHeader}</tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
     frame.onload = () => {
       window.setTimeout(() => {
         frame.contentWindow?.focus();
