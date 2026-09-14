@@ -37,7 +37,7 @@ th, td { border: 1px solid #94a3b8; padding: 8px 6px; text-align: center; }
 thead th { background: #dbeafe; color: #0f172a; font-weight: 700; }
 tbody th { background: #eff6ff; text-align: left; white-space: nowrap; }
 tbody td:last-child { font-weight: 700; color: #1d4ed8; }
-</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(title)}</p></div></header><h2>Resumen trimestral de calificaciones</h2><table><thead><tr><th>CÃ³digo</th><th>Estudiante</th><th>Cognitiva</th><th>Afectivo-social</th><th>Motriz</th><th>Formativa 70%</th><th>Proyecto 15%</th><th>Examen 15%</th><th>Nota final</th></tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
+</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(title)}</p></div></header><h2>Resumen trimestral de calificaciones</h2><table><thead><tr><th>C&oacute;digo</th><th>Estudiante</th><th>Cognitiva</th><th>Afectivo-social</th><th>Motriz</th><th>Formativa 70%</th><th>Proyecto 15%</th><th>Examen 15%</th><th>Nota final</th></tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
     frame.onload = () => {
       window.setTimeout(() => {
         frame.contentWindow?.focus();
