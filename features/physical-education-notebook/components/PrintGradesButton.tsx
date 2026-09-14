@@ -9,14 +9,11 @@ export default function PrintGradesButton() {
     const summary = document.getElementById("grade-summary-print");
     if (!summary) return;
 
-    const title = summary.querySelector("h1")?.textContent?.trim() ?? "Reporte individual";
-    const course = summary.querySelector("h1")?.parentElement?.querySelector("p")?.textContent?.trim() ?? "";
-    const rows = Array.from(summary.querySelectorAll("article")).map((article) => {
-      const period = article.querySelector("h2")?.textContent?.trim() ?? "";
-      const values = Array.from(article.querySelectorAll("div:last-child > div")).map((metric) => metric.querySelectorAll("p")[1]?.textContent?.trim() ?? "Pendiente");
-      return `<tr><th>${escapeHtml(period)}</th>${values.map((item) => `<td>${escapeHtml(item)}</td>`).join("")}</tr>`;
+    const title = summary.querySelector("h2")?.textContent?.trim() ?? "Resumen trimestral";
+    const rows = Array.from(summary.querySelectorAll("tbody tr")).map((row) => {
+      const cells = Array.from(row.querySelectorAll("th, td"));
+      return `<tr>${cells.map((cell, index) => { const tag = index === 0 ? "th" : "td"; return `<${tag}>${escapeHtml(cell.textContent?.replace(/\s+/g, " ").trim() ?? "")}</${tag}>`; }).join("")}</tr>`;
     });
-
     const frame = document.createElement("iframe");
     frame.setAttribute("title", "PDF del reporte individual");
     frame.style.position = "fixed";
@@ -38,7 +35,7 @@ th, td { border: 1px solid #94a3b8; padding: 8px 6px; text-align: center; }
 thead th { background: #dbeafe; color: #0f172a; font-weight: 700; }
 tbody th { background: #eff6ff; text-align: left; white-space: nowrap; }
 tbody td:last-child { font-weight: 700; color: #1d4ed8; }
-</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(title)} - ${escapeHtml(course)}</p></div></header><h2>Resumen trimestral de calificaciones</h2><table><thead><tr><th>Periodo</th><th>Cognitiva</th><th>Afectivo-social</th><th>Motriz</th><th>Formativa 70%</th><th>Proyecto 15%</th><th>Examen 15%</th><th>Nota final</th></tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
+</style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>Cuaderno Digital de Educaci&oacute;n F&iacute;sica - Reporte individual</p><p>${escapeHtml(title)}</p></div></header><h2>Resumen trimestral de calificaciones</h2><table><thead><tr><th>Periodo</th><th>Cognitiva</th><th>Afectivo-social</th><th>Motriz</th><th>Formativa 70%</th><th>Proyecto 15%</th><th>Examen 15%</th><th>Nota final</th></tr></thead><tbody>${rows.join("")}</tbody></table></body></html>`;
     frame.onload = () => {
       window.setTimeout(() => {
         frame.contentWindow?.focus();
