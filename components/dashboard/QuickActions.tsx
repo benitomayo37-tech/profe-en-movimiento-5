@@ -406,6 +406,17 @@ export default function QuickActions({
             ))}
           </div>
 
+          <div className="mt-6">
+            <Link
+              id="recreation-dashboard-link"
+              href="/recreacion"
+              className="inline-flex min-h-12 items-center rounded-2xl border border-orange-300/50 bg-orange-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-orange-950/30 transition hover:-translate-y-0.5 hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300/40"
+            >
+              <span aria-hidden="true" className="mr-2 text-lg">&#127922;</span>
+              Recreaci&oacute;n y Retos
+              <span aria-hidden="true" className="ml-2">&#8594;</span>
+            </Link>
+          </div>
           {selectedAction ? (
             <div
               className="mt-7 rounded-3xl border border-emerald-300/30 bg-emerald-400/10 p-5"
