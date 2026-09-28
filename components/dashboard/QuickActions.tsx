@@ -181,6 +181,25 @@ const actions: AssistantAction[] = [
     ],
   },
   {
+    title: "Recreacion y Retos",
+    shortLabel: "Planificar una actividad recreativa",
+    description:
+      "DiseÃ±a juegos, yincanas, escape rooms y retos inclusivos para tus clases.",
+    href: "/recreacion",
+    icon: "ðŸŽ²",
+    access: "Free + Pro",
+    keywords: [
+      "recreacion",
+      "juego recreativo",
+      "juegos",
+      "yincana",
+      "escape room",
+      "reto",
+      "integracion",
+      "actividad recreativa",
+    ],
+  },
+  {
     title: "Actualidad Deportiva",
     shortLabel: "Consultar noticias deportivas",
     description:
@@ -200,7 +219,7 @@ const actions: AssistantAction[] = [
   },
 ];
 
-const suggestedActions = actions.slice(1, 6);
+const suggestedActions = actions.slice(1, 7);
 
 function normalizeText(value: string) {
   return value
