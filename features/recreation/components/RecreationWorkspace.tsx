@@ -125,3 +125,4 @@ export default function RecreationWorkspace() {
 function Detail({ label, value, full = false }: { label: string; value: string; full?: boolean }) {
   return <div className={full ? "sm:col-span-2" : ""}><p className="text-xs font-black uppercase text-blue-700">{label}</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{value || "No especificado"}</p></div>;
 }
+}
