@@ -136,6 +136,10 @@ export default function RecreationWorkspace() {
       <style dangerouslySetInnerHTML={{ __html: "@page { size: A4 portrait; margin: 12mm; } @media print { html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; } body * { visibility: hidden !important; } .recreation-print-overlay, .recreation-print-overlay * { visibility: visible !important; } .recreation-print-overlay { position: fixed !important; inset: 0 !important; display: block !important; width: 100% !important; height: auto !important; min-height: 0 !important; overflow: visible !important; background: #fff !important; padding: 0 !important; } .recreation-print-detail { position: static !important; display: block !important; width: 100% !important; max-width: none !important; max-height: none !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; } .no-print { display: none !important; } }" }} />
       {viewingActivity ? <div className="recreation-print-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-label="Detalle de actividad recreativa">
         <div className="recreation-print-detail max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
+          <div className="recreation-print-header mb-5 flex items-center gap-3 border-b-2 border-blue-700 pb-3">
+            <img src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" className="h-14 w-14 object-contain" />
+            <div><h1 className="text-lg font-black text-blue-700">Profe en Movimiento 5.0</h1><p className="text-xs font-semibold text-slate-500">RecreaciÃ³n y Retos &middot; PlanificaciÃ³n de actividad</p></div>
+          </div>
           <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Actividad recreativa</p>
@@ -156,7 +160,8 @@ export default function RecreationWorkspace() {
             <Detail label="Seguridad" value={viewingActivity.safety} full />
           </div>
           <div className="mt-6 flex flex-wrap justify-end gap-2"><button type="button" className="no-print rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 hover:bg-blue-100" onClick={() => window.print()}>Imprimir / Guardar</button><button type="button" onClick={() => setViewingActivity(null)} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white hover:bg-blue-600">Cerrar</button></div>
-        </div>
+                  <div className="recreation-print-footer mt-8 border-t border-slate-300 pt-3 text-center text-xs font-semibold text-slate-500">Profe en Movimiento 5.0 &middot; RecreaciÃ³n y Retos &middot; Documento generado desde la plataforma</div>
+</div>
       </div> : null}    </div>
   );
 }
