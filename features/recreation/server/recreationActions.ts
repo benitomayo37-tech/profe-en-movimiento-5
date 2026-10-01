@@ -78,7 +78,6 @@ export async function listRecreationActivitiesAction(): Promise<RecreationAction
     .from("physical_education_recreation_activities")
     .select("id, owner_id, title, activity_type, objective, level, duration_minutes, participants, space, materials, instructions, adaptations, safety, evaluation, status, created_at, updated_at")
     .eq("owner_id", userId)
-    .neq("status", "archived")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -125,4 +124,90 @@ export async function createRecreationActivityAction(input: RecreationActivityDr
 
   revalidatePath("/recreacion");
   return { success: true, message: "Actividad guardada correctamente.", data: { id: data.id } };
+}
+export async function updateRecreationActivityAction(
+  id: string,
+  input: RecreationActivityDraft,
+): Promise<RecreationActionResult<{ id: string } | null>> {
+  const parsedId = z.string().uuid().safeParse(id);
+  const parsed = recreationActivitySchema.safeParse(input);
+  if (!parsedId.success || !parsed.success) {
+    return { success: false, message: "Revisa los campos de la actividad.", data: null };
+  }
+
+  const { supabase, userId } = await getAuthenticatedContext();
+  if (!supabase || !userId) return { success: false, message: "Debes iniciar sesion.", data: null };
+
+  const { data, error } = await supabase
+    .from("physical_education_recreation_activities")
+    .update({
+      title: parsed.data.title,
+      activity_type: parsed.data.type,
+      objective: parsed.data.objective,
+      level: parsed.data.level || null,
+      duration_minutes: parseDuration(parsed.data.duration),
+      participants: parsed.data.participants || null,
+      space: parsed.data.space || null,
+      materials: parsed.data.materials || null,
+      instructions: parsed.data.instructions,
+      adaptations: parsed.data.adaptations || null,
+      safety: parsed.data.safety,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", parsedId.data)
+    .eq("owner_id", userId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    console.error("No se pudo actualizar la actividad recreativa:", error);
+    return { success: false, message: "No pudimos actualizar la actividad.", data: null };
+  }
+
+  revalidatePath("/recreacion");
+  return { success: true, message: "Actividad actualizada correctamente.", data: { id: data.id } };
+}
+
+export async function publishRecreationActivityAction(
+  id: string,
+): Promise<RecreationActionResult<{ id: string } | null>> {
+  return changeRecreationActivityStatus(id, "published");
+}
+
+export async function archiveRecreationActivityAction(
+  id: string,
+): Promise<RecreationActionResult<{ id: string } | null>> {
+  return changeRecreationActivityStatus(id, "archived");
+}
+
+async function changeRecreationActivityStatus(
+  id: string,
+  status: "draft" | "published" | "archived",
+): Promise<RecreationActionResult<{ id: string } | null>> {
+  const parsedId = z.string().uuid().safeParse(id);
+  if (!parsedId.success) return { success: false, message: "La actividad no es valida.", data: null };
+
+  const { supabase, userId } = await getAuthenticatedContext();
+  if (!supabase || !userId) return { success: false, message: "Debes iniciar sesion.", data: null };
+
+  const { data, error } = await supabase
+    .from("physical_education_recreation_activities")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", parsedId.data)
+    .eq("owner_id", userId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    console.error("No se pudo cambiar el estado de la actividad recreativa:", error);
+    return { success: false, message: "No pudimos actualizar el estado.", data: null };
+  }
+
+  revalidatePath("/recreacion");
+  return { success: true, message: status === "published" ? "Actividad publicada correctamente." : status === "draft" ? "Actividad restaurada correctamente." : "Actividad archivada correctamente.", data: { id: data.id } };
+}
+export async function restoreRecreationActivityAction(
+  id: string,
+): Promise<RecreationActionResult<{ id: string } | null>> {
+  return changeRecreationActivityStatus(id, "draft");
 }
