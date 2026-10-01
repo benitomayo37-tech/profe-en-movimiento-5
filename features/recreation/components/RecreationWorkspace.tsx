@@ -142,7 +142,7 @@ export default function RecreationWorkspace() {
               <h3 className="mt-1 text-2xl font-black text-slate-950">{viewingActivity.title}</h3>
               <p className="mt-1 text-sm font-bold text-slate-500">{recreationActivityTypes.find((item) => item.value === viewingActivity.type)?.label} &middot; {viewingActivity.status === "draft" ? "Borrador" : viewingActivity.status === "archived" ? "Archivada" : "Publicada"}</p>
             </div>
-            <button type="button" onClick={() => setViewingActivity(null)} className="rounded-full border border-slate-300 px-3 py-1 text-lg font-black text-slate-600 hover:bg-slate-100" aria-label="Cerrar detalle" className="no-print rounded-full border border-slate-300 px-3 py-1 text-lg font-black text-slate-600 hover:bg-slate-100">&times;</button>
+            <button type="button" onClick={() => setViewingActivity(null)} className="no-print rounded-full border border-slate-300 px-3 py-1 text-lg font-black text-slate-600 hover:bg-slate-100" aria-label="Cerrar detalle">&times;</button>
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2"><p className="text-xs font-black uppercase text-blue-700">Objetivo</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{viewingActivity.objective}</p></div>
