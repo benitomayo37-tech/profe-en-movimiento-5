@@ -29,6 +29,7 @@ export default function RecreationWorkspace() {
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [viewingActivity, setViewingActivity] = useState<RecreationActivityRecord | null>(null);
 
   async function loadActivities() {
     const result = await listRecreationActivitiesAction();
@@ -130,8 +131,35 @@ export default function RecreationWorkspace() {
       </div><div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={saveDraft} disabled={saving || !draft.title.trim() || !draft.objective.trim() || !draft.instructions.trim() || !draft.safety.trim()} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">{saving ? "Guardando..." : editingId ? "Actualizar actividad" : "Guardar actividad"}</button><button type="button" onClick={cancelForm} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-black text-slate-700">Cancelar</button></div>{feedback ? <p className="mt-3 text-sm font-black text-blue-700">{feedback}</p> : null}</section> : null}
 
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Mis actividades</p><h3 className="mt-1 text-xl font-black text-slate-950">Actividades guardadas</h3></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{visibleActivities.length} guardadas</span></div>
-        {loadingActivities ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Cargando actividades...</p> : visibleActivities.length === 0 ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Todav&iacute;a no hay actividades en este filtro.</p> : <div className="mt-4 grid gap-3 md:grid-cols-2">{visibleActivities.map((activity) => <article key={activity.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-black uppercase text-blue-700">{recreationActivityTypes.find((item) => item.value === activity.type)?.label}</p><h4 className="mt-1 font-black text-slate-950">{activity.title}</h4></div><span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-black uppercase text-blue-700">{activity.status === "draft" ? "Borrador" : activity.status === "archived" ? "Archivada" : "Publicada"}</span></div><p className="mt-1 text-sm font-semibold text-slate-600">{activity.objective}</p><p className="mt-2 text-xs font-bold text-slate-500">{activity.duration || "Duraci&oacute;n no especificada"}</p><div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => startEdit(activity)} className="rounded-lg border border-blue-300 px-3 py-1.5 text-xs font-black text-blue-700 hover:bg-blue-50">Editar</button>{activity.status === "draft" ? <button type="button" onClick={() => void changeStatus(activity.id, "publish")} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-black text-white hover:bg-emerald-500">Publicar</button> : null}<button type="button" onClick={() => void changeStatus(activity.id, activity.status === "archived" ? "restore" : "archive")} className="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-black text-red-700 hover:bg-red-50">{activity.status === "archived" ? "Restaurar" : "Archivar"}</button></div></article>)}</div>}
+        {loadingActivities ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Cargando actividades...</p> : visibleActivities.length === 0 ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Todav&iacute;a no hay actividades en este filtro.</p> : <div className="mt-4 grid gap-3 md:grid-cols-2">{visibleActivities.map((activity) => <article key={activity.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-black uppercase text-blue-700">{recreationActivityTypes.find((item) => item.value === activity.type)?.label}</p><h4 className="mt-1 font-black text-slate-950">{activity.title}</h4></div><span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-black uppercase text-blue-700">{activity.status === "draft" ? "Borrador" : activity.status === "archived" ? "Archivada" : "Publicada"}</span></div><p className="mt-1 text-sm font-semibold text-slate-600">{activity.objective}</p><p className="mt-2 text-xs font-bold text-slate-500">{activity.duration || "Duraci&oacute;n no especificada"}</p><div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => setViewingActivity(activity)} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-black text-slate-700 hover:bg-slate-100">Ver actividad</button><button type="button" onClick={() => startEdit(activity)} className="rounded-lg border border-blue-300 px-3 py-1.5 text-xs font-black text-blue-700 hover:bg-blue-50">Editar</button>{activity.status === "draft" ? <button type="button" onClick={() => void changeStatus(activity.id, "publish")} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-black text-white hover:bg-emerald-500">Publicar</button> : null}<button type="button" onClick={() => void changeStatus(activity.id, activity.status === "archived" ? "restore" : "archive")} className="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-black text-red-700 hover:bg-red-50">{activity.status === "archived" ? "Restaurar" : "Archivar"}</button></div></article>)}</div>}
       </section>
-    </div>
+      {viewingActivity ? <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-label="Detalle de actividad recreativa">
+        <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
+          <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Actividad recreativa</p>
+              <h3 className="mt-1 text-2xl font-black text-slate-950">{viewingActivity.title}</h3>
+              <p className="mt-1 text-sm font-bold text-slate-500">{recreationActivityTypes.find((item) => item.value === viewingActivity.type)?.label} Â· {viewingActivity.status === "draft" ? "Borrador" : viewingActivity.status === "archived" ? "Archivada" : "Publicada"}</p>
+            </div>
+            <button type="button" onClick={() => setViewingActivity(null)} className="rounded-full border border-slate-300 px-3 py-1 text-lg font-black text-slate-600 hover:bg-slate-100" aria-label="Cerrar detalle">Ã—</button>
+          </div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2"><p className="text-xs font-black uppercase text-blue-700">Objetivo</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{viewingActivity.objective}</p></div>
+            <Detail label="Nivel o edad" value={viewingActivity.level} />
+            <Detail label="DuraciÃ³n" value={viewingActivity.duration} />
+            <Detail label="Participantes" value={viewingActivity.participants} />
+            <Detail label="Espacio" value={viewingActivity.space} />
+            <Detail label="Materiales" value={viewingActivity.materials} full />
+            <Detail label="Instrucciones" value={viewingActivity.instructions} full />
+            <Detail label="Adaptaciones DUA y NEE" value={viewingActivity.adaptations} full />
+            <Detail label="Seguridad" value={viewingActivity.safety} full />
+          </div>
+          <div className="mt-6 flex justify-end"><button type="button" onClick={() => setViewingActivity(null)} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white hover:bg-blue-600">Cerrar</button></div>
+        </div>
+      </div> : null}    </div>
   );
+}
+
+function Detail({ label, value, full = false }: { label: string; value: string; full?: boolean }) {
+  return <div className={full ? "sm:col-span-2" : ""}><p className="text-xs font-black uppercase text-blue-700">{label}</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{value || "No especificado"}</p></div>;
 }
