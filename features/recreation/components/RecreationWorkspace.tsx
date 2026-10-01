@@ -99,98 +99,29 @@ export default function RecreationWorkspace() {
   }
 
   function printViewingActivity() {
-    const source = document.querySelector<HTMLElement>(".recreation-print-detail");
-    if (!source) return;
-
-    const frame = document.createElement("iframe");
-    frame.setAttribute("title", "PDF de actividad recreativa");
-    frame.style.position = "fixed";
-    frame.style.width = "1px";
-    frame.style.height = "1px";
-    frame.style.border = "0";
-    frame.style.opacity = "0";
-    frame.style.pointerEvents = "none";
-    frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><base href="${window.location.origin}/"><title>Actividad recreativa</title><style>@page{size:A4 portrait;margin:12mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#1e293b;font-family:Arial,sans-serif;font-size:11px;line-height:1.42}.recreation-print-detail{width:100%;max-width:none!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:0!important;border-radius:0!important;box-shadow:none!important}.no-print{display:none!important}.recreation-print-header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #1d4ed8;padding-bottom:10px;margin-bottom:18px}.recreation-print-header img{width:58px;height:58px;object-fit:contain}.recreation-print-header h1{margin:0;color:#1d4ed8;font-size:20px}.recreation-print-header p{margin:3px 0 0;color:#475569;font-size:11px}.recreation-print-detail h3{margin:0 0 4px;color:#020617;font-size:22px;line-height:1.15}.recreation-print-detail h3+p{margin:0 0 14px;color:#475569;font-size:12px;font-weight:700}.recreation-print-detail h3+p+div{border-top:1px solid #cbd5e1;padding-top:14px}.recreation-print-detail .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}.recreation-print-detail .grid>div{min-width:0;border:1px solid #dbeafe;border-left:4px solid #60a5fa;border-radius:8px;background:#f8fbff;padding:9px 11px;break-inside:avoid}.recreation-print-detail .grid>div:first-child,.recreation-print-detail .grid>div:nth-child(6),.recreation-print-detail .grid>div:nth-child(7),.recreation-print-detail .grid>div:nth-child(8),.recreation-print-detail .grid>div:nth-child(9){grid-column:1/-1}.recreation-print-detail .grid>div>p:first-child{margin:0 0 4px;color:#1d4ed8;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}.recreation-print-detail .grid>div>p:last-child{margin:0;color:#334155;white-space:pre-wrap}.recreation-print-footer{border-top:1px solid #cbd5e1;margin-top:18px;padding-top:8px;color:#64748b;font-size:9px;text-align:center}
-</style></style></head><body>${source.innerHTML}</body></html>`;
-    frame.onload = () => {
-      const printWindow = frame.contentWindow;
-      if (!printWindow) return;
-      printWindow.onafterprint = () => frame.remove();
-      window.setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-      }, 700);
-    };
-    document.body.appendChild(frame);
-  }
-  return (
-    <div className="space-y-6">
-      <section className="rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 p-6 text-white shadow-xl sm:p-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div><h2 className="text-3xl font-black">Recreaci&oacute;n y Retos</h2><p className="mt-2 max-w-2xl text-sm font-semibold text-blue-100">Dise&ntilde;a juegos, yincanas y escape rooms inclusivos para clases, convivencias y jornadas recreativas.</p></div>
-          <button type="button" onClick={() => setShowForm((value) => !value)} className="rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-black text-white shadow-lg transition hover:bg-orange-400">{showForm ? "Cerrar formulario" : "+ Nueva actividad"}</button>
-        </div>
-      </section>
-
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {recreationActivityTypes.map((item) => <button key={item.value} type="button" onClick={() => { setSelectedType(item.value); setShowForm(true); setDraft((current) => ({ ...current, type: item.value })); }} className="rounded-2xl border border-blue-100 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-md"><p className="text-sm font-black text-slate-950">{item.label}</p><p className="mt-1 text-xs font-semibold text-slate-500">{item.description}</p></button>)}
-      </section>
-
-      <div className="flex flex-wrap gap-2">{[{ value: "todos", label: "Todas" }, ...recreationActivityTypes].map((item) => <button key={item.value} type="button" onClick={() => setSelectedType(item.value)} className={selectedType === item.value ? "rounded-full bg-blue-700 px-3 py-1.5 text-xs font-black text-white" : "rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-black text-slate-600 hover:border-blue-400 hover:text-blue-700"}>{item.label}</button>)}</div>
-
-      <div className="flex flex-wrap gap-2">
-        {[{ value: "active", label: "Activas" }, { value: "all", label: "Todas" }, { value: "draft", label: "Borradores" }, { value: "published", label: "Publicadas" }, { value: "archived", label: "Archivadas" }].map((item) => <button key={item.value} type="button" onClick={() => setStatusFilter(item.value)} className={statusFilter === item.value ? "rounded-full bg-orange-500 px-3 py-1.5 text-xs font-black text-white" : "rounded-full border border-orange-200 bg-white px-3 py-1.5 text-xs font-black text-orange-700 hover:border-orange-400"}>{item.label}</button>)}
-      </div>
-      {showForm ? <section className="rounded-3xl border border-blue-100 bg-blue-50/70 p-5 shadow-sm sm:p-6"><div className="mb-4"><p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Planificador</p><h3 className="mt-1 text-xl font-black text-slate-950">{editingId ? "Editar actividad recreativa" : "Crear actividad recreativa"}</h3><p className="mt-1 text-sm font-semibold text-slate-600">Completa los campos esenciales para guardar una propuesta segura e inclusiva.</p></div><div className="grid gap-4 md:grid-cols-2">
-        <label className="text-sm font-black text-slate-700">Nombre<input className={fieldClass} value={draft.title} onChange={(event) => updateDraft("title", event.target.value)} placeholder="Ej. Mision de los cuatro equipos" /></label>
-        <label className="text-sm font-black text-slate-700">Tipo<select className={fieldClass} value={draft.type} onChange={(event) => updateDraft("type", event.target.value as RecreationActivityDraft["type"])}>{recreationActivityTypes.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
-        <label className="text-sm font-black text-slate-700 md:col-span-2">Objetivo<textarea className={fieldClass} rows={2} value={draft.objective} onChange={(event) => updateDraft("objective", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700">Nivel o edad<input className={fieldClass} value={draft.level} onChange={(event) => updateDraft("level", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700">Duraci&oacute;n<input className={fieldClass} value={draft.duration} onChange={(event) => updateDraft("duration", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700">Participantes<input className={fieldClass} value={draft.participants} onChange={(event) => updateDraft("participants", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700">Espacio<input className={fieldClass} value={draft.space} onChange={(event) => updateDraft("space", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700 md:col-span-2">Materiales<input className={fieldClass} value={draft.materials} onChange={(event) => updateDraft("materials", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700 md:col-span-2">Instrucciones<textarea className={fieldClass} rows={3} value={draft.instructions} onChange={(event) => updateDraft("instructions", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700 md:col-span-2">Adaptaciones DUA y NEE<textarea className={fieldClass} rows={3} value={draft.adaptations} onChange={(event) => updateDraft("adaptations", event.target.value)} /></label>
-        <label className="text-sm font-black text-slate-700 md:col-span-2">Seguridad<textarea className={fieldClass} rows={3} value={draft.safety} onChange={(event) => updateDraft("safety", event.target.value)} /></label>
-      </div><div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={saveDraft} disabled={saving || !draft.title.trim() || !draft.objective.trim() || !draft.instructions.trim() || !draft.safety.trim()} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50">{saving ? "Guardando..." : editingId ? "Actualizar actividad" : "Guardar actividad"}</button><button type="button" onClick={cancelForm} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-black text-slate-700">Cancelar</button></div>{feedback ? <p className="mt-3 text-sm font-black text-blue-700">{feedback}</p> : null}</section> : null}
-
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Mis actividades</p><h3 className="mt-1 text-xl font-black text-slate-950">Actividades guardadas</h3></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">{visibleActivities.length} guardadas</span></div>
-        {loadingActivities ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Cargando actividades...</p> : visibleActivities.length === 0 ? <p className="mt-5 rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500">Todav&iacute;a no hay actividades en este filtro.</p> : <div className="mt-4 grid gap-3 md:grid-cols-2">{visibleActivities.map((activity) => <article key={activity.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-black uppercase text-blue-700">{recreationActivityTypes.find((item) => item.value === activity.type)?.label}</p><h4 className="mt-1 font-black text-slate-950">{activity.title}</h4></div><span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-black uppercase text-blue-700">{activity.status === "draft" ? "Borrador" : activity.status === "archived" ? "Archivada" : "Publicada"}</span></div><p className="mt-1 text-sm font-semibold text-slate-600">{activity.objective}</p><p className="mt-2 text-xs font-bold text-slate-500">{activity.duration || "Duraci&oacute;n no especificada"}</p><div className="mt-4 flex flex-wrap gap-2"><button type="button" onClick={() => setViewingActivity(activity)} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-black text-slate-700 hover:bg-slate-100">Ver actividad</button><button type="button" onClick={() => startEdit(activity)} className="rounded-lg border border-blue-300 px-3 py-1.5 text-xs font-black text-blue-700 hover:bg-blue-50">Editar</button>{activity.status === "draft" ? <button type="button" onClick={() => void changeStatus(activity.id, "publish")} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-black text-white hover:bg-emerald-500">Publicar</button> : null}<button type="button" onClick={() => void changeStatus(activity.id, activity.status === "archived" ? "restore" : "archive")} className="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-black text-red-700 hover:bg-red-50">{activity.status === "archived" ? "Restaurar" : "Archivar"}</button></div></article>)}</div>}
-      </section>
-      <style dangerouslySetInnerHTML={{ __html: "@page { size: A4 portrait; margin: 12mm; } @media print { html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; } body * { visibility: hidden !important; } .recreation-print-overlay, .recreation-print-overlay * { visibility: visible !important; } .recreation-print-overlay { position: fixed !important; inset: 0 !important; display: block !important; width: 100% !important; height: auto !important; min-height: 0 !important; overflow: visible !important; background: #fff !important; padding: 0 !important; } .recreation-print-detail { position: static !important; display: block !important; width: 100% !important; max-width: none !important; max-height: none !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; } .no-print { display: none !important; } }" }} />
-      {viewingActivity ? <div className="recreation-print-overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-label="Detalle de actividad recreativa">
-        <div className="recreation-print-detail max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
-          <div className="recreation-print-header mb-5 flex items-center gap-3 border-b-2 border-blue-700 pb-3">
-            <img src="/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento" className="h-14 w-14 object-contain" />
-            <div><h1 className="text-lg font-black text-blue-700">Profe en Movimiento 5.0</h1><p className="text-xs font-semibold text-slate-500">Recreaci&oacute;nn y Retos &middot; Planificaci&oacute;nn de actividad</p></div>
-          </div>
-          <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Actividad recreativa</p>
-              <h3 className="mt-1 text-2xl font-black text-slate-950">{viewingActivity.title}</h3>
-              <p className="mt-1 text-sm font-bold text-slate-500">{recreationActivityTypes.find((item) => item.value === viewingActivity.type)?.label} &middot; {viewingActivity.status === "draft" ? "Borrador" : viewingActivity.status === "archived" ? "Archivada" : "Publicada"}</p>
-            </div>
-            <button type="button" onClick={() => setViewingActivity(null)} className="no-print rounded-full border border-slate-300 px-3 py-1 text-lg font-black text-slate-600 hover:bg-slate-100" aria-label="Cerrar detalle">&times;</button>
-          </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2"><p className="text-xs font-black uppercase text-blue-700">Objetivo</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{viewingActivity.objective}</p></div>
-            <Detail label="Nivel o edad" value={viewingActivity.level} />
-            <Detail label="Duraci&oacute;n" value={viewingActivity.duration} />
-            <Detail label="Participantes" value={viewingActivity.participants} />
-            <Detail label="Espacio" value={viewingActivity.space} />
-            <Detail label="Materiales" value={viewingActivity.materials} full />
-            <Detail label="Instrucciones" value={viewingActivity.instructions} full />
-            <Detail label="Adaptaciones DUA y NEE" value={viewingActivity.adaptations} full />
-            <Detail label="Seguridad" value={viewingActivity.safety} full />
-          </div>
-          <div className="mt-6 flex flex-wrap justify-end gap-2"><button type="button" className="no-print rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 hover:bg-blue-100" onClick={printViewingActivity}>Imprimir / Guardar</button><button type="button" onClick={() => setViewingActivity(null)} className="no-print rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white hover:bg-blue-600">Cerrar</button></div>
-                  <div className="recreation-print-footer mt-8 border-t border-slate-300 pt-3 text-center text-xs font-semibold text-slate-500">Profe en Movimiento 5.0 &middot; Recreaci&oacute;nn y Retos &middot; Documento generado desde la plataforma</div>
-</div>
-      </div> : null}    </div>
-  );
+  if (!viewingActivity) return;
+  const activity = viewingActivity;
+  const escapeHtml = (value: string) => value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+  const typeLabel = recreationActivityTypes.find((item) => item.value === activity.type)?.label ?? activity.type;
+  const statusLabel = activity.status === "draft" ? "Borrador" : activity.status === "archived" ? "Archivada" : "Publicada";
+  const field = (label: string, value: string, wide = false) => `<section class="field${wide ? " wide" : ""}"><div class="field-label">${label}</div><div class="field-value">${escapeHtml(value || "No especificado")}</div></section>`;
+  const frame = document.createElement("iframe");
+  frame.setAttribute("title", "ImpresiÃ³n de actividad recreativa");
+  frame.style.position = "fixed";
+  frame.style.width = "1px";
+  frame.style.height = "1px";
+  frame.style.opacity = "0";
+  frame.style.pointerEvents = "none";
+  frame.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(activity.title)}</title><style>
+@page{size:A4 portrait;margin:13mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#172554;font-family:Arial,sans-serif;font-size:11px;line-height:1.45}.sheet{border:1px solid #bfdbfe;border-radius:14px;padding:18px;background:linear-gradient(180deg,#f8fbff 0,#fff 170px)}.brand{display:flex;align-items:center;gap:13px;border-bottom:4px solid #2563eb;padding-bottom:11px;margin-bottom:18px}.brand img{width:58px;height:58px;object-fit:contain}.brand h1{margin:0;color:#1d4ed8;font-size:20px;letter-spacing:-.02em}.brand p{margin:3px 0 0;color:#64748b;font-size:10px}.kicker{margin:0;color:#2563eb;font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.title{margin:4px 0 5px;color:#0f172a;font-size:24px;line-height:1.15}.meta{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 17px}.pill{border-radius:999px;padding:4px 9px;background:#dbeafe;color:#1e40af;font-size:10px;font-weight:800}.pill.status{background:#dcfce7;color:#166534}.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{min-width:0;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:9px;background:#f8fbff;padding:9px 11px;break-inside:avoid}.field.wide{grid-column:1/-1}.field-label{margin-bottom:4px;color:#1d4ed8;font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.field-value{color:#334155;white-space:pre-wrap}.footer{margin-top:18px;border-top:1px solid #bfdbfe;padding-top:9px;color:#64748b;font-size:9px;text-align:center}.footer strong{color:#1d4ed8}@media print{.sheet{border:0;padding:0;background:#fff}}
+</style></head><body><main class="sheet"><header class="brand"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1>Profe en Movimiento 5.0</h1><p>RecreaciÃ³n y Retos Â· PlanificaciÃ³n de actividad</p></div></header><p class="kicker">Actividad recreativa</p><h2 class="title">${escapeHtml(activity.title)}</h2><div class="meta"><span class="pill">${escapeHtml(typeLabel)}</span><span class="pill status">${escapeHtml(statusLabel)}</span></div><div class="fields">${field("Objetivo", activity.objective, true)}${field("Nivel o edad", activity.level)}${field("DuraciÃ³n", activity.duration)}${field("Participantes", activity.participants)}${field("Espacio", activity.space)}${field("Materiales", activity.materials, true)}${field("Instrucciones", activity.instructions, true)}${field("Adaptaciones DUA y NEE", activity.adaptations, true)}${field("Seguridad", activity.safety, true)}</div><footer class="footer"><strong>Profe en Movimiento 5.0</strong> Â· RecreaciÃ³n y Retos Â· Documento generado desde la plataforma</footer></main></body></html>`;
+  frame.onload = () => window.setTimeout(() => { frame.contentWindow?.focus(); frame.contentWindow?.print(); window.setTimeout(() => frame.remove(), 1200); }, 250);
+  document.body.appendChild(frame);
 }
-
 function Detail({ label, value, full = false }: { label: string; value: string; full?: boolean }) {
   return <div className={full ? "sm:col-span-2" : ""}><p className="text-xs font-black uppercase text-blue-700">{label}</p><p className="mt-1 whitespace-pre-wrap text-sm font-semibold text-slate-700">{value || "No especificado"}</p></div>;
 }
