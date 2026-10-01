@@ -98,6 +98,37 @@ export default function RecreationWorkspace() {
     if (result.success) await loadActivities();
   }
 
+  function printViewingActivity() {
+    if (!viewingActivity) return;
+    const escapeHtml = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    const activity = viewingActivity;
+    const typeLabel = recreationActivityTypes.find((item) => item.value === activity.type)?.label ?? activity.type;
+    const statusLabel = activity.status === "draft" ? "Borrador" : activity.status === "archived" ? "Archivada" : "Publicada";
+    const popup = window.open("", "_blank", "width=900,height=1200");
+    if (!popup) return;
+    popup.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(activity.title)}</title><style>
+      @page { size: A4 portrait; margin: 12mm; }
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #1e293b; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.45; }
+      .header { display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #1d4ed8; padding-bottom: 10px; margin-bottom: 16px; }
+      .header img { width: 54px; height: 54px; object-fit: contain; }
+      .brand { margin: 0; color: #1d4ed8; font-size: 18px; }
+      .subtitle { margin: 2px 0 0; color: #64748b; font-size: 11px; }
+      .eyebrow { margin: 0; color: #1d4ed8; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+      h2 { margin: 3px 0 3px; color: #020617; font-size: 22px; }
+      .meta { margin: 0 0 12px; color: #475569; font-size: 12px; font-weight: 700; }
+      .rule { border: 0; border-top: 1px solid #cbd5e1; margin: 0 0 14px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+      .field { break-inside: avoid; }
+      .full { grid-column: 1 / -1; }
+      .label { margin: 0 0 3px; color: #1d4ed8; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+      .value { margin: 0; white-space: pre-wrap; }
+      .footer { border-top: 1px solid #cbd5e1; margin-top: 22px; padding-top: 8px; color: #64748b; font-size: 9px; text-align: center; }
+    </style></head><body><header class="header"><img src="${window.location.origin}/logos/logo-profe-en-movimiento.png" alt="Profe en Movimiento"><div><h1 class="brand">Profe en Movimiento 5.0</h1><p class="subtitle">RecreaciÃ³n y Retos Â· PlanificaciÃ³n de actividad</p></div></header><p class="eyebrow">Actividad recreativa</p><h2>${escapeHtml(activity.title)}</h2><p class="meta">${escapeHtml(typeLabel)} Â· ${escapeHtml(statusLabel)}</p><hr class="rule"><div class="grid"><div class="field full"><p class="label">Objetivo</p><p class="value">${escapeHtml(activity.objective)}</p></div><div class="field"><p class="label">Nivel o edad</p><p class="value">${escapeHtml(activity.level || "No especificado")}</p></div><div class="field"><p class="label">DuraciÃ³n</p><p class="value">${escapeHtml(activity.duration || "No especificada")}</p></div><div class="field"><p class="label">Participantes</p><p class="value">${escapeHtml(activity.participants || "No especificados")}</p></div><div class="field"><p class="label">Espacio</p><p class="value">${escapeHtml(activity.space || "No especificado")}</p></div><div class="field full"><p class="label">Materiales</p><p class="value">${escapeHtml(activity.materials || "No especificados")}</p></div><div class="field full"><p class="label">Instrucciones</p><p class="value">${escapeHtml(activity.instructions)}</p></div><div class="field full"><p class="label">Adaptaciones DUA y NEE</p><p class="value">${escapeHtml(activity.adaptations || "No especificadas")}</p></div><div class="field full"><p class="label">Seguridad</p><p class="value">${escapeHtml(activity.safety)}</p></div></div><footer class="footer">Profe en Movimiento 5.0 Â· RecreaciÃ³n y Retos Â· Documento generado desde la plataforma</footer></body></html>`);
+    popup.document.close();
+    popup.focus();
+    window.setTimeout(() => { popup.print(); popup.onafterprint = () => popup.close(); }, 350);
+  }
   return (
     <div className="space-y-6">
       <section className="rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 p-6 text-white shadow-xl sm:p-8">
@@ -159,7 +190,7 @@ export default function RecreationWorkspace() {
             <Detail label="Adaptaciones DUA y NEE" value={viewingActivity.adaptations} full />
             <Detail label="Seguridad" value={viewingActivity.safety} full />
           </div>
-          <div className="mt-6 flex flex-wrap justify-end gap-2"><button type="button" className="no-print rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 hover:bg-blue-100" onClick={() => window.print()}>Imprimir / Guardar</button><button type="button" onClick={() => setViewingActivity(null)} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white hover:bg-blue-600">Cerrar</button></div>
+          <div className="mt-6 flex flex-wrap justify-end gap-2"><button type="button" className="no-print rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-black text-blue-700 hover:bg-blue-100" onClick={printViewingActivity}>Imprimir / Guardar</button><button type="button" onClick={() => setViewingActivity(null)} className="rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-black text-white hover:bg-blue-600">Cerrar</button></div>
                   <div className="recreation-print-footer mt-8 border-t border-slate-300 pt-3 text-center text-xs font-semibold text-slate-500">Profe en Movimiento 5.0 &middot; RecreaciÃ³n y Retos &middot; Documento generado desde la plataforma</div>
 </div>
       </div> : null}    </div>
