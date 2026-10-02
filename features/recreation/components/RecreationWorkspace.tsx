@@ -128,8 +128,8 @@ export default function RecreationWorkspace() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-300">Planificador recreativo</p>
             <h1 className="mt-2 text-3xl font-black">Recreaci&oacute;n y Retos</h1>
-            <p className="mt-2 max-w-2xl text-sm font-semibold text-blue-100">DiseÃ±a juegos, yincanas y escape rooms inclusivos para clases, convivencias y jornadas recreativas.</p>
-          </div>
+            <p className="mt-2 max-w-2xl text-sm font-semibold text-blue-100"> juegos, yincanas y escape rooms inclusivos para clases, convivencias y jornadas recreativas.</p>
+          </div>Diseña
           <button type="button" onClick={() => { setEditingId(null); setDraft(emptyRecreationActivity); setFeedback(""); setShowForm(true); }} className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-black text-white shadow-md transition hover:bg-orange-400">+ Nueva actividad</button>
         </div>
       </header>
@@ -151,7 +151,7 @@ export default function RecreationWorkspace() {
       {showForm ? <form onSubmit={(event) => { event.preventDefault(); void saveDraft(); }} className="rounded-3xl border border-blue-200 bg-blue-50/60 p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">{editingId ? "Editar actividad" : "Nueva actividad"}</p><h2 className="text-2xl font-black text-slate-900">Datos de la propuesta</h2></div><button type="button" onClick={cancelForm} className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700">Cancelar</button></div>
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="md:col-span-2 text-sm font-black text-slate-800">Nombre<input required value={draft.title} onChange={(event) => updateDraft("title", event.target.value)} className={fieldClass + " mt-1"} placeholder="Ej. MisiÃ³n de los cuatro equipos" /></label>
+          <label className="md:col-span-2 text-sm font-black text-slate-800">Nombre<input required value={draft.title} onChange={(event) => updateDraft("title", event.target.value)} className={fieldClass + " mt-1"} placeholder="Ej. Misión de los cuatro equipos" /></label>
           <label className="text-sm font-black text-slate-800">Tipo<select value={draft.type} onChange={(event) => updateDraft("type", event.target.value)} className={fieldClass + " mt-1"}>{recreationActivityTypes.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
           <label className="text-sm font-black text-slate-800">Nivel o edad<input required value={draft.level} onChange={(event) => updateDraft("level", event.target.value)} className={fieldClass + " mt-1"} placeholder="Ej. 9no EGB" /></label>
           <label className="text-sm font-black text-slate-800">Duraci&oacute;n<input required value={draft.duration} onChange={(event) => updateDraft("duration", event.target.value)} className={fieldClass + " mt-1"} placeholder="Ej. 45 minutos" /></label>
