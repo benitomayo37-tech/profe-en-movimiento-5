@@ -128,8 +128,8 @@ export default function RecreationWorkspace() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-300">Planificador recreativo</p>
             <h1 className="mt-2 text-3xl font-black">Recreaci&oacute;n y Retos</h1>
-            <p className="mt-2 max-w-2xl text-sm font-semibold text-blue-100"> juegos, yincanas y escape rooms inclusivos para clases, convivencias y jornadas recreativas.</p>
-          </div>Diseña
+            <p className="mt-2 max-w-2xl text-sm font-semibold text-blue-100">Diseña juegos, yincanas y escape rooms inclusivos para clases, convivencias y jornadas recreativas.</p>
+</div>
           <button type="button" onClick={() => { setEditingId(null); setDraft(emptyRecreationActivity); setFeedback(""); setShowForm(true); }} className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-black text-white shadow-md transition hover:bg-orange-400">+ Nueva actividad</button>
         </div>
       </header>
