@@ -32,7 +32,10 @@ const VAGUE_INITIAL_VERB_PATTERN =
   /\b(\d{1,3}(?:[.,]\d+)?)\s*%/g;
 
 const COUNT_TOTAL_CRITERION_PATTERN =
-  /\b(\d+)\s+(?:(?:pases?|aciertos?|ejecuciones?|repeticiones?)\s+(?:(?:efectiv|correct|exitos|recibid|lograd)[oa]s?\s*)?)?(?:de|sobre)\s+(\d+)\s+(?:intentos?|pases?|ejecuciones?|repeticiones?|oportunidades?)\b/g;
+  /\b(\d+)\s+(?:(?:pases?|aciertos?|ejecuciones?|repeticiones?)\s+(?:(?:efectiv|correct|exitos|recibid|lograd)[oa]s?\s*)?)?(?:de|sobre)\s+(\d+)(?:\s+(?:intentos?|pases?|ejecuciones?|repeticiones?|oportunidades?))?\b/g;
+
+const COUNT_SLASH_CRITERION_PATTERN =
+  /\b(\d+)\s*\/\s*(\d+)\b/g;
 
 function normalizeText(
   value: string,
@@ -440,6 +443,12 @@ function validateQuantitativeCriterion(
       ),
     );
 
+  const slashMatches = Array.from(
+    objectiveText.matchAll(
+      COUNT_SLASH_CRITERION_PATTERN,
+    ),
+  );
+
   const usesConsecutiveCriterion =
     /\bconsecutiv[oa]s?\b/.test(
       objectiveText,
@@ -471,6 +480,11 @@ function validateQuantitativeCriterion(
         totalAttempts:
           Number(match[2]),
       }),
+    ).concat(
+      slashMatches.map((match) => ({
+        successfulAttempts: Number(match[1]),
+        totalAttempts: Number(match[2]),
+      })),
     );
 
   for (

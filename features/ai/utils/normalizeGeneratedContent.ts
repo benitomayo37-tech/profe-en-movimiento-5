@@ -425,7 +425,9 @@ function normalizeForComparison(value: string): string {
 function normalizeLessonPlanSectionOrder(
   sections: GeneratedAIContent["sections"],
 ): GeneratedAIContent["sections"] {
-  const organizationSectionIndex = sections.findIndex((section) => {
+  let normalizedSections = sections;
+
+  let organizationSectionIndex = normalizedSections.findIndex((section) => {
     const normalizedTitle = normalizeForComparison(section.title);
 
     return (
@@ -433,10 +435,57 @@ function normalizeLessonPlanSectionOrder(
       /\b(?:grupo|espacio|material)/.test(normalizedTitle)
     );
   });
-  const methodologySectionIndex = sections.findIndex((section) =>
+  let methodologySectionIndex = normalizedSections.findIndex((section) =>
     normalizeForComparison(section.title).includes("metodolog"),
   );
-  const startSectionIndex = sections.findIndex((section) => {
+
+  // Algunos modelos colocan la metodología como el primer elemento de la
+  // sección de organización, aunque el prompt exige una sección separada.
+  // La extraemos para que la estructura final sea estable antes de validar.
+  if (methodologySectionIndex < 0) {
+    const sourceSectionIndex = normalizedSections.findIndex((section) =>
+      section.content.some((item) =>
+        /^\s*(?:metodolog[ií]as?|enfoques?)\b/i.test(item),
+      ),
+    );
+
+    if (sourceSectionIndex >= 0) {
+      const sourceSection = normalizedSections[sourceSectionIndex];
+      const firstMethodologyItemIndex = sourceSection.content.findIndex((item) =>
+        /^\s*(?:metodolog[ií]as?|enfoques?)\b/i.test(item),
+      );
+
+      if (firstMethodologyItemIndex >= 0) {
+        const methodologySection: GeneratedAIContent["sections"][number] = {
+          title: "Metodología aplicada",
+          content: sourceSection.content.slice(firstMethodologyItemIndex),
+        };
+        const organizationSection = {
+          ...sourceSection,
+          content: sourceSection.content.slice(0, firstMethodologyItemIndex),
+        };
+
+        normalizedSections = normalizedSections.flatMap((section, index) =>
+          index === sourceSectionIndex
+            ? [organizationSection, methodologySection]
+            : [section],
+        );
+      }
+    }
+  }
+
+  organizationSectionIndex = normalizedSections.findIndex((section) => {
+    const normalizedTitle = normalizeForComparison(section.title);
+
+    return (
+      normalizedTitle.includes("organizacion") &&
+      /\b(?:grupo|espacio|material)/.test(normalizedTitle)
+    );
+  });
+  methodologySectionIndex = normalizedSections.findIndex((section) =>
+    normalizeForComparison(section.title).includes("metodolog"),
+  );
+  const startSectionIndex = normalizedSections.findIndex((section) => {
     const normalizedTitle = normalizeForComparison(section.title).trim();
 
     return (
@@ -450,15 +499,15 @@ function normalizeLessonPlanSectionOrder(
     methodologySectionIndex < 0 ||
     startSectionIndex < 0
   ) {
-    return sections;
+    return normalizedSections;
   }
 
-  const organizationSection = sections[organizationSectionIndex];
+  const organizationSection = normalizedSections[organizationSectionIndex];
   const methodologySection = {
-    ...sections[methodologySectionIndex],
+    ...normalizedSections[methodologySectionIndex],
     title: "Metodología aplicada",
   };
-  const remainingSections = sections.filter(
+  const remainingSections = normalizedSections.filter(
     (_, index) =>
       index !== organizationSectionIndex &&
       index !== methodologySectionIndex,
@@ -473,7 +522,7 @@ function normalizeLessonPlanSectionOrder(
   });
 
   if (startIndex < 0) {
-    return sections;
+    return normalizedSections;
   }
 
   return [
@@ -482,6 +531,21 @@ function normalizeLessonPlanSectionOrder(
     methodologySection,
     ...remainingSections.slice(startIndex),
   ];
+}
+
+function normalizeLessonPlanActiveRoleText(value: string): string {
+  return value
+    .replace(/\bobservador[- ]coevaluador\b/gi, "participante que ofrece retroalimentación en movimiento")
+    .replace(/\bobservador\b/gi, "participante con función motriz activa");
+}
+
+function normalizeLessonPlanActiveRoles(
+  sections: GeneratedAIContent["sections"],
+): GeneratedAIContent["sections"] {
+  return sections.map((section) => ({
+    ...section,
+    content: section.content.map(normalizeLessonPlanActiveRoleText),
+  }));
 }
 
 function normalizeBloomDeclaredLevel(value: string): string {
@@ -747,27 +811,35 @@ export function normalizeGeneratedContent(
     };
   });
   const orderedSections = normalizeLessonPlanSectionOrder(processedSections);
+  const lessonPlanSections =
+    formData?.toolId === "lesson-plan"
+      ? normalizeLessonPlanActiveRoles(orderedSections)
+      : orderedSections;
   const finalSections = content.rubric
     ? normalizeRubricCalculation(
-        orderedSections,
+        lessonPlanSections,
         content.rubric.criteria.length,
       )
     : formData?.toolId === "assessment"
-      ? normalizeAssessmentLanguage(orderedSections, formData.materials)
+      ? normalizeAssessmentLanguage(lessonPlanSections, formData.materials)
       : formData?.toolId === "checklist"
       ? normalizeChecklistCalculation(
-          normalizeChecklistLanguage(orderedSections),
+          normalizeChecklistLanguage(lessonPlanSections),
         )
-      : orderedSections;
+      : lessonPlanSections;
 
   return {
     ...content,
     title: normalizeRequestedTechniques(
-      normalizeActiveParticipation(content.title.trim()),
+      formData?.toolId === "lesson-plan"
+        ? normalizeLessonPlanActiveRoleText(normalizeActiveParticipation(content.title.trim()))
+        : normalizeActiveParticipation(content.title.trim()),
       formData,
     ),
     introduction: normalizeRequestedTechniques(
-      normalizeActiveParticipation(content.introduction.trim()),
+      formData?.toolId === "lesson-plan"
+        ? normalizeLessonPlanActiveRoleText(normalizeActiveParticipation(content.introduction.trim()))
+        : normalizeActiveParticipation(content.introduction.trim()),
       formData,
     ),
     sections: finalSections,

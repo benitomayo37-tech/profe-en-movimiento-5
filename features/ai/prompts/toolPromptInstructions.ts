@@ -19,23 +19,24 @@ REGLAS GENERALES
 
 SECCIONES OBLIGATORIAS Y ORDEN
 
-Genera exactamente estas secciones y conserva este orden:
+Genera exactamente estas secciones y conserva este orden. Cada elemento debe
+ser una sección independiente del arreglo "sections":
 
 1. Datos y propósito de la sesión.
 2. Objetivo de aprendizaje.
 3. Organización del grupo, espacio y materiales.
-Metodología aplicada.
-4. Inicio.
-5. Desarrollo.
-6. Cierre y vuelta a la calma.
-7. Evaluación del aprendizaje.
-8. Medidas de seguridad.
-9. Estrategias DUA integradas, únicamente si DUA está activado.
-10. Apoyos para adaptación NEE, únicamente si NEE está activado.
+4. Metodología aplicada.
+5. Inicio.
+6. Desarrollo.
+7. Cierre y vuelta a la calma.
+8. Evaluación del aprendizaje.
+9. Medidas de seguridad.
+10. Estrategias DUA integradas, únicamente si DUA está activado.
+11. Apoyos para adaptación NEE, únicamente si NEE está activado.
 
-La sección debe titularse exactamente "Metodología aplicada", sin número,
-y debe aparecer inmediatamente después de "Organización del grupo, espacio
-y materiales" y antes de "Inicio".
+La sección "Metodología aplicada" es obligatoria, independiente y debe
+aparecer inmediatamente después de "Organización del grupo, espacio y
+materiales" y antes de "Inicio". No la mezcles dentro de la organización.
 
 No combines estas secciones, no cambies su orden y no repitas su contenido
 en otras partes.

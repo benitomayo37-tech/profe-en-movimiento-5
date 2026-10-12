@@ -36,7 +36,7 @@ SELECCIÓN AUTOMÁTICA
 APRENDIZAJE COOPERATIVO
 
 - Organiza equipos pequeños con interdependencia positiva y responsabilidad individual.
-- Define roles funcionales como coordinador, ejecutante, observador, responsable de materiales o portavoz.
+- Define roles funcionales activos como coordinador, ejecutante, pasador, receptor, participante en desplazamiento, responsable de materiales o portavoz.
 - Incluye una meta compartida que necesite la participación de todos.
 - Evita filas prolongadas y estudiantes sin función activa.
 - Incorpora coevaluación, autoevaluación y valoración del aporte individual al equipo.
@@ -105,9 +105,9 @@ RESOLUCIÓN DE PROBLEMAS
   "reciprocal-teaching": `
 ENSEÑANZA RECÍPROCA
 
-- Organiza parejas o pequeños equipos que alternen los roles de ejecutante y observador.
+- Organiza parejas o pequeños equipos que alternen los roles de ejecutante y participante que ofrece retroalimentación mientras mantiene una función motriz activa.
 - Proporciona criterios observables, breves y comprensibles para ofrecer retroalimentación.
-- Incluye cambio obligatorio de roles para que todos ejecuten, observen y orienten.
+- Incluye cambio obligatorio de funciones para que todos ejecuten, orienten y reciban retroalimentación.
 - El docente supervisa la calidad y el respeto de la retroalimentación.
 - Utiliza coevaluación y una breve autoevaluación al finalizar.
 `,
