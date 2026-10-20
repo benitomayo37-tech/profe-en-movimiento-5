@@ -63,6 +63,30 @@ function createErrorResponse(
   );
 }
 
+function applyAutomaticObjectiveTaxonomy(data: AIFormData): void {
+  if (
+    data.toolId !== "lesson-plan" ||
+    data.objectiveTaxonomy !== "automatic"
+  ) {
+    return;
+  }
+
+  const normalizedTopic = data.topic
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  if (
+    !/\b(?:juegos?\s+cooperativos?|aprendizaje\s+cooperativo)\b/.test(
+      normalizedTopic,
+    )
+  ) {
+    return;
+  }
+
+  data.objectiveTaxonomy = "harrow";
+}
+
 function isValidDurationPlan(
   value: unknown,
 ): boolean {
@@ -481,6 +505,8 @@ export async function POST(
         400,
       );
     }
+
+    applyAutomaticObjectiveTaxonomy(parsedBody);
 
     if (parsedBody.toolId !== "lesson-plan" && !access.hasProAccess) {
       return createErrorResponse(
