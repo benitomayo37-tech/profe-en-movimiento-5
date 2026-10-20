@@ -43,6 +43,7 @@ import { validateGeneratedAssessment } from "@/features/ai/utils/validateGenerat
 import { validateGeneratedObjective } from "@/features/ai/utils/validateGeneratedObjective";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const MAX_REQUEST_SIZE = 12_000;
 const MAX_GENERATION_ATTEMPTS = 3;
