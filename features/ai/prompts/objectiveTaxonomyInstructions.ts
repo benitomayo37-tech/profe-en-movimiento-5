@@ -19,6 +19,9 @@ SELECCIÓN AUTOMÁTICA
 - Selecciona Bloom + Harrow cuando la comprensión y la ejecución motriz deban integrarse.
 - No selecciones una taxonomía por defecto sin analizar el aprendizaje solicitado.
 - Identifica claramente la taxonomía y el nivel elegidos.
+- Para temas centrados en juegos cooperativos, colaboración, responsabilidad, participación, convivencia o trabajo en equipo, selecciona Harrow cuando el objetivo se centre en la participación motriz y social.
+- Selecciona Bloom + Harrow únicamente cuando el objetivo incluya una evidencia cognitiva explícita, como analizar, explicar, aplicar, evaluar o tomar decisiones.
+- No selecciones Bloom por sí sola para un objetivo que solo describa colaboración, participación o responsabilidad.
 `,
 
     bloom: `
