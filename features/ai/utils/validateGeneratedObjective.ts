@@ -465,7 +465,8 @@ function validateQuantitativeCriterion(
 
   if (
     percentageMatches.length > 0 &&
-    countTotalMatches.length === 0
+    countTotalMatches.length === 0 &&
+    slashMatches.length === 0
   ) {
     return invalid(
       'El porcentaje del objetivo debe indicar también una relación verificable, por ejemplo: "8 pases efectivos de 10 intentos, equivalente al 80%".',
