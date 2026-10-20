@@ -43,7 +43,7 @@ import { validateGeneratedAssessment } from "@/features/ai/utils/validateGenerat
 import { validateGeneratedObjective } from "@/features/ai/utils/validateGeneratedObjective";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const MAX_REQUEST_SIZE = 12_000;
 const MAX_GENERATION_ATTEMPTS = 3;
@@ -530,7 +530,12 @@ export async function POST(
 
       freeReservationActive = reservation.reserved;
     }
+const model =
+  process.env.OPENAI_MODEL?.trim() ||
+  "gpt-5-mini";
 
+const isReasoningModel =
+  /^(?:gpt-5(?:[-.]|$)|o\d)/.test(model);
     const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
@@ -545,9 +550,11 @@ export async function POST(
     ) {
       const response =
         await client.responses.create({
-          model:
-            process.env.OPENAI_MODEL ??
-            "gpt-5-mini",
+          model,
+
+reasoning: isReasoningModel
+  ? { effort: "low" as const }
+  : undefined,
 
           store: false,
 
