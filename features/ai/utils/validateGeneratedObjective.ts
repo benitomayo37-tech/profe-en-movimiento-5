@@ -14,7 +14,7 @@ export interface ObjectiveValidationResult {
 }
 
 const BLOOM_VERB_PATTERN =
-  /\b(?:identific(?:ar|ando)|describ(?:ir|iendo)|explic(?:ar|ando)|aplic(?:ar|ando)|diferenci(?:ar|ando)|analiz(?:ar|ando)|compar(?:ar|ando)|clasific(?:ar|ando)|evalu(?:ar|ando)|justific(?:ar|ando)|disen(?:ar|ando)|cre(?:ar|ando)|resolv(?:er|iendo)|seleccion(?:ar|ando)|decid(?:ir|iendo)|tomar\s+decisiones|tomando\s+decisiones)\b/;
+  /\b(?:identific(?:ar|ando)|describ(?:ir|iendo)|explic(?:ar|ando)|aplic(?:ar|ando)|diferenci(?:ar|ando)|analiz(?:ar|ando)|compar(?:ar|ando)|clasific(?:ar|ando)|evalu(?:ar|ando)|justific(?:ar|ando)|disen(?:ar|ando)|cre(?:ar|ando)|resolv(?:er|iendo)|seleccion(?:ar|ando)|decid(?:ir|iendo)|tomar\s+decisiones|tomando\s+decisiones|demostr(?:ar|ando))\b/;
 
 const HARROW_VERB_PATTERN =
   /\b(?:ejecut(?:ar|ando)|coordin(?:ar|ando)|control(?:ar|ando)|ajust(?:ar|ando)|combin(?:ar|ando)|desplazarse|desplazandose|lanz(?:ar|ando)|recib(?:ir|iendo)|equilibr(?:ar|ando)|demostr(?:ar|ando)|adapt(?:ar|ando)|realiz(?:ar|ando))\b/;
